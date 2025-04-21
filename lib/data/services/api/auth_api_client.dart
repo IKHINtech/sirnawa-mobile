@@ -12,13 +12,13 @@ class AuthApiClient {
   Future<Result<LoginResponse>> login(LoginRequest loginRequest) async {
     try {
       final response = await _dio.post(
-        '/login',
+        '/auth/login',
         data: loginRequest.toJson(),
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
 
       if (response.statusCode == 200) {
-        return Result.ok(LoginResponse.fromJson(response.data));
+        return Result.ok(LoginResponse.fromJson(response.data["data"]));
       } else {
         return Result.error(Exception("Login error"));
       }
