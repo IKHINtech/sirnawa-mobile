@@ -4,8 +4,8 @@ import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:sirnawa_mobile/config/depedencies.dart';
 import 'package:sirnawa_mobile/routing/router.dart';
+import 'package:sirnawa_mobile/ui/core/themes/theme.dart';
 import 'package:sirnawa_mobile/ui/core/ui/scroll_behaviour.dart';
-import 'package:sirnawa_mobile/utils/theme.dart';
 import 'package:sirnawa_mobile/utils/util.dart';
 
 void main() async {
@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
     );
     MaterialTheme theme = MaterialTheme(textTheme);
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       title: 'Sirnajaya Kartika Warga',
       scrollBehavior: AppCustomScrollBehavior(),
       theme: brightness == Brightness.light ? theme.light() : theme.dark(),

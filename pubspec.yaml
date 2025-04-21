@@ -43,6 +43,7 @@ dependencies:
   flutter_dotenv:
   provider:
   go_router:
+  lucide_icons:
 
 dev_dependencies:
   flutter_test:

@@ -5,6 +5,7 @@ import 'package:sirnawa_mobile/data/repositories/auth/auth_repository.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/auth/login/view_models/login_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/auth/login/widgets/login_screen.dart';
+import 'package:sirnawa_mobile/ui/home/widgets/home_screen.dart';
 
 GoRouter router(AuthRepository authRepository) => GoRouter(
   initialLocation: Routes.home,
@@ -23,15 +24,13 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
     GoRoute(
       path: Routes.home,
       builder: (context, state) {
-        return LoginScreen(
-          viewModel: LoginViewModel(authRepository: context.read()),
+        return HomeScreen(
         );
       },
     ),
   ],
 );
 Future<String?> _redirect(BuildContext context, GoRouterState state) async {
-  // TODO: kenapa masih belum ke redirects
   // if the user is not logged in, they need to login
   final loggedIn = await context.read<AuthRepository>().isAuthenticated;
   final loggingIn = state.matchedLocation == Routes.login;
