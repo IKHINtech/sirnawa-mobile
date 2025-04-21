@@ -31,6 +31,7 @@ GoRouter router(AuthRepository authRepository) => GoRouter(
   ],
 );
 Future<String?> _redirect(BuildContext context, GoRouterState state) async {
+  // TODO: kenapa masih belum ke redirects
   // if the user is not logged in, they need to login
   final loggedIn = await context.read<AuthRepository>().isAuthenticated;
   final loggingIn = state.matchedLocation == Routes.login;
