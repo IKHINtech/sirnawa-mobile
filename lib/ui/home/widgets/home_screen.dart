@@ -130,9 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 16),
             Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(20),
-                ),
+                borderRadius: BorderRadius.all(Radius.circular(20)),
                 color: Theme.of(context).colorScheme.surface,
               ),
               child: Column(
@@ -152,71 +150,28 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisSpacing: 10,
                     crossAxisCount: 4,
                     children: <Widget>[
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          CircleAvatar(
-                            radius: 30,
-                            child: Icon(LucideIcons.receipt),
-                          ),
-                          Text(
-                            "IPL",
-                            style: Theme.of(context).textTheme.bodyLarge!
-                                .copyWith(fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                      _menuItem(
+                        context,
+                        title: "IPL",
+                        icon: Icons.receipt_long,
                       ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          CircleAvatar(
-                            radius: 30,
-                            child: Icon(
-                              LucideIcons.annoyed,
-                              color: Colors.orange,
-                            ),
-                          ),
-                          Text(
-                            "Info",
-                            style: Theme.of(context).textTheme.bodyLarge!
-                                .copyWith(fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                      _menuItem(
+                        context,
+                        title: "Info",
+                        color: Colors.orange,
+                        icon: LucideIcons.info,
                       ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          CircleAvatar(
-                            radius: 30,
-                            child: Icon(LucideIcons.info, color: Colors.green),
-                          ),
-                          Text(
-                            "Ronda",
-                            style: Theme.of(context).textTheme.bodyLarge!
-                                .copyWith(fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                      _menuItem(
+                        context,
+                        title: "Ronda",
+                        color: Colors.green,
+                        icon: Icons.security,
                       ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          CircleAvatar(
-                            radius: 30,
-                            child: Icon(
-                              LucideIcons.settings,
-                              color: Colors.purple,
-                            ),
-                          ),
-                          Text(
-                            "Admin",
-                            style: Theme.of(context).textTheme.bodyLarge!
-                                .copyWith(fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                      _menuItem(
+                        context,
+                        title: "Admin",
+                        color: Colors.purple,
+                        icon: Icons.settings,
                       ),
                     ],
                   ),
@@ -227,13 +182,11 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(
-                   Radius.circular(20),
-                ),
+                borderRadius: BorderRadius.all(Radius.circular(20)),
                 color: Theme.of(context).colorScheme.surface,
               ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start ,
+                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
@@ -245,41 +198,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   GridView.count(
                     primary: false,
                     shrinkWrap: true,
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(10),
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     crossAxisCount: 2,
                     children: <Widget>[
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        color: Colors.teal[100],
-                        child: const Text("He'd have you all unravel at the"),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        color: Colors.teal[200],
-                        child: const Text('Heed not the rabble'),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        color: Colors.teal[300],
-                        child: const Text('Sound of screams but the'),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        color: Colors.teal[400],
-                        child: const Text('Who scream'),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        color: Colors.teal[500],
-                        child: const Text('Revolution is coming...'),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        color: Colors.teal[600],
-                        child: const Text('Revolution, they...'),
-                      ),
+                      _fitureItem(),
+                      _fitureItem(),
+                      _fitureItem(),
+                      _fitureItem(),
+                      _fitureItem(),
+                      _fitureItem(),
+                      _fitureItem(),
+                      _fitureItem(),
+                      _fitureItem(),
+                      _fitureItem(),
                     ],
                   ),
                 ],
@@ -305,10 +238,38 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Badge(label: Text('2'), child: Icon(Icons.shopping_bag)),
             label: 'Warung',
           ),
-
           NavigationDestination(icon: Icon(LucideIcons.user), label: 'Profile'),
         ],
       ),
+    );
+  }
+
+  Container _fitureItem() {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      color: Colors.teal[100],
+      child: const Text("He'd have you all unravel at the"),
+    );
+  }
+
+  Column _menuItem(
+    BuildContext context, {
+    required title,
+    Color? color,
+    IconData? icon,
+  }) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        CircleAvatar(radius: 30, child: Icon(icon, color: color)),
+        Text(
+          title,
+          style: Theme.of(
+            context,
+          ).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
+        ),
+      ],
     );
   }
 }
