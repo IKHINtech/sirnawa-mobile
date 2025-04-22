@@ -1,4 +1,5 @@
 import 'package:logging/logging.dart';
+import 'package:sirnawa_mobile/data/services/api/user_services.dart';
 import 'package:sirnawa_mobile/data/services/share_preference_service.dart';
 
 import '../../../utils/result.dart';
@@ -12,16 +13,38 @@ class AuthRepositoryRemote extends AuthRepository {
   AuthRepositoryRemote({
     required ApiClient apiClient,
     required AuthApiClient authApiClient,
+    required UserService userService,
     required SharedPreferencesService sharedPreferencesService,
   }) : _apiClient = apiClient,
        _authApiClient = authApiClient,
+       _userService = userService,
        _sharedPreferencesService = sharedPreferencesService {
     _apiClient.authHeaderProvider = _authHeaderProvider;
-  }
+    _apiClient.setRefreshTokenCallback(() async {
+      final result = await _userService.refreshToken();
+      switch (result) {
+        case Ok<LoginResponse>():
+          _log.info('User logged int');
+          // Set auth status
+          _isAuthenticated = true;
+          _authToken = result.value.accessToken.token;
+          // Store in Shared preferences
+           await _sharedPreferencesService.saveToken(
+            result.value.accessToken.token,
+          );
+        case Error<LoginResponse>():
+          _log.warning('Error logging in: ${result.error}');
+           Result.error(result.error);
+      }
+      return null;
+    });
+    
+      }
 
   final AuthApiClient _authApiClient;
   final ApiClient _apiClient;
   final SharedPreferencesService _sharedPreferencesService;
+  final UserService _userService;
 
   bool? _isAuthenticated;
   String? _authToken;

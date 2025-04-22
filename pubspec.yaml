@@ -40,6 +40,8 @@ dependencies:
   shared_preferences:
   logging:
   dio:
+  cookie_jar: 
+  dio_cookie_manager: 
   flutter_dotenv:
   provider:
   go_router:

@@ -5,7 +5,7 @@ import 'package:sirnawa_mobile/utils/result.dart';
 
 class AuthApiClient {
   AuthApiClient({Dio? dio})
-    : _dio = dio ?? Dio(BaseOptions(baseUrl: 'https://api.siskerma.com'));
+    : _dio = dio ?? Dio(BaseOptions(baseUrl: ''));
 
   final Dio _dio;
 
@@ -14,6 +14,24 @@ class AuthApiClient {
       final response = await _dio.post(
         '/auth/login',
         data: loginRequest.toJson(),
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+
+      if (response.statusCode == 200) {
+        return Result.ok(LoginResponse.fromJson(response.data["data"]));
+      } else {
+        return Result.error(Exception("Login error"));
+      }
+    } on DioException catch (error) {
+      return Result.error(error);
+    } catch (error) {
+      return Result.error(Exception(error));
+    }
+  }
+  Future<Result<LoginResponse>> refreshToken() async {
+    try {
+      final response = await _dio.post(
+        '/auth/refresh-token',
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
 

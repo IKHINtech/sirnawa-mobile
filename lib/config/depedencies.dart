@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
-import 'package:sirnawa_mobile/config/app_config.dart';
 import 'package:sirnawa_mobile/data/repositories/auth/auth_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/auth/auth_repository_remote.dart';
 import 'package:sirnawa_mobile/data/repositories/rt/rt_repository.dart';
@@ -20,7 +19,7 @@ List<SingleChildWidget> get providersRemote {
     Provider<AuthApiClient>(create: (BuildContext context) => AuthApiClient()),
     Provider<ApiClient>(
       create:
-          (BuildContext context) => ApiClient(baseUrl: AppConfig.apiBaseUrl),
+          (BuildContext context) => ApiClient(baseUrl: ""),
     ),
     Provider<SharedPreferencesService>(
       create: (context) => SharedPreferencesService(),
@@ -29,6 +28,7 @@ List<SingleChildWidget> get providersRemote {
       create:
           (BuildContext context) =>
               AuthRepositoryRemote(
+                userService: UserService(context.read<ApiClient>()),
                     authApiClient: context.read<AuthApiClient>(),
                     apiClient: context.read<ApiClient>(),
                     sharedPreferencesService:

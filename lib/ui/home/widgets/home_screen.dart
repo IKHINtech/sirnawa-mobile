@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/home/view_models/home_viewmodel.dart';
 
 class HomeScreen extends StatefulWidget {
