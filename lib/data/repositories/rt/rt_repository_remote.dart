@@ -8,14 +8,32 @@ class RtRepositoryRemote implements RtRepository {
   RtRepositoryRemote({required RtService rtService}) : _rtService = rtService;
   final RtService _rtService;
 
-  // List<RtModel>? _cachedRts;
-
   @override
-  Future<Result<ApiResponse<List<RtModel>>>> getBookingsList() async {
+  Future<Result<ApiResponse<List<RtModel>>>> getListRt(
+    Map<String, dynamic>? queryParams,
+  ) async {
     try {
-      return await _rtService.getRts();
+      return await _rtService.getRts(queryParams);
     } on Exception catch (e) {
       return Result.error(e);
     }
+  }
+
+  @override
+  Future<Result<void>> createRt(RtModel rt) {
+    // TODO: implement createRt
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Result<void>> delete(String id) {
+    // TODO: implement delete
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Result<ApiResponse<RtModel>>> getRtByID() {
+    // TODO: implement getRtByID
+    throw UnimplementedError();
   }
 }

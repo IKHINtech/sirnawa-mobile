@@ -13,6 +13,7 @@ import 'package:sirnawa_mobile/data/services/api/auth_api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/rt_services.dart';
 import 'package:sirnawa_mobile/data/services/api/user_services.dart';
 import 'package:sirnawa_mobile/data/services/share_preference_service.dart';
+import 'package:sirnawa_mobile/ui/admin/rt/rt_viewmodel/rt_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/home/view_models/home_viewmodel.dart';
 
 List<SingleChildWidget> get providersRemote {
@@ -57,6 +58,11 @@ List<SingleChildWidget> get providersRemote {
       create:
           (BuildContext context) =>
               HomeViewmodel(userRepo: context.read<UserRepository>()),
+    ),
+    ChangeNotifierProvider<RtViewModel>(
+      create:
+          (BuildContext context) =>
+              RtViewModel(rtRepo: context.read<RtRepository>()),
     ),
   ];
 }

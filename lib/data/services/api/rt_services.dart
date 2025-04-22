@@ -9,9 +9,11 @@ class RtService {
 
   RtService(this.apiClient);
 
-  Future<Result<ApiResponse<List<RtModel>>>> getRts() async {
+  Future<Result<ApiResponse<List<RtModel>>>> getRts(
+    Map<String, dynamic>? queryParams,
+  ) async {
     try {
-      final response = await apiClient.get('/resident');
+      final response = await apiClient.get('/rt', queryParams: queryParams);
 
       final data = ApiResponse<List<RtModel>>.fromJson(
         response.data,
