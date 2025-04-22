@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sirnawa_mobile/data/repositories/auth/auth_repository.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
+import 'package:sirnawa_mobile/ui/admin/rt/widget/rt_screen.dart';
+import 'package:sirnawa_mobile/ui/admin/widgets/admin_screen.dart';
 import 'package:sirnawa_mobile/ui/auth/login/view_models/login_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/auth/login/widgets/login_screen.dart';
 import 'package:sirnawa_mobile/ui/community/widgets/community_screen.dart';
@@ -26,6 +28,8 @@ GoRouter createRouter(BuildContext context) => GoRouter(
         );
       },
     ),
+    GoRoute(path: Routes.admin, builder: (context, state) => AdminScreen()),
+    GoRoute(path: Routes.adminRt, builder: (context, state) => RtScreen()),
     ShellRoute(
       builder: (context, state, child) => HomeShell(child: child),
       routes: [

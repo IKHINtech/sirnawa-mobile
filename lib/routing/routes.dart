@@ -4,6 +4,12 @@ abstract final class Routes {
   static const warung = '/warung';
   static const profile = '/profile';
   static const login = '/login';
+  static const admin = '/admin';
+  static const adminRt = '/admin/rt';
+  static const adminRw = '/admin/rw';
+  static const adminBlock = '/admin/block';
+  static const adminHome = '/admin/home';
+  static const adminResident = '/admin/resident';
   static const search = '/$searchRelative';
   static const searchRelative = 'search';
   static const results = '/$resultsRelative';

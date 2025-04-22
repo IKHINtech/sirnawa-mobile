@@ -29,17 +29,17 @@ class AuthRepositoryRemote extends AuthRepository {
           _isAuthenticated = true;
           _authToken = result.value.accessToken.token;
           // Store in Shared preferences
-           await _sharedPreferencesService.saveToken(
+          await _sharedPreferencesService.saveToken(
             result.value.accessToken.token,
           );
+          return result.value.accessToken.token;
         case Error<LoginResponse>():
           _log.warning('Error logging in: ${result.error}');
-           Result.error(result.error);
+          Result.error(result.error);
       }
       return null;
     });
-    
-      }
+  }
 
   final AuthApiClient _authApiClient;
   final ApiClient _apiClient;
