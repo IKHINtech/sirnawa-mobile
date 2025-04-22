@@ -16,6 +16,7 @@ class _RtScreenState extends State<RtScreen> {
   void initState() {
     super.initState();
     _scrollController = ScrollController()..addListener(_onScroll);
+    widget.viewModel.addListener(_onViewModelChange);
     widget.viewModel.fetchListRt(reset: true); // load pertama
   }
 

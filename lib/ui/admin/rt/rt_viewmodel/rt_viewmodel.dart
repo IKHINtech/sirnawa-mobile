@@ -13,7 +13,7 @@ class RtViewModel extends ChangeNotifier {
   List<RtModel> _list = [];
 
   int _currentPage = 1;
-  final int _limit = 2;
+  final int _limit = 10;
   int _totalPages = 1;
 
   bool get isLoading => _isLoading;
