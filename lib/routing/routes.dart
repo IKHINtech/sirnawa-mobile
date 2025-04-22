@@ -1,5 +1,8 @@
 abstract final class Routes {
   static const home = '/';
+  static const community = '/community';
+  static const warung = '/warung';
+  static const profile = '/profile';
   static const login = '/login';
   static const search = '/$searchRelative';
   static const searchRelative = 'search';

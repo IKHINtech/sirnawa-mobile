@@ -5,10 +5,14 @@ import 'package:sirnawa_mobile/data/repositories/auth/auth_repository.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/auth/login/view_models/login_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/auth/login/widgets/login_screen.dart';
+import 'package:sirnawa_mobile/ui/community/widgets/community_screen.dart';
 import 'package:sirnawa_mobile/ui/home/view_models/home_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/home/widgets/home_screen.dart';
+import 'package:sirnawa_mobile/ui/home/widgets/home_sheel.dart';
+import 'package:sirnawa_mobile/ui/profile/widgets/profile_screen.dart';
+import 'package:sirnawa_mobile/ui/warung/widgets/warung_screen.dart';
 
-  GoRouter createRouter(BuildContext context) => GoRouter(
+GoRouter createRouter(BuildContext context) => GoRouter(
   initialLocation: Routes.home,
   debugLogDiagnostics: true,
   redirect: _redirect,
@@ -22,11 +26,34 @@ import 'package:sirnawa_mobile/ui/home/widgets/home_screen.dart';
         );
       },
     ),
-    GoRoute(
-      path: Routes.home,
-      builder: (context, state) {
-        return HomeScreen(viewModel: HomeViewmodel(userRepo: context.read()));
-      },
+    ShellRoute(
+      builder: (context, state, child) => HomeShell(child: child),
+      routes: [
+        GoRoute(
+          path: Routes.home,
+          pageBuilder:
+              (context, state) => NoTransitionPage(
+                child: HomeScreen(
+                  viewModel: HomeViewmodel(userRepo: context.read()),
+                ),
+              ),
+        ),
+        GoRoute(
+          path: Routes.profile,
+          pageBuilder:
+              (context, state) => NoTransitionPage(child: ProfileScreen()),
+        ),
+        GoRoute(
+          path: Routes.warung,
+          pageBuilder:
+              (context, state) => NoTransitionPage(child: WarungScreen()),
+        ),
+        GoRoute(
+          path: Routes.community,
+          pageBuilder:
+              (context, state) => NoTransitionPage(child: CommunityScreen()),
+        ),
+      ],
     ),
   ],
 );

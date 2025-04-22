@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/home/view_models/home_viewmodel.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -33,7 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final viewmodel = context.watch<HomeViewmodel>();
     return Scaffold(
-      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -56,9 +57,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text(
                     "Sirnajaya Kartika",
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
                   ),
                   Row(
                     children: [
@@ -73,13 +74,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 children: [
                                   Icon(
                                     Icons.apartment_rounded,
-                                    color:
-                                        Theme.of(context).colorScheme.tertiary,
+                                    color: Theme.of(context).colorScheme.tertiary,
                                   ),
                                   SizedBox(width: 8),
                                   Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         viewmodel.user?.resident?.name ?? "-",
@@ -90,12 +89,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       ),
                                       Text(
-                                        viewmodel.user?.role.toUpperCase() ??
-                                            "-",
+                                        viewmodel.user?.role.toUpperCase() ?? "-",
                                         style:
-                                            Theme.of(
-                                              context,
-                                            ).textTheme.bodySmall,
+                                            Theme.of(context).textTheme.bodySmall,
                                       ),
                                     ],
                                   ),
@@ -117,10 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       CircleAvatar(
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         radius: 30,
-                        child: const Icon(
-                          LucideIcons.user,
-                          color: Colors.white,
-                        ),
+                        child: const Icon(LucideIcons.user, color: Colors.white),
                       ),
                     ],
                   ),
@@ -138,8 +131,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   Center(
                     child: Text(
                       "Menu",
-                      style: Theme.of(context).textTheme.headlineMedium!
-                          .copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   GridView.count(
@@ -150,11 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisSpacing: 10,
                     crossAxisCount: 4,
                     children: <Widget>[
-                      _menuItem(
-                        context,
-                        title: "IPL",
-                        icon: Icons.receipt_long,
-                      ),
+                      _menuItem(context, title: "IPL", icon: Icons.receipt_long),
                       _menuItem(
                         context,
                         title: "Info",
@@ -221,28 +211,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
-        selectedIndex: currentPageIndex,
-        destinations: const <Widget>[
-          NavigationDestination(icon: Icon(LucideIcons.home), label: 'Home'),
-          NavigationDestination(
-            icon: Badge(child: Icon(LucideIcons.users)),
-            label: 'Community',
-          ),
-          NavigationDestination(
-            icon: Badge(label: Text('2'), child: Icon(Icons.shopping_bag)),
-            label: 'Warung',
-          ),
-          NavigationDestination(icon: Icon(LucideIcons.user), label: 'Profile'),
-        ],
-      ),
     );
   }
+
 
   Container _fitureItem() {
     return Container(
