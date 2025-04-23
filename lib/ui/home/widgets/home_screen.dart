@@ -12,7 +12,6 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch<HomeState>(homeViewModelProvider);
-    final viweModel = ref.watch<HomeViewModel>(homeViewModelProvider.notifier);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -39,6 +38,87 @@ class HomeScreen extends ConsumerWidget {
             SizedBox(height: 16),
             _mainMenu(context),
             Container(height: 20, color: Colors.white),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+                color: Theme.of(context).colorScheme.surface,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Ronda Minggu Ini",
+                        style: Theme.of(
+                          context,
+                        ).textTheme.headlineSmall!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
+                      Icon(
+                        Icons.calendar_month,
+                        color: Theme.of(context).colorScheme.outline,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 3),
+                  Text(
+                    "Sabtu, 12 April 2025",
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      color: Theme.of(context).colorScheme.outline,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Card.outlined(
+                    child: ListTile(
+                      title: Text("Group A"),
+                      subtitle: Text("12:00 PM - 2:00 PM"),
+                      trailing: Icon(
+                        Icons.security_rounded,
+                        color: Colors.redAccent,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            Container(height: 20, color: Colors.white),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+                color: Theme.of(context).colorScheme.surface,
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Pengumuman",
+                        style: Theme.of(
+                          context,
+                        ).textTheme.headlineSmall!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
+                      Icon(
+                        Icons.info_outline_rounded,
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            Container(height: 20, color: Colors.white),
             _fiture(context),
           ],
         ),
@@ -61,7 +141,7 @@ class HomeScreen extends ConsumerWidget {
             "Fitur",
             style: Theme.of(
               context,
-            ).textTheme.headlineMedium!.copyWith(fontWeight: FontWeight.bold),
+            ).textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.bold),
           ),
           GridView.count(
             primary: false,
@@ -99,9 +179,10 @@ class HomeScreen extends ConsumerWidget {
           Center(
             child: Text(
               "Menu",
-              style: Theme.of(
-                context,
-              ).textTheme.headlineMedium!.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: 23,
+              ),
             ),
           ),
           GridView.count(
@@ -122,14 +203,14 @@ class HomeScreen extends ConsumerWidget {
                 onTab: () {},
                 context,
                 title: "Rumah",
-                color: Colors.orange,
+                color: Colors.green,
                 icon: LucideIcons.home,
               ),
               _menuItem(
                 onTab: () {},
                 context,
                 title: "Ronda",
-                color: Colors.green,
+                color: Colors.redAccent,
                 icon: Icons.security,
               ),
               _menuItem(
