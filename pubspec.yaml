@@ -40,12 +40,12 @@ dependencies:
   shared_preferences:
   logging:
   dio:
-  cookie_jar: 
-  dio_cookie_manager: 
+  cookie_jar:
+  dio_cookie_manager:
   flutter_dotenv:
-  provider:
   go_router:
   lucide_icons:
+  flutter_riverpod:
 
 dev_dependencies:
   flutter_test:

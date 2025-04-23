@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:logging/logging.dart';
 import 'package:sirnawa_mobile/data/services/api/user_services.dart';
 import 'package:sirnawa_mobile/data/services/share_preference_service.dart';
@@ -9,7 +11,7 @@ import '../../services/api/model/login_request/login_request.dart';
 import '../../services/api/model/login_response/login_response.dart';
 import 'auth_repository.dart';
 
-class AuthRepositoryRemote extends AuthRepository {
+class AuthRepositoryRemote implements AuthRepository {
   AuthRepositoryRemote({
     required ApiClient apiClient,
     required AuthApiClient authApiClient,
@@ -20,60 +22,68 @@ class AuthRepositoryRemote extends AuthRepository {
        _userService = userService,
        _sharedPreferencesService = sharedPreferencesService {
     _apiClient.authHeaderProvider = _authHeaderProvider;
-    _apiClient.setRefreshTokenCallback(() async {
-      final result = await _userService.refreshToken();
-      switch (result) {
-        case Ok<LoginResponse>():
-          _log.info('User logged int');
-          // Set auth status
-          _isAuthenticated = true;
-          _authToken = result.value.accessToken.token;
-          // Store in Shared preferences
-          await _sharedPreferencesService.saveToken(
-            result.value.accessToken.token,
-          );
-          return result.value.accessToken.token;
-        case Error<LoginResponse>():
-          _log.warning('Error logging in: ${result.error}');
-          Result.error(result.error);
-      }
-      return null;
-    });
+    _apiClient.setRefreshTokenCallback(_refreshToken);
+    _init();
+    // Initialize stream controller
+    _authController = StreamController<bool>.broadcast();
+  }
+
+  Future<void> _init() async {
+    // Load initial auth state
+    await isAuthenticated;
   }
 
   final AuthApiClient _authApiClient;
   final ApiClient _apiClient;
   final SharedPreferencesService _sharedPreferencesService;
   final UserService _userService;
+  final _log = Logger('AuthRepositoryRemote');
 
   bool? _isAuthenticated;
   String? _authToken;
-  final _log = Logger('AuthRepositoryRemote');
+  late final StreamController<bool> _authController;
 
-  /// Fetch token from shared preferences
-  Future<void> _fetch() async {
-    final result = await _sharedPreferencesService.fetchToken();
+  // Helper method to update auth state and notify listeners
+  void _updateAuthState(bool isAuthenticated) {
+    _isAuthenticated = isAuthenticated;
+    _authController.add(isAuthenticated);
+  }
+
+  @override
+  Stream<bool> get authStateChanges => _authController.stream;
+
+  Future<String?> _refreshToken() async {
+    final result = await _userService.refreshToken();
     switch (result) {
-      case Ok<String?>():
-        _authToken = result.value;
-        _isAuthenticated = result.value != null;
-      case Error<String?>():
-        _log.severe(
-          'Failed to fech Token from SharedPreferences',
-          result.error,
-        );
+      case Ok<LoginResponse>():
+        _log.info('Token refreshed');
+        _authToken = result.value.accessToken.token;
+        await _sharedPreferencesService.saveToken(_authToken);
+        _updateAuthState(true);
+        return _authToken;
+      case Error<LoginResponse>():
+        _log.warning('Error refreshing token: ${result.error}');
+        _updateAuthState(false);
+        return null;
     }
   }
 
   @override
   Future<bool> get isAuthenticated async {
-    // Status is cached
-    if (_isAuthenticated != null) {
-      return _isAuthenticated!;
+    if (_isAuthenticated != null) return _isAuthenticated!;
+
+    final result = await _sharedPreferencesService.fetchToken();
+    switch (result) {
+      case Ok<String?>():
+        _authToken = result.value;
+        final authenticated = result.value != null;
+        _updateAuthState(authenticated);
+        return authenticated;
+      case Error<String?>():
+        _log.severe('Failed to fetch token', result.error);
+        _updateAuthState(false);
+        return false;
     }
-    // No status cached, fetch from storage
-    await _fetch();
-    return _isAuthenticated ?? false;
   }
 
   @override
@@ -85,46 +95,49 @@ class AuthRepositoryRemote extends AuthRepository {
       final result = await _authApiClient.login(
         LoginRequest(email: email, password: password),
       );
+
       switch (result) {
         case Ok<LoginResponse>():
-          _log.info('User logged int');
-          // Set auth status
-          _isAuthenticated = true;
+          _log.info('User logged in');
           _authToken = result.value.accessToken.token;
-          // Store in Shared preferences
-          return await _sharedPreferencesService.saveToken(
-            result.value.accessToken.token,
-          );
+          await _sharedPreferencesService.saveToken(_authToken);
+          _updateAuthState(true);
+          return const Result.ok(null);
         case Error<LoginResponse>():
-          _log.warning('Error logging in: ${result.error}');
+          _log.warning('Login failed: ${result.error}');
+          _updateAuthState(false);
           return Result.error(result.error);
       }
-    } finally {
-      notifyListeners();
+    } catch (e) {
+      _log.severe('Login exception', e);
+      _updateAuthState(false);
+      return Result.error(Exception('Login failed'));
     }
   }
 
   @override
   Future<Result<void>> logout() async {
-    _log.info('User logged out');
+    _log.info('Logging out');
     try {
-      // Clear stored auth token
       final result = await _sharedPreferencesService.saveToken(null);
       if (result is Error<void>) {
-        _log.severe('Failed to clear stored auth token');
+        _log.severe('Failed to clear token');
+        return result;
       }
 
-      // Clear token in ApiClient
       _authToken = null;
-
-      // Clear authenticated status
-      _isAuthenticated = false;
-      return result;
-    } finally {
-      notifyListeners();
+      _updateAuthState(false);
+      return const Result.ok(null);
+    } catch (e) {
+      _log.severe('Logout exception', e);
+      return Result.error(Exception('Logout failed'));
     }
   }
 
   String? _authHeaderProvider() =>
       _authToken != null ? 'Bearer $_authToken' : null;
+
+  void dispose() {
+    _authController.close();
+  }
 }

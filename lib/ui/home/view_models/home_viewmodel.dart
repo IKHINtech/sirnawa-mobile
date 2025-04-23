@@ -1,44 +1,82 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sirnawa_mobile/data/repositories/user/user_repository.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
 import 'package:sirnawa_mobile/domain/model/user/user_model.dart';
-import 'package:sirnawa_mobile/utils/command.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
 
-class HomeViewmodel extends ChangeNotifier {
-  HomeViewmodel({required UserRepository userRepo}) : _userRepo = userRepo {
-    loadUser = Command0(_fetchCurrentUser)..execute();
+class HomeState {
+  final bool isLoading;
+  final String? error;
+  final UserModel? user;
+  final AsyncValue<void> loadStatus;
+
+  const HomeState({
+    required this.isLoading,
+    required this.error,
+    required this.user,
+    required this.loadStatus,
+  });
+
+  HomeState copyWith({
+    bool? isLoading,
+    String? error,
+    UserModel? user,
+    AsyncValue<void>? loadStatus,
+  }) {
+    return HomeState(
+      isLoading: isLoading ?? this.isLoading,
+      error: error ?? this.error,
+      user: user ?? this.user,
+      loadStatus: loadStatus ?? this.loadStatus,
+    );
   }
+
+  factory HomeState.initial() {
+    return const HomeState(
+      isLoading: false,
+      error: null,
+      user: null,
+      loadStatus: AsyncValue.data(null),
+    );
+  }
+}
+
+class HomeViewModel extends StateNotifier<HomeState> {
   final UserRepository _userRepo;
 
-  bool _isLoading = false;
-  String? _error;
-  UserModel? _user;
+  HomeViewModel({required UserRepository userRepo})
+    : _userRepo = userRepo,
+      super(HomeState.initial()) {
+    _fetchCurrentUser();
+  }
 
-  bool get isLoading => _isLoading;
-  String? get error => _error;
-  UserModel? get user => _user;
-  late final Command0 loadUser;
-
-  Future<Result<void>> _fetchCurrentUser() async {
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
+  Future<void> _fetchCurrentUser() async {
+    state = state.copyWith(
+      isLoading: true,
+      error: null,
+      loadStatus: const AsyncValue.loading(),
+    );
 
     final result = await _userRepo.getCurrentUser();
 
-    if (result is Ok<ApiResponse<UserModel>>) {
-      final apiResponse = result.value;
-      _user = apiResponse.data;
-    } else if (result is Error<ApiResponse<UserModel>>) {
-      _error = result.error.toString();
+    switch (result) {
+      case Ok<ApiResponse<UserModel>>():
+        state = state.copyWith(
+          isLoading: false,
+          user: result.value.data,
+          loadStatus: const AsyncValue.data(null),
+        );
+      case Error():
+        state = state.copyWith(
+          isLoading: false,
+          error: result.error.toString(),
+          loadStatus: AsyncValue.error(result.error, StackTrace.empty),
+        );
     }
+  }
 
-    _isLoading = false;
-    notifyListeners();
-
-    return _error != null
-        ? Result.error(Exception(_error))
-        : const Result.ok(null);
+  // Command pattern bisa diimplementasikan sebagai method biasa
+  Future<void> reloadUser() async {
+    return _fetchCurrentUser();
   }
 }

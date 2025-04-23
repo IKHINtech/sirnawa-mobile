@@ -1,39 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:provider/provider.dart';
+import 'package:sirnawa_mobile/config/app_providers.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/home/view_models/home_viewmodel.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.viewModel});
-  final HomeViewmodel viewModel;
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  int currentPageIndex = 0;
-  late final HomeViewmodel _viewModel;
+class HomeScreen extends ConsumerWidget {
+  const HomeScreen({super.key});
 
   @override
-  void initState() {
-    super.initState();
-    _viewModel = widget.viewModel;
-    _viewModel.addListener(_onModelChanged);
-  }
-
-  void _onModelChanged() => setState(() {});
-
-  @override
-  void dispose() {
-    _viewModel.removeListener(_onModelChanged);
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final viewmodel = context.watch<HomeViewmodel>();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch<HomeState>(homeViewModelProvider);
+    final viweModel = ref.watch<HomeViewModel>(homeViewModelProvider.notifier);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -54,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               padding: const EdgeInsets.only(bottom: 16.0, left: 16, right: 16),
               child: Column(
-                children: [_title(context), _userLogin(context, viewmodel)],
+                children: [_title(context), _userLogin(context, state)],
               ),
             ),
             SizedBox(height: 16),
@@ -169,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Row _userLogin(BuildContext context, HomeViewmodel viewmodel) {
+  Row _userLogin(BuildContext context, HomeState viewmodel) {
     return Row(
       children: [
         Expanded(

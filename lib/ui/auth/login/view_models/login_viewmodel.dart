@@ -1,28 +1,66 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:sirnawa_mobile/data/repositories/auth/auth_repository.dart';
-import 'package:sirnawa_mobile/utils/command.dart';
-import 'package:sirnawa_mobile/utils/result.dart';
 
-class LoginViewModel {
-  LoginViewModel({required AuthRepository authRepository})
-    : _authRepository = authRepository {
-    login = Command1<void, (String email, String password)>(_login);
+class LoginState {
+  final bool isLoading;
+  final String? error;
+  final AsyncValue<void> loginStatus;
+
+  const LoginState({
+    required this.isLoading,
+    required this.error,
+    required this.loginStatus,
+  });
+
+  LoginState copyWith({
+    bool? isLoading,
+    String? error,
+    AsyncValue<void>? loginStatus,
+  }) {
+    return LoginState(
+      isLoading: isLoading ?? this.isLoading,
+      error: error ?? this.error,
+      loginStatus: loginStatus ?? this.loginStatus,
+    );
   }
 
-  final AuthRepository _authRepository;
-  final _log = Logger('LoginViewModel');
-
-  late Command1 login;
-
-  Future<Result<void>> _login((String, String) credentials) async {
-    final (email, password) = credentials;
-    final result = await _authRepository.login(
-      email: email,
-      password: password,
+  factory LoginState.initial() {
+    return const LoginState(
+      isLoading: false,
+      error: null,
+      loginStatus: AsyncValue.data(null),
     );
-    if (result is Error<void>) {
+  }
+}
+
+class LoginViewModel extends StateNotifier<LoginState> {
+  final AuthRepository _authRepository;
+  final Logger _log = Logger('LoginViewModel');
+
+  LoginViewModel({required AuthRepository authRepository})
+    : _authRepository = authRepository,
+      super(LoginState.initial());
+
+  Future<void> login(String email, String password) async {
+    state = state.copyWith(
+      isLoading: true,
+      error: null,
+      loginStatus: const AsyncValue.loading(),
+    );
+
+    final result = await AsyncValue.guard(
+      () => _authRepository.login(email: email, password: password),
+    );
+
+    state = state.copyWith(
+      isLoading: false,
+      loginStatus: result,
+      error: result.hasError ? result.error.toString() : null,
+    );
+
+    if (result.hasError) {
       _log.warning('Login failed! ${result.error}');
     }
-    return result;
   }
 }

@@ -1,104 +1,53 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:sirnawa_mobile/routing/routes.dart';
-import 'package:sirnawa_mobile/ui/auth/login/view_models/login_viewmodel.dart';
-import 'package:sirnawa_mobile/ui/core/themes/dimens.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sirnawa_mobile/config/app_providers.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key, required this.viewModel});
-
-  final LoginViewModel viewModel;
+class LoginScreen extends ConsumerWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(loginViewModelProvider);
+    final viewModel = ref.read(loginViewModelProvider.notifier);
+    final emailController = TextEditingController();
+    final passwordController = TextEditingController();
 
-class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _email = TextEditingController(
-    text: 'email@example.com',
-  );
-  final TextEditingController _password = TextEditingController(
-    text: 'password',
-  );
-
-  @override
-  void initState() {
-    super.initState();
-    widget.viewModel.login.addListener(_onResult);
-  }
-
-  @override
-  void didUpdateWidget(covariant LoginScreen oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    oldWidget.viewModel.login.removeListener(_onResult);
-    widget.viewModel.login.addListener(_onResult);
-  }
-
-  @override
-  void dispose() {
-    widget.viewModel.login.removeListener(_onResult);
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Padding(
-            padding: Dimens.of(context).edgeInsetsScreenSymmetric,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TextField(controller: _email),
-                const SizedBox(height: Dimens.paddingVertical),
-                TextField(controller: _password, obscureText: true),
-                const SizedBox(height: Dimens.paddingVertical),
-                ListenableBuilder(
-                  listenable: widget.viewModel.login,
-                  builder: (context, _) {
-                    return FilledButton(
-                      onPressed: () {
-                        widget.viewModel.login.execute((
-                          _email.value.text,
-                          _password.value.text,
-                        ));
-                      },
-                      child: Text("Login"),
-                    );
-                  },
-                ),
-              ],
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(labelText: 'Email'),
             ),
-          ),
-        ],
+            TextField(
+              controller: passwordController,
+              decoration: const InputDecoration(labelText: 'Password'),
+              obscureText: true,
+            ),
+            const SizedBox(height: 20),
+            state.loginStatus.when(
+              loading: () => const CircularProgressIndicator(),
+              error:
+                  (error, stack) => Text(
+                    'Error: ${error.toString()}',
+                    style: const TextStyle(color: Colors.red),
+                  ),
+              data:
+                  (_) => ElevatedButton(
+                    onPressed: () {
+                      viewModel.login(
+                        emailController.text,
+                        passwordController.text,
+                      );
+                    },
+                    child: const Text('Login'),
+                  ),
+            ),
+          ],
+        ),
       ),
     );
-  }
-
-  void _onResult() {
-    if (widget.viewModel.login.completed) {
-      widget.viewModel.login.clearResult();
-      context.go(Routes.home);
-    }
-
-    if (widget.viewModel.login.error) {
-      widget.viewModel.login.clearResult();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Error ketika login"),
-          action: SnackBarAction(
-            label: "Coba Lagi",
-            onPressed:
-                () => widget.viewModel.login.execute((
-                  _email.value.text,
-                  _password.value.text,
-                )),
-          ),
-        ),
-      );
-    }
   }
 }
