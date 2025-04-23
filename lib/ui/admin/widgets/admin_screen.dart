@@ -31,7 +31,14 @@ class _AdminScreenState extends State<AdminScreen> {
                     context.push(Routes.adminRt);
                   },
                   icon: Icons.group,
-                  title: "Managemen RT",
+                  title: "Data RT",
+                ),
+                _itemAdmin(
+                  onClick: () {
+                    context.push(Routes.adminResident);
+                  },
+                  icon: Icons.person,
+                  title: "Data Warga",
                 ),
               ],
             ),
@@ -53,9 +60,10 @@ class _AdminScreenState extends State<AdminScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(icon, size: 40),
+            CircleAvatar(radius: 28, child: Icon(icon, size: 40)),
             Text(
               title,
+              textAlign: TextAlign.center,
               style: Theme.of(
                 context,
               ).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),

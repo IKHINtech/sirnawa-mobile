@@ -121,9 +121,9 @@ class HomeScreen extends ConsumerWidget {
               _menuItem(
                 onTab: () {},
                 context,
-                title: "Info",
+                title: "Rumah",
                 color: Colors.orange,
-                icon: LucideIcons.info,
+                icon: LucideIcons.home,
               ),
               _menuItem(
                 onTab: () {},

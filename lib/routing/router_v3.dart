@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sirnawa_mobile/config/auth_providers.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
+import 'package:sirnawa_mobile/ui/admin/resident/widget/resident_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/rt/widget/rt_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/widgets/admin_screen.dart';
 import 'package:sirnawa_mobile/ui/auth/login/widgets/login_screen.dart';
@@ -84,6 +85,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.adminRt,
         builder: (context, state) => const RtScreen(),
+      ),
+
+      GoRoute(
+        path: Routes.adminResident,
+        builder: (context, state) => const ResidentScreen(),
       ),
       ShellRoute(
         builder: (context, state, child) => HomeShell(child: child),

@@ -1,39 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
-import 'package:sirnawa_mobile/ui/admin/rt/rt_viewmodel/rt_viewmodel.dart';
+import 'package:sirnawa_mobile/ui/admin/resident/resident_view_model/resident_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class RtScreen extends ConsumerStatefulWidget {
-  const RtScreen({super.key});
+class ResidentScreen extends ConsumerStatefulWidget {
+  const ResidentScreen({super.key});
 
   @override
-  ConsumerState<RtScreen> createState() => _RtScreenState();
+  ConsumerState<ResidentScreen> createState() => _ResidentScreenState();
 }
 
-class _RtScreenState extends ConsumerState<RtScreen> {
+class _ResidentScreenState extends ConsumerState<ResidentScreen> {
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
-      ref.read(rtViewModelProvider.notifier).fetchListRt(reset: true);
+      ref
+          .read(residentViewModelProvider.notifier)
+          .fetchListResident(reset: true);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(rtViewModelProvider);
-    final viewModel = ref.read(rtViewModelProvider.notifier);
+    final state = ref.watch(residentViewModelProvider);
+    final viewModel = ref.read(residentViewModelProvider.notifier);
 
     return Scaffold(
-      appBar: CustomAppBar(title: 'Data RT'),
+      appBar: CustomAppBar(title: 'Data Warga'),
       body: _buildBody(state, viewModel, context),
     );
   }
 
   Widget _buildBody(
-    RtState state,
-    RtViewModel viewModel,
+    ResidentState state,
+    ResidentViewModel viewModel,
     BuildContext context,
   ) {
     if (state.isLoading && state.list.isEmpty) {
@@ -47,7 +49,7 @@ class _RtScreenState extends ConsumerState<RtScreen> {
           children: [
             Text("Error: ${state.error}"),
             ElevatedButton(
-              onPressed: () => viewModel.fetchListRt(reset: true),
+              onPressed: () => viewModel.fetchListResident(reset: true),
               child: const Text("Retry"),
             ),
           ],
@@ -56,7 +58,7 @@ class _RtScreenState extends ConsumerState<RtScreen> {
     }
 
     return RefreshIndicator(
-      onRefresh: () => viewModel.fetchListRt(reset: true),
+      onRefresh: () => viewModel.fetchListResident(reset: true),
       child: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount:
@@ -70,7 +72,11 @@ class _RtScreenState extends ConsumerState<RtScreen> {
           }
           final rt = state.list[index];
           return Card(
-            child: ListTile(leading: Icon(Icons.group), title: Text(rt.name)),
+            child: ListTile(
+              leading: const CircleAvatar(child: Icon(Icons.person)),
+              title: Text(rt.name),
+              subtitle: Text(rt.phoneNumber),
+            ),
           );
         },
       ),
