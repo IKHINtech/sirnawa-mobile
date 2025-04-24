@@ -13,114 +13,140 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch<HomeState>(homeViewModelProvider);
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              color: Theme.of(context).colorScheme.surface,
-              height: kToolbarHeight,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20),
+      body: RefreshIndicator(
+        onRefresh: () => ref.read(homeViewModelProvider.notifier).reloadUser(),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                color: Theme.of(context).colorScheme.surface,
+                height: kToolbarHeight,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                  ),
+                  color: Theme.of(context).colorScheme.surface,
                 ),
-                color: Theme.of(context).colorScheme.surface,
+                padding: const EdgeInsets.only(bottom: 16.0, left: 16, right: 16),
+                child: Column(
+                  children: [_title(context),
+                  
+              SizedBox(height: 16),
+                  
+                   _userLogin(context, state)],
+                ),
               ),
-              padding: const EdgeInsets.only(bottom: 16.0, left: 16, right: 16),
-              child: Column(
-                children: [_title(context), _userLogin(context, state)],
-              ),
-            ),
-            SizedBox(height: 16),
-            _mainMenu(context),
-            Container(height: 20, color: Colors.white),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                color: Theme.of(context).colorScheme.surface,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Ronda Minggu Ini",
-                        style: Theme.of(
-                          context,
-                        ).textTheme.headlineSmall!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
+              _mainMenu(context),
+              Container(height: 20, color: Colors.white),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  color: Theme.of(context).colorScheme.surface,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Ronda Minggu Ini",
+                          style: Theme.of(
+                            context,
+                          ).textTheme.headlineSmall!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
                         ),
-                      ),
-                      Icon(
-                        Icons.calendar_month,
+                        Icon(
+                          Icons.calendar_month,
+                          color: Theme.of(context).colorScheme.outline,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 3),
+                    Text(
+                      "Sabtu, 12 April 2025",
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
                         color: Theme.of(context).colorScheme.outline,
                       ),
-                    ],
-                  ),
-                  SizedBox(height: 3),
-                  Text(
-                    "Sabtu, 12 April 2025",
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
                     ),
-                  ),
-                  SizedBox(height: 10),
-                  Card.outlined(
-                    child: ListTile(
-                      title: Text("Group A"),
-                      subtitle: Text("12:00 PM - 2:00 PM"),
-                      trailing: Icon(
-                        Icons.security_rounded,
-                        color: Colors.redAccent,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            Container(height: 20, color: Colors.white),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                color: Theme.of(context).colorScheme.surface,
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Pengumuman",
-                        style: Theme.of(
-                          context,
-                        ).textTheme.headlineSmall!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                    SizedBox(height: 10),
+                    Card.outlined(
+                      child: ListTile(
+                        title: Text("Group A"),
+                        subtitle: Row(
+                          children: [
+                            Icon(Icons.person),
+                            Text("3 Orang"),
+                          ],
+                        ),
+                        trailing: Icon(
+                          Icons.security_rounded,
+                          color: Colors.redAccent,
                         ),
                       ),
-                      Icon(
-                        Icons.info_outline_rounded,
-                        color: Theme.of(context).colorScheme.error,
-                      ),
-                    ],
-                  ),
-                ],
+                    ),
+                    CustomElevatedButton(
+                      title: "Lihat Jadwal Lengkap",
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
               ),
-            ),
-
-            Container(height: 20, color: Colors.white),
-            _fiture(context),
-          ],
+              Container(height: 20, color: Colors.white),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  color: Theme.of(context).colorScheme.surface,
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Pengumuman",
+                          style: Theme.of(
+                            context,
+                          ).textTheme.headlineSmall!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                        Icon(
+                          LucideIcons.bell,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Card.outlined(
+                      child: ListTile(
+                        title: Text("Kerja Bakti Rutin"),
+                        subtitle: Text("lorem ipsum"),
+                        trailing: Icon(Icons.info, color: Colors.blue),
+                      ),
+                    ),
+                    CustomElevatedButton(
+                      title: "Lihat Pengumuman Lain",
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+              ),
+          
+              Container(height: 20, color: Colors.white),
+              _fiture(context),
+            ],
+          ),
         ),
       ),
     );
@@ -229,56 +255,61 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Row _userLogin(BuildContext context, HomeState viewmodel) {
-    return Row(
-      children: [
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+  Widget _userLogin(BuildContext context, HomeState viewmodel) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.apartment_rounded,
-                      color: Theme.of(context).colorScheme.tertiary,
-                    ),
-                    SizedBox(width: 8),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
                       children: [
-                        Text(
-                          viewmodel.user?.resident?.name ?? "-",
-                          style: Theme.of(context).textTheme.titleMedium!
-                              .copyWith(fontWeight: FontWeight.bold),
+                        Icon(
+                          Icons.apartment_rounded,
+                          color: Theme.of(context).colorScheme.tertiary,
                         ),
-                        Text(
-                          viewmodel.user?.role.toUpperCase() ?? "-",
-                          style: Theme.of(context).textTheme.bodySmall,
+                        SizedBox(width: 8),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              viewmodel.user?.resident?.name ?? "-",
+                              style: Theme.of(context).textTheme.titleMedium!
+                                  .copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              viewmodel.user?.role.toUpperCase() ?? "-",
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
                         ),
                       ],
                     ),
+                    Text(
+                      "Blok I - 1 No.29",
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                      ),
+                    ),
                   ],
                 ),
-                Text(
-                  "Blok I - 1 No.29",
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey,
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+            CircleAvatar(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              radius: 30,
+              child: const Icon(LucideIcons.user, color: Colors.white),
+            ),
+          ],
         ),
-        CircleAvatar(
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          radius: 30,
-          child: const Icon(LucideIcons.user, color: Colors.white),
-        ),
-      ],
+      ),
     );
   }
 
@@ -321,6 +352,30 @@ class HomeScreen extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class CustomElevatedButton extends StatelessWidget {
+  const CustomElevatedButton({
+    super.key,
+    required this.onPressed,
+    required this.title,
+  });
+  final String title;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ButtonStyle(
+        minimumSize: WidgetStateProperty.all<Size>(Size(double.infinity, 40)),
+        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      ),
+      onPressed: onPressed,
+      child: Text(title),
     );
   }
 }
