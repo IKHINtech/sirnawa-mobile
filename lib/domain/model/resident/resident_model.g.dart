@@ -18,6 +18,12 @@ _ResidentModel _$ResidentModelFromJson(Map<String, dynamic> json) =>
       birthDate: DateTime.parse(json['birth_date'] as String),
       job: json['job'] as String,
       isHeadOfFamily: json['is_head_of_family'] as bool,
+      residentHouses:
+          (json['resident_houses'] as List<dynamic>?)
+              ?.map(
+                (e) => ResidentHouseModel.fromJson(e as Map<String, dynamic>),
+              )
+              .toList(),
     );
 
 Map<String, dynamic> _$ResidentModelToJson(_ResidentModel instance) =>
@@ -32,4 +38,5 @@ Map<String, dynamic> _$ResidentModelToJson(_ResidentModel instance) =>
       'birth_date': instance.birthDate.toIso8601String(),
       'job': instance.job,
       'is_head_of_family': instance.isHeadOfFamily,
+      'resident_houses': instance.residentHouses,
     };

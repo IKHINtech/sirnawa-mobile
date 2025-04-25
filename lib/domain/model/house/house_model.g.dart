@@ -15,6 +15,24 @@ _HouseModel _$HouseModelFromJson(Map<String, dynamic> json) => _HouseModel(
   rtId: json['rt_id'] as String,
   blockId: json['block_id'] as String,
   status: json['status'] as String,
+  rw:
+      json['rw'] == null
+          ? null
+          : RwModel.fromJson(json['rw'] as Map<String, dynamic>),
+  rt:
+      json['rt'] == null
+          ? null
+          : RtModel.fromJson(json['rt'] as Map<String, dynamic>),
+  block:
+      json['block'] == null
+          ? null
+          : BlockModel.fromJson(json['block'] as Map<String, dynamic>),
+  hosuingArea:
+      json['housing_area'] == null
+          ? null
+          : HousingAreaModel.fromJson(
+            json['housing_area'] as Map<String, dynamic>,
+          ),
 );
 
 Map<String, dynamic> _$HouseModelToJson(_HouseModel instance) =>
@@ -27,4 +45,8 @@ Map<String, dynamic> _$HouseModelToJson(_HouseModel instance) =>
       'rt_id': instance.rtId,
       'block_id': instance.blockId,
       'status': instance.status,
+      'rw': instance.rw,
+      'rt': instance.rt,
+      'block': instance.block,
+      'housing_area': instance.hosuingArea,
     };

@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:sirnawa_mobile/domain/model/resident_house/resident_house_model.dart';
 
 part 'resident_model.freezed.dart';
 part 'resident_model.g.dart';
@@ -16,6 +17,7 @@ class ResidentModel with _$ResidentModel {
     @JsonKey(name: 'birth_date') required DateTime birthDate,
     required String job,
     @JsonKey(name: 'is_head_of_family') required bool isHeadOfFamily,
+    @JsonKey(name: "resident_houses") List<ResidentHouseModel>? residentHouses,
   }) = _ResidentModel;
 
   factory ResidentModel.fromJson(Map<String, dynamic> json) =>
