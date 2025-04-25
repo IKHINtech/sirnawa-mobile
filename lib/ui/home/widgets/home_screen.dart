@@ -72,13 +72,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   children: [
                     _title(context, state),
 
-                    SizedBox(height: 16),
+                    SizedBox(height: 8),
 
                     _userLogin(context, state, notifier),
                   ],
                 ),
               ),
-              _mainMenu(context),
+              _mainMenu(context, state),
               Container(height: 20, color: Colors.white),
               Container(
                 padding: const EdgeInsets.all(16),
@@ -198,7 +198,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Fitur",
+            "Statistik",
             style: Theme.of(
               context,
             ).textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.bold),
@@ -211,16 +211,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             mainAxisSpacing: 10,
             crossAxisCount: 2,
             children: <Widget>[
-              _fitureItem(),
-              _fitureItem(),
-              _fitureItem(),
-              _fitureItem(),
-              _fitureItem(),
-              _fitureItem(),
-              _fitureItem(),
-              _fitureItem(),
-              _fitureItem(),
-              _fitureItem(),
+              _fitureItem(
+                title: "IPL",
+                icon: Icons.receipt_long,
+                color: Colors.green[200]!,
+                content: "3",
+                onClick: () {},
+              ),
+              _fitureItem(
+                title: "Rumah",
+                icon: Icons.home,
+                color: Colors.blue[200]!,
+                content: "3",
+                onClick: () {},
+              ),
+              _fitureItem(
+                title: "Warga",
+                icon: Icons.person,
+                color: Colors.yellow[200]!,
+                content: "100",
+                onClick: () {},
+              ),
             ],
           ),
         ],
@@ -228,7 +239,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Container _mainMenu(BuildContext context) {
+  Container _mainMenu(BuildContext context, HomeState state) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -275,7 +286,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               _menuItem(
                 onTab: () {
-                  context.push(Routes.admin);
+                  if (state.user?.role == "warga") {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Akses admin hanya untuk pengurus"),
+                        backgroundColor: Colors.red,
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  } else {
+                    context.push(Routes.admin);
+                  }
                 },
                 context,
                 title: "Admin",
@@ -315,10 +336,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           ? CustomShimmer(
                             child: CustomPlaceholder(height: 18, width: 90),
                           )
-                          : Text(
-                            viewmodel.user?.resident?.name ?? "-",
-                            style: Theme.of(context).textTheme.titleMedium!
-                                .copyWith(fontWeight: FontWeight.bold),
+                          : SizedBox(
+                            width: 120,
+                            child: Text(
+                              " ${viewmodel.user?.resident?.name}",
+                              style: Theme.of(context).textTheme.titleMedium!
+                                  .copyWith(fontWeight: FontWeight.bold),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
                           ),
                       viewmodel.isLoading
                           ? const SizedBox(height: 6)
@@ -386,23 +412,80 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _title(BuildContext context, HomeState state) {
-    return state.isLoading
-        ? CustomShimmer(child: CustomPlaceholder(height: 28, width: 240))
-        : Text(
-          state.residentHouse != null
-              ? state.residentHouse?.house.hosuingArea?.name ?? "-"
-              : "-",
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
-        );
+    return Column(
+      children: [
+        state.isLoading
+            ? CustomShimmer(child: CustomPlaceholder(height: 28, width: 240))
+            : Text(
+              state.residentHouse != null
+                  ? state.residentHouse?.house.hosuingArea?.name ?? "-"
+                  : "-",
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+            ),
+        state.isLoading ? SizedBox(height: 8) : SizedBox(height: 4),
+        state.isLoading
+            ? CustomShimmer(child: CustomPlaceholder(height: 18, width: 50))
+            : Container(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 3),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              child: Text(
+                state.residentHouse != null
+                    ? state.residentHouse?.house.rt?.name ?? "-"
+                    : "-",
+                style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+      ],
+    );
   }
 
-  Container _fitureItem() {
+  Container _fitureItem({
+    required String title,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onClick,
+    required String content,
+  }) {
     return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: color,
+      ),
       padding: const EdgeInsets.all(8),
-      color: Colors.teal[100],
-      child: const Text("He'd have you all unravel at the"),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            title,
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: onClick,
+                child: Icon(
+                  icon,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 40,
+                ),
+              ),
+              Text(content, style: Theme.of(context).textTheme.headlineLarge),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
