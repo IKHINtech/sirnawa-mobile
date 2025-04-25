@@ -7,7 +7,7 @@ part of 'house_model.dart';
 // **************************************************************************
 
 _HouseModel _$HouseModelFromJson(Map<String, dynamic> json) => _HouseModel(
-  id: (json['id'] as num).toInt(),
+  id: json['id'] as String,
   createdAt: DateTime.parse(json['created_at'] as String),
   updatedAt: DateTime.parse(json['updated_at'] as String),
   number: json['number'] as String,

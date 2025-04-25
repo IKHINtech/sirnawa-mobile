@@ -10,7 +10,7 @@ part 'house_model.g.dart';
 @freezed
 class HouseModel with _$HouseModel {
   const factory HouseModel({
-    required int id,
+    required String id,
     @JsonKey(name: 'created_at') required DateTime createdAt,
     @JsonKey(name: 'updated_at') required DateTime updatedAt,
     required String number,

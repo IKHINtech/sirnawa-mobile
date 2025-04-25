@@ -4,14 +4,45 @@ import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
+import 'package:sirnawa_mobile/ui/core/ui/custom_elevated_button.dart';
+import 'package:sirnawa_mobile/ui/core/ui/custom_shimmer.dart';
+import 'package:sirnawa_mobile/ui/core/ui/placeholder.dart';
 import 'package:sirnawa_mobile/ui/home/view_models/home_viewmodel.dart';
+import 'package:sirnawa_mobile/ui/home/widgets/house_list.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
+  @override
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  void _showHouseBottomSheet(
+    BuildContext context,
+    HomeState viewmodel,
+    HomeViewModel notifier,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (BuildContext context) {
+        return HouseDetailBottomSheet(
+          viewmodel: viewmodel,
+          onSelect: (selectedHouse) {
+            notifier.changeHouse(selectedHouse);
+          },
+        );
+      },
+    );
+  }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final state = ref.watch<HomeState>(homeViewModelProvider);
+    final notifier = ref.watch<HomeViewModel>(homeViewModelProvider.notifier);
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () => ref.read(homeViewModelProvider.notifier).reloadUser(),
@@ -32,13 +63,19 @@ class HomeScreen extends ConsumerWidget {
                   ),
                   color: Theme.of(context).colorScheme.surface,
                 ),
-                padding: const EdgeInsets.only(bottom: 16.0, left: 16, right: 16),
+                padding: const EdgeInsets.only(
+                  bottom: 16.0,
+                  left: 16,
+                  right: 16,
+                ),
                 child: Column(
-                  children: [_title(context),
-                  
-              SizedBox(height: 16),
-                  
-                   _userLogin(context, state)],
+                  children: [
+                    _title(context, state),
+
+                    SizedBox(height: 16),
+
+                    _userLogin(context, state, notifier),
+                  ],
                 ),
               ),
               _mainMenu(context),
@@ -82,10 +119,7 @@ class HomeScreen extends ConsumerWidget {
                       child: ListTile(
                         title: Text("Group A"),
                         subtitle: Row(
-                          children: [
-                            Icon(Icons.person),
-                            Text("3 Orang"),
-                          ],
+                          children: [Icon(Icons.person), Text("3 Orang")],
                         ),
                         trailing: Icon(
                           Icons.security_rounded,
@@ -142,7 +176,7 @@ class HomeScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-          
+
               Container(height: 20, color: Colors.white),
               _fiture(context),
             ],
@@ -230,7 +264,7 @@ class HomeScreen extends ConsumerWidget {
                 context,
                 title: "Rumah",
                 color: Colors.green,
-                icon: LucideIcons.home,
+                icon: Icons.home,
               ),
               _menuItem(
                 onTab: () {},
@@ -255,71 +289,113 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _userLogin(BuildContext context, HomeState viewmodel) {
+  Widget _userLogin(
+    BuildContext context,
+    HomeState viewmodel,
+    HomeViewModel notifier,
+  ) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(
           children: [
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.apartment_rounded,
-                          color: Theme.of(context).colorScheme.tertiary,
-                        ),
-                        SizedBox(width: 8),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              viewmodel.user?.resident?.name ?? "-",
-                              style: Theme.of(context).textTheme.titleMedium!
-                                  .copyWith(fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              viewmodel.user?.role.toUpperCase() ?? "-",
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Text(
-                      "Blok I - 1 No.29",
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
+              child: Row(
+                children: [
+                  viewmodel.isLoading
+                      ? CustomShimmer(
+                        child: CircleAvatar(child: Icon(Icons.person_2)),
+                      )
+                      : CircleAvatar(child: Icon(Icons.person_2)),
+                  SizedBox(width: 8),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      viewmodel.isLoading
+                          ? CustomShimmer(
+                            child: CustomPlaceholder(height: 18, width: 90),
+                          )
+                          : Text(
+                            viewmodel.user?.resident?.name ?? "-",
+                            style: Theme.of(context).textTheme.titleMedium!
+                                .copyWith(fontWeight: FontWeight.bold),
+                          ),
+                      viewmodel.isLoading
+                          ? const SizedBox(height: 6)
+                          : SizedBox(),
+                      viewmodel.isLoading
+                          ? CustomShimmer(
+                            child: CustomPlaceholder(height: 12, width: 50),
+                          )
+                          : Text(
+                            viewmodel.user?.role.toUpperCase() ?? "-",
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            CircleAvatar(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              radius: 30,
-              child: const Icon(LucideIcons.user, color: Colors.white),
-            ),
+            viewmodel.isLoading
+                ? CustomShimmer(
+                  child: _selectedHouse(context, viewmodel, notifier),
+                )
+                : _selectedHouse(context, viewmodel, notifier),
           ],
         ),
       ),
     );
   }
 
-  Text _title(BuildContext context) {
-    return Text(
-      "Sirnajaya Kartika",
-      style: Theme.of(
-        context,
-      ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+  Widget _selectedHouse(
+    BuildContext context,
+    HomeState viewmodel,
+    HomeViewModel notifier,
+  ) {
+    return GestureDetector(
+      onTap:
+          () =>
+              !viewmodel.isLoading
+                  ? _showHouseBottomSheet(context, viewmodel, notifier)
+                  : null,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(50),
+          color: Theme.of(context).colorScheme.primary,
+        ),
+        padding: EdgeInsets.all(12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              "${viewmodel.residentHouse?.house.block?.name} No. ${viewmodel.residentHouse?.house.number}",
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+
+            SizedBox(width: 8),
+            const Icon(LucideIcons.home, color: Colors.white),
+          ],
+        ),
+      ),
     );
+  }
+
+  Widget _title(BuildContext context, HomeState state) {
+    return state.isLoading
+        ? CustomShimmer(child: CustomPlaceholder(height: 28, width: 240))
+        : Text(
+          state.residentHouse != null
+              ? state.residentHouse?.house.hosuingArea?.name ?? "-"
+              : "-",
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+        );
   }
 
   Container _fitureItem() {
@@ -352,30 +428,6 @@ class HomeScreen extends ConsumerWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class CustomElevatedButton extends StatelessWidget {
-  const CustomElevatedButton({
-    super.key,
-    required this.onPressed,
-    required this.title,
-  });
-  final String title;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ButtonStyle(
-        minimumSize: WidgetStateProperty.all<Size>(Size(double.infinity, 40)),
-        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        ),
-      ),
-      onPressed: onPressed,
-      child: Text(title),
     );
   }
 }

@@ -46,6 +46,7 @@ dependencies:
   go_router:
   lucide_icons:
   flutter_riverpod:
+  shimmer:
 
 dev_dependencies:
   flutter_test:

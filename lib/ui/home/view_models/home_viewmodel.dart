@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sirnawa_mobile/data/repositories/user/user_repository.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
+import 'package:sirnawa_mobile/domain/model/resident_house/resident_house_model.dart';
 import 'package:sirnawa_mobile/domain/model/user/user_model.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
 
@@ -8,6 +9,8 @@ class HomeState {
   final bool isLoading;
   final String? error;
   final UserModel? user;
+  final ResidentHouseModel? residentHouse;
+  final List<ResidentHouseModel> listHouse;
   final AsyncValue<void> loadStatus;
 
   const HomeState({
@@ -15,6 +18,8 @@ class HomeState {
     required this.error,
     required this.user,
     required this.loadStatus,
+    required this.residentHouse,
+    required this.listHouse,
   });
 
   HomeState copyWith({
@@ -22,12 +27,16 @@ class HomeState {
     String? error,
     UserModel? user,
     AsyncValue<void>? loadStatus,
+    ResidentHouseModel? residentHouse,
+    List<ResidentHouseModel>? listHouse,
   }) {
     return HomeState(
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
       user: user ?? this.user,
       loadStatus: loadStatus ?? this.loadStatus,
+      residentHouse: residentHouse ?? this.residentHouse,
+      listHouse: listHouse ?? this.listHouse,
     );
   }
 
@@ -36,7 +45,9 @@ class HomeState {
       isLoading: false,
       error: null,
       user: null,
+      residentHouse: null,
       loadStatus: AsyncValue.data(null),
+      listHouse: [],
     );
   }
 }
@@ -61,8 +72,12 @@ class HomeViewModel extends StateNotifier<HomeState> {
 
     switch (result) {
       case Ok<ApiResponse<UserModel>>():
+        final primaryHouse = result.value.data?.resident?.residentHouses
+            ?.firstWhere((house) => house.isPrimary == true);
         state = state.copyWith(
           isLoading: false,
+          residentHouse: primaryHouse,
+          listHouse: result.value.data?.resident?.residentHouses ?? [],
           user: result.value.data,
           loadStatus: const AsyncValue.data(null),
         );
@@ -78,5 +93,9 @@ class HomeViewModel extends StateNotifier<HomeState> {
   // Command pattern bisa diimplementasikan sebagai method biasa
   Future<void> reloadUser() async {
     return _fetchCurrentUser();
+  }
+
+  void changeHouse(ResidentHouseModel house) {
+    state = state.copyWith(residentHouse: house);
   }
 }

@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$HouseModel {
 
- int get id;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt; String get number;@JsonKey(name: 'rw_id') String get rwId;@JsonKey(name: 'rt_id') String get rtId;@JsonKey(name: 'block_id') String get blockId; String get status; RwModel? get rw; RtModel? get rt; BlockModel? get block;@JsonKey(name: 'housing_area') HousingAreaModel? get hosuingArea;
+ String get id;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt; String get number;@JsonKey(name: 'rw_id') String get rwId;@JsonKey(name: 'rt_id') String get rtId;@JsonKey(name: 'block_id') String get blockId; String get status; RwModel? get rw; RtModel? get rt; BlockModel? get block;@JsonKey(name: 'housing_area') HousingAreaModel? get hosuingArea;
 /// Create a copy of HouseModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $HouseModelCopyWith<$Res>  {
   factory $HouseModelCopyWith(HouseModel value, $Res Function(HouseModel) _then) = _$HouseModelCopyWithImpl;
 @useResult
 $Res call({
- int id,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt, String number,@JsonKey(name: 'rw_id') String rwId,@JsonKey(name: 'rt_id') String rtId,@JsonKey(name: 'block_id') String blockId, String status, RwModel? rw, RtModel? rt, BlockModel? block,@JsonKey(name: 'housing_area') HousingAreaModel? hosuingArea
+ String id,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt, String number,@JsonKey(name: 'rw_id') String rwId,@JsonKey(name: 'rt_id') String rtId,@JsonKey(name: 'block_id') String blockId, String status, RwModel? rw, RtModel? rt, BlockModel? block,@JsonKey(name: 'housing_area') HousingAreaModel? hosuingArea
 });
 
 
@@ -69,7 +69,7 @@ class _$HouseModelCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? createdAt = null,Object? updatedAt = null,Object? number = null,Object? rwId = null,Object? rtId = null,Object? blockId = null,Object? status = null,Object? rw = freezed,Object? rt = freezed,Object? block = freezed,Object? hosuingArea = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,number: null == number ? _self.number : number // ignore: cast_nullable_to_non_nullable
 as String,rwId: null == rwId ? _self.rwId : rwId // ignore: cast_nullable_to_non_nullable
@@ -142,7 +142,7 @@ class _HouseModel implements HouseModel {
   const _HouseModel({required this.id, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt, required this.number, @JsonKey(name: 'rw_id') required this.rwId, @JsonKey(name: 'rt_id') required this.rtId, @JsonKey(name: 'block_id') required this.blockId, required this.status, this.rw, this.rt, this.block, @JsonKey(name: 'housing_area') this.hosuingArea});
   factory _HouseModel.fromJson(Map<String, dynamic> json) => _$HouseModelFromJson(json);
 
-@override final  int id;
+@override final  String id;
 @override@JsonKey(name: 'created_at') final  DateTime createdAt;
 @override@JsonKey(name: 'updated_at') final  DateTime updatedAt;
 @override final  String number;
@@ -188,7 +188,7 @@ abstract mixin class _$HouseModelCopyWith<$Res> implements $HouseModelCopyWith<$
   factory _$HouseModelCopyWith(_HouseModel value, $Res Function(_HouseModel) _then) = __$HouseModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt, String number,@JsonKey(name: 'rw_id') String rwId,@JsonKey(name: 'rt_id') String rtId,@JsonKey(name: 'block_id') String blockId, String status, RwModel? rw, RtModel? rt, BlockModel? block,@JsonKey(name: 'housing_area') HousingAreaModel? hosuingArea
+ String id,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt, String number,@JsonKey(name: 'rw_id') String rwId,@JsonKey(name: 'rt_id') String rtId,@JsonKey(name: 'block_id') String blockId, String status, RwModel? rw, RtModel? rt, BlockModel? block,@JsonKey(name: 'housing_area') HousingAreaModel? hosuingArea
 });
 
 
@@ -208,7 +208,7 @@ class __$HouseModelCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? createdAt = null,Object? updatedAt = null,Object? number = null,Object? rwId = null,Object? rtId = null,Object? blockId = null,Object? status = null,Object? rw = freezed,Object? rt = freezed,Object? block = freezed,Object? hosuingArea = freezed,}) {
   return _then(_HouseModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,number: null == number ? _self.number : number // ignore: cast_nullable_to_non_nullable
 as String,rwId: null == rwId ? _self.rwId : rwId // ignore: cast_nullable_to_non_nullable
