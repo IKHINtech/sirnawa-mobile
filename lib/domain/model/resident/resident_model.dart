@@ -9,7 +9,6 @@ class ResidentModel with _$ResidentModel {
     required String id,
     @JsonKey(name: 'created_at') required DateTime createdAt,
     @JsonKey(name: 'updated_at') required DateTime updatedAt,
-    @JsonKey(name: 'house_id') required String houseId,
     required String name,
     required String nik,
     @JsonKey(name: 'phone_number') required String phoneNumber,
