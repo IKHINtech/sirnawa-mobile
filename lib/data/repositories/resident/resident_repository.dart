@@ -3,10 +3,10 @@ import 'package:sirnawa_mobile/domain/model/resident/resident_model.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
 
 abstract class ResidentRepository {
-  Future<Result<ApiResponse<List<ResidentModel>>>> getListResident(
+  Future<Result<ApiResponse<List<ResidentModel>>>> getResidents(
     Map<String, dynamic>? queryParams,
   );
-  Future<Result<ApiResponse<ResidentModel>>> getResidentByID();
-  Future<Result<void>> createResident(ResidentModel rt);
-  Future<Result<void>> delete(String id);
+  Future<Result<void>> createResident(ResidentModel resident);
+  Future<Result<void>> updateResident(String id, ResidentModel resident);
+  Future<Result<void>> deleteResident(String id);
 }

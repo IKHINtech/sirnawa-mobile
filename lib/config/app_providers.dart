@@ -50,7 +50,9 @@ final residentServiceProvider = Provider<ResidentService>((ref) {
 });
 
 final residentRepositoryProvider = Provider<ResidentRepository>((ref) {
-  return ResidentRepositoryRemote(rtService: ref.read(residentServiceProvider));
+  return ResidentRepositoryRemote(
+    residentService: ref.read(residentServiceProvider),
+  );
 });
 
 final residentViewModelProvider =
@@ -72,7 +74,10 @@ final userRepositoryProvider = Provider<UserRepository>((ref) {
 final homeViewModelProvider = StateNotifierProvider<HomeViewModel, HomeState>((
   ref,
 ) {
-  return HomeViewModel(userRepo: ref.read(userRepositoryProvider), authRepository: ref.read(authRepositoryProvider));
+  return HomeViewModel(
+    userRepo: ref.read(userRepositoryProvider),
+    authRepository: ref.read(authRepositoryProvider),
+  );
 });
 
 // ========= Login View Model =========

@@ -6,7 +6,7 @@ abstract class RtRepository {
   Future<Result<ApiResponse<List<RtModel>>>> getListRt(
     Map<String, dynamic>? queryParams,
   );
-  Future<Result<ApiResponse<RtModel>>> getRtByID();
   Future<Result<void>> createRt(RtModel rt);
+  Future<Result<void>> updateRt(String id, RtModel rt);
   Future<Result<void>> delete(String id);
 }

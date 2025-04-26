@@ -20,20 +20,29 @@ class RtRepositoryRemote implements RtRepository {
   }
 
   @override
-  Future<Result<void>> createRt(RtModel rt) {
-    // TODO: implement createRt
-    throw UnimplementedError();
+  Future<Result<void>> createRt(RtModel rt) async {
+    try {
+      return await _rtService.createRt(rt);
+    } on Exception catch (e) {
+      return Result.error(e);
+    }
   }
 
   @override
-  Future<Result<void>> delete(String id) {
-    // TODO: implement delete
-    throw UnimplementedError();
+  Future<Result<void>> delete(String id) async {
+    try {
+      return await _rtService.deleteRt(id);
+    } on Exception catch (e) {
+      return Result.error(e);
+    }
   }
 
   @override
-  Future<Result<ApiResponse<RtModel>>> getRtByID() {
-    // TODO: implement getRtByID
-    throw UnimplementedError();
+  Future<Result<void>> updateRt(String id, RtModel rt) async {
+    try {
+      return await _rtService.updateRt(id, rt);
+    } on Exception catch (e) {
+      return Result.error(e);
+    }
   }
 }

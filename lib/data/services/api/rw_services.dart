@@ -1,26 +1,26 @@
 import 'package:dio/dio.dart';
 import 'package:sirnawa_mobile/data/services/api/api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
-import 'package:sirnawa_mobile/domain/model/rt/rt_model.dart';
+import 'package:sirnawa_mobile/domain/model/rw/rw_model.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
 
-class RtService {
+class RwService {
   final ApiClient apiClient;
 
-  RtService(this.apiClient);
+  RwService(this.apiClient);
 
-  // ✅ GET /rt
-  Future<Result<ApiResponse<List<RtModel>>>> getRts(
+  // ✅ GET /rw
+  Future<Result<ApiResponse<List<RwModel>>>> getRws(
     Map<String, dynamic>? queryParams,
   ) async {
     try {
-      final response = await apiClient.get('/rt', queryParams: queryParams);
+      final response = await apiClient.get('/rw', queryParams: queryParams);
 
-      final data = ApiResponse<List<RtModel>>.fromJson(
+      final data = ApiResponse<List<RwModel>>.fromJson(
         response.data,
         (json) =>
             (json as List)
-                .map((e) => RtModel.fromJson(e as Map<String, dynamic>))
+                .map((e) => RwModel.fromJson(e as Map<String, dynamic>))
                 .toList(),
       );
 
@@ -30,14 +30,14 @@ class RtService {
     }
   }
 
-  // ✅ POST /rt
-  Future<Result<ApiResponse<RtModel>>> createRt(RtModel rt) async {
+  // ✅ POST /rw
+  Future<Result<ApiResponse<RwModel>>> createRw(RwModel rw) async {
     try {
-      final response = await apiClient.post('/rt', data: rt.toJson());
+      final response = await apiClient.post('/rw', data: rw.toJson());
 
-      final data = ApiResponse<RtModel>.fromJson(
+      final data = ApiResponse<RwModel>.fromJson(
         response.data,
-        (json) => RtModel.fromJson(json as Map<String, dynamic>),
+        (json) => RwModel.fromJson(json as Map<String, dynamic>),
       );
 
       return Result.ok(data);
@@ -46,14 +46,14 @@ class RtService {
     }
   }
 
-  // ✅ PUT /rt/{id}
-  Future<Result<ApiResponse<RtModel>>> updateRt(String id, RtModel rt) async {
+  // ✅ PUT /rw/{id}
+  Future<Result<ApiResponse<RwModel>>> updateRw(String id, RwModel rw) async {
     try {
-      final response = await apiClient.put('/rt/$id', data: rt.toJson());
+      final response = await apiClient.put('/rw/$id', data: rw.toJson());
 
-      final data = ApiResponse<RtModel>.fromJson(
+      final data = ApiResponse<RwModel>.fromJson(
         response.data,
-        (json) => RtModel.fromJson(json as Map<String, dynamic>),
+        (json) => RwModel.fromJson(json as Map<String, dynamic>),
       );
 
       return Result.ok(data);
@@ -62,17 +62,17 @@ class RtService {
     }
   }
 
-  // ✅ DELETE /rt/{id}
-  Future<Result<void>> deleteRt(String id) async {
+  // ✅ DELETE /rw/{id}
+  Future<Result<void>> deleteRw(String id) async {
     try {
-      await apiClient.delete('/rt/$id');
+      await apiClient.delete('/rw/$id');
       return Result.ok(null);
     } catch (e) {
       return Result.error(Exception(_parseDioError(e)));
     }
   }
 
-  // Helper untuk handle error dengan lebih rapi (opsional)
+  // Helper error parser
   String? _parseDioError(Object error) {
     if (error is DioException) {
       return error.message;

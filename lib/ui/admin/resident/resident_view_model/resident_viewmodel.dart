@@ -68,7 +68,7 @@ class ResidentViewModel extends StateNotifier<ResidentState> {
         _totalPages = 1;
       }
 
-      final result = await _repository.getListResident({
+      final result = await _repository.getResidents({
         "page": _currentPage,
         "page_size": _limit,
       });

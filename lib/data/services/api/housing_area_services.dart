@@ -1,28 +1,31 @@
 import 'package:dio/dio.dart';
 import 'package:sirnawa_mobile/data/services/api/api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
-import 'package:sirnawa_mobile/domain/model/resident/resident_model.dart';
+import 'package:sirnawa_mobile/domain/model/housing_area/housing_area_model.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
 
-class ResidentService {
+class HousingAreaService {
   final ApiClient apiClient;
 
-  ResidentService(this.apiClient);
+  HousingAreaService(this.apiClient);
 
-  Future<Result<ApiResponse<List<ResidentModel>>>> getResidents(
+  // ✅ GET /housing-area
+  Future<Result<ApiResponse<List<HousingAreaModel>>>> getHousingAreas(
     Map<String, dynamic>? queryParams,
   ) async {
     try {
       final response = await apiClient.get(
-        '/resident',
+        '/housing-area',
         queryParams: queryParams,
       );
 
-      final data = ApiResponse<List<ResidentModel>>.fromJson(
+      final data = ApiResponse<List<HousingAreaModel>>.fromJson(
         response.data,
         (json) =>
             (json as List)
-                .map((e) => ResidentModel.fromJson(e as Map<String, dynamic>))
+                .map(
+                  (e) => HousingAreaModel.fromJson(e as Map<String, dynamic>),
+                )
                 .toList(),
       );
 
@@ -32,19 +35,19 @@ class ResidentService {
     }
   }
 
-  // ✅ POST /resident
-  Future<Result<ApiResponse<ResidentModel>>> createResident(
-    ResidentModel resident,
+  // ✅ POST /housing-area
+  Future<Result<ApiResponse<HousingAreaModel>>> createHousingArea(
+    HousingAreaModel area,
   ) async {
     try {
       final response = await apiClient.post(
-        '/resident',
-        data: resident.toJson(),
+        '/housing-area',
+        data: area.toJson(),
       );
 
-      final data = ApiResponse<ResidentModel>.fromJson(
+      final data = ApiResponse<HousingAreaModel>.fromJson(
         response.data,
-        (json) => ResidentModel.fromJson(json as Map<String, dynamic>),
+        (json) => HousingAreaModel.fromJson(json as Map<String, dynamic>),
       );
 
       return Result.ok(data);
@@ -53,20 +56,20 @@ class ResidentService {
     }
   }
 
-  // ✅ PUT /resident/{id}
-  Future<Result<ApiResponse<ResidentModel>>> updateResident(
+  // ✅ PUT /housing-area/{id}
+  Future<Result<ApiResponse<HousingAreaModel>>> updateHousingArea(
     String id,
-    ResidentModel resident,
+    HousingAreaModel area,
   ) async {
     try {
       final response = await apiClient.put(
-        '/resident/$id',
-        data: resident.toJson(),
+        '/housing-area/$id',
+        data: area.toJson(),
       );
 
-      final data = ApiResponse<ResidentModel>.fromJson(
+      final data = ApiResponse<HousingAreaModel>.fromJson(
         response.data,
-        (json) => ResidentModel.fromJson(json as Map<String, dynamic>),
+        (json) => HousingAreaModel.fromJson(json as Map<String, dynamic>),
       );
 
       return Result.ok(data);
@@ -75,17 +78,17 @@ class ResidentService {
     }
   }
 
-  // ✅ DELETE /resident/{id}
-  Future<Result<void>> deleteResident(String id) async {
+  // ✅ DELETE /housing-area/{id}
+  Future<Result<void>> deleteHousingArea(String id) async {
     try {
-      await apiClient.delete('/resident/$id');
+      await apiClient.delete('/housing-area/$id');
       return Result.ok(null);
     } catch (e) {
       return Result.error(Exception(_parseDioError(e)));
     }
   }
 
-  // Helper untuk handle error dengan lebih rapi (opsional)
+  // 🔍 Error handling helper
   String? _parseDioError(Object error) {
     if (error is DioException) {
       return error.message;

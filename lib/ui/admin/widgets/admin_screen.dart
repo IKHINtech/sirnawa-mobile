@@ -40,6 +40,49 @@ class _AdminScreenState extends State<AdminScreen> {
                   icon: Icons.person,
                   title: "Data Warga",
                 ),
+                _itemAdmin(
+                  onClick: () {
+                    context.push(Routes.adminResident);
+                  },
+                  icon: Icons.home,
+                  title: "Data Rumah",
+                ),
+                _itemAdmin(
+                  onClick: () {
+                    context.push(Routes.adminResident);
+                  },
+                  icon: Icons.apartment,
+                  title: "Data Blok",
+                ),
+                _itemAdmin(
+                  onClick: () {
+                    context.push(Routes.adminResident);
+                  },
+                  icon: Icons.notifications,
+                  title: "Pengumuman",
+                ),
+                _itemAdmin(
+                  onClick: () {
+                    context.push(Routes.adminResident);
+                  },
+                  icon: Icons.calendar_month,
+                  title: "Jadwal Ronda",
+                ),
+                _itemAdmin(
+                  onClick: () {
+                    context.push(Routes.adminResident);
+                  },
+                  icon: Icons.groups_2_outlined,
+                  title: "Group Ronda",
+                ),
+
+                _itemAdmin(
+                  onClick: () {
+                    context.push(Routes.adminResident);
+                  },
+                  icon: Icons.receipt_long_sharp,
+                  title: "Data IPL",
+                ),
               ],
             ),
           ],
