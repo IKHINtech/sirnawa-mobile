@@ -95,7 +95,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
               _mainMenu(context, state),
-              Container(height: 20, color: Colors.white),
+              Container(
+                height: 20,
+                // color: Colors.white,
+              ),
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -150,7 +153,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ],
                 ),
               ),
-              Container(height: 20, color: Colors.white),
+              Container(
+                height: 20,
+
+                //  color: Colors.white
+              ),
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(

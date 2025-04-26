@@ -32,11 +32,10 @@ class LoginScreen extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    _buildLogo(),
+                    _buildLogo(context),
                     const SizedBox(height: 40),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: CustomTextField(
@@ -49,7 +48,6 @@ class LoginScreen extends ConsumerWidget {
                     const SizedBox(height: 20),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: CustomTextField(
@@ -93,12 +91,12 @@ class LoginScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildLogo() {
+  Widget _buildLogo(BuildContext context) {
     return Container(
       height: 120,
       width: 120,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.onSurface,
         image: DecorationImage(
           image: AssetImage(
             'assets/images/sirnawa-logo.png',

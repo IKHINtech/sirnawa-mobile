@@ -29,7 +29,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   title: Text(
                     "Profile",
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: scrolled ? Colors.black : Colors.white,
+                      color:
+                          scrolled
+                              ? Theme.of(context).colorScheme.onSurface
+                              : Colors.white,
                     ),
                   ),
                   background: Stack(
