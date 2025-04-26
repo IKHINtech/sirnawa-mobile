@@ -52,30 +52,46 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                color: Theme.of(context).colorScheme.surface,
-                height: kToolbarHeight,
-              ),
-              Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(20),
-                    bottomRight: Radius.circular(20),
+                  image: DecorationImage(
+                    image: NetworkImage(
+                      "https://images.pexels.com/photos/259780/pexels-photo-259780.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                    ),
+                    fit: BoxFit.cover,
                   ),
-                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(24),
+                    bottomRight: Radius.circular(24),
+                  ),
                 ),
-                padding: const EdgeInsets.only(
-                  bottom: 16.0,
-                  left: 16,
-                  right: 16,
-                ),
-                child: Column(
-                  children: [
-                    _title(context, state),
-
-                    SizedBox(height: 8),
-
-                    _userLogin(context, state, notifier),
-                  ],
+                child: Container(
+                  decoration: BoxDecoration(
+                    // Overlay gelap biar teks/icon tetap terbaca
+                    color: Colors.black.withValues(alpha: 0.3),
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(24),
+                      bottomRight: Radius.circular(24),
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      SizedBox(height: kToolbarHeight),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: 16.0,
+                          left: 16,
+                          right: 16,
+                        ),
+                        child: Column(
+                          children: [
+                            _title(context, state),
+                            const SizedBox(height: 8),
+                            _userLogin(context, state, notifier),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               _mainMenu(context, state),
@@ -420,9 +436,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               state.residentHouse != null
                   ? state.residentHouse?.house.hosuingArea?.name ?? "-"
                   : "-",
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
         state.isLoading ? SizedBox(height: 8) : SizedBox(height: 4),
         state.isLoading
