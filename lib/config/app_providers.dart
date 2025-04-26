@@ -72,7 +72,7 @@ final userRepositoryProvider = Provider<UserRepository>((ref) {
 final homeViewModelProvider = StateNotifierProvider<HomeViewModel, HomeState>((
   ref,
 ) {
-  return HomeViewModel(userRepo: ref.read(userRepositoryProvider));
+  return HomeViewModel(userRepo: ref.read(userRepositoryProvider), authRepository: ref.read(authRepositoryProvider));
 });
 
 // ========= Login View Model =========

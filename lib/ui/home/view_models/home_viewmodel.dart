@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sirnawa_mobile/data/repositories/auth/auth_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/user/user_repository.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
 import 'package:sirnawa_mobile/domain/model/resident_house/resident_house_model.dart';
@@ -54,9 +55,11 @@ class HomeState {
 
 class HomeViewModel extends StateNotifier<HomeState> {
   final UserRepository _userRepo;
+  final AuthRepository _authRepository;
 
-  HomeViewModel({required UserRepository userRepo})
+  HomeViewModel({required UserRepository userRepo, required AuthRepository authRepository})
     : _userRepo = userRepo,
+    _authRepository = authRepository,
       super(HomeState.initial()) {
     _fetchCurrentUser();
   }
@@ -93,6 +96,10 @@ class HomeViewModel extends StateNotifier<HomeState> {
   // Command pattern bisa diimplementasikan sebagai method biasa
   Future<void> reloadUser() async {
     return _fetchCurrentUser();
+  }
+
+  Future<void> logout() async {
+    await _authRepository.logout();
   }
 
   void changeHouse(ResidentHouseModel house) {
