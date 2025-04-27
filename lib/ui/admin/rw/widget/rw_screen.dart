@@ -2,40 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
-import 'package:sirnawa_mobile/ui/admin/block/block_view_model/block_viewmodel.dart';
+import 'package:sirnawa_mobile/ui/admin/rw/rw_viewmodel/rw_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class BlockScreen extends ConsumerStatefulWidget {
-  const BlockScreen({super.key});
+class RwScreen extends ConsumerStatefulWidget {
+  const RwScreen({super.key});
 
   @override
-  ConsumerState<BlockScreen> createState() => _BlockScreenState();
+  ConsumerState<RwScreen> createState() => _RwScreenState();
 }
 
-class _BlockScreenState extends ConsumerState<BlockScreen> {
+class _RwScreenState extends ConsumerState<RwScreen> {
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
-      ref.read(blockViewModelProvider.notifier).fetchListBlock(reset: true);
+      ref.read(rwViewModelProvider.notifier).fetchListRw(reset: true);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(blockViewModelProvider);
-    final viewModel = ref.read(blockViewModelProvider.notifier);
-    final homeState = ref.read(homeViewModelProvider);
+    final state = ref.watch(rwViewModelProvider);
+    final viewModel = ref.read(rwViewModelProvider.notifier);
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Data Blok ${homeState.residentHouse?.house.rt?.name ?? ""}',
-      ),
+      appBar: CustomAppBar(title: 'Data RW'),
       body: _buildBody(state, viewModel, context),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.push(Routes.adminBlockCreate);
+          context.push(Routes.adminRwCreate);
         },
         child: const Icon(Icons.add),
       ),
@@ -43,8 +40,8 @@ class _BlockScreenState extends ConsumerState<BlockScreen> {
   }
 
   Widget _buildBody(
-    BlockState state,
-    BlockViewModel viewModel,
+    RwState state,
+    RwViewModel viewModel,
     BuildContext context,
   ) {
     if (state.isLoading && state.list.isEmpty) {
@@ -58,7 +55,7 @@ class _BlockScreenState extends ConsumerState<BlockScreen> {
           children: [
             Text("Error: ${state.error}"),
             ElevatedButton(
-              onPressed: () => viewModel.fetchListBlock(reset: true),
+              onPressed: () => viewModel.fetchListRw(reset: true),
               child: const Text("Retry"),
             ),
           ],
@@ -67,7 +64,7 @@ class _BlockScreenState extends ConsumerState<BlockScreen> {
     }
 
     return RefreshIndicator(
-      onRefresh: () => viewModel.fetchListBlock(reset: true),
+      onRefresh: () => viewModel.fetchListRw(reset: true),
       child: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount:
@@ -82,10 +79,8 @@ class _BlockScreenState extends ConsumerState<BlockScreen> {
           final rt = state.list[index];
           return Card(
             child: ListTile(
-              onTap: () {
-                context.push(Routes.adminBlockUpdate, extra: rt);
-              },
-              leading: const CircleAvatar(child: Icon(Icons.apartment)),
+              onTap: () => context.push(Routes.adminRwUpdate, extra: rt),
+              leading: Icon(Icons.group),
               title: Text(rt.name),
             ),
           );

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:sirnawa_mobile/data/services/api/api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
 import 'package:sirnawa_mobile/domain/model/house/house_model.dart';
+import 'package:sirnawa_mobile/utils/error_parser.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
 
 class HouseService {
@@ -26,7 +27,7 @@ class HouseService {
 
       return Result.ok(data);
     } catch (e) {
-      return Result.error(Exception(_parseDioError(e)));
+      return Result.error(Exception(parseDioError(e)));
     }
   }
 
@@ -42,7 +43,7 @@ class HouseService {
 
       return Result.ok(data);
     } catch (e) {
-      return Result.error(Exception(_parseDioError(e)));
+      return Result.error(Exception(parseDioError(e)));
     }
   }
 
@@ -61,7 +62,7 @@ class HouseService {
 
       return Result.ok(data);
     } catch (e) {
-      return Result.error(Exception(_parseDioError(e)));
+      return Result.error(Exception(parseDioError(e)));
     }
   }
 
@@ -71,15 +72,7 @@ class HouseService {
       await apiClient.delete('/house/$id');
       return Result.ok(null);
     } catch (e) {
-      return Result.error(Exception(_parseDioError(e)));
+      return Result.error(Exception(parseDioError(e)));
     }
-  }
-
-  // 🔧 Error parser
-  String? _parseDioError(Object error) {
-    if (error is DioException) {
-      return error.message;
-    }
-    return error.toString();
   }
 }

@@ -3,6 +3,7 @@ import 'package:sirnawa_mobile/data/services/api/api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
 import 'package:sirnawa_mobile/data/services/api/model/login_response/login_response.dart';
 import 'package:sirnawa_mobile/domain/model/user/user_model.dart';
+import 'package:sirnawa_mobile/utils/error_parser.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
 
 class UserService {
@@ -12,9 +13,7 @@ class UserService {
 
   Future<Result<LoginResponse>> refreshToken() async {
     try {
-      final response = await apiClient.get(
-        '/auth/refresh-token',
-      );
+      final response = await apiClient.get('/auth/refresh-token');
 
       if (response.statusCode == 200) {
         return Result.ok(LoginResponse.fromJson(response.data["data"]));
@@ -27,6 +26,7 @@ class UserService {
       return Result.error(Exception(error));
     }
   }
+
   Future<Result<ApiResponse<UserModel>>> getCurrentUser() async {
     try {
       final response = await apiClient.get('/auth/me');
@@ -38,14 +38,7 @@ class UserService {
 
       return Result.ok(data);
     } catch (e) {
-      return Result.error(Exception(_parseDioError(e)));
+      return Result.error(Exception(parseDioError(e)));
     }
-  }
-
-  String? _parseDioError(Object error) {
-    if (error is DioException) {
-      return error.message;
-    }
-    return error.toString();
   }
 }

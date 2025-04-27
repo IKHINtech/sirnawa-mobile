@@ -83,7 +83,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           right: 16,
                         ),
                         child:
-                            state.user == null
+                            state.user == null && !state.isLoading
                                 ? Card(
                                   child: ListTile(
                                     textColor: Colors.red,

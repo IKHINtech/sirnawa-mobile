@@ -7,6 +7,8 @@ abstract final class Routes {
   static const admin = '/admin';
   static const adminRt = '/admin/rt';
   static const adminRw = '/admin/rw';
+  static const adminRwCreate = '/admin/rw/create';
+  static const adminRwUpdate = '/admin/rw/update';
   static const adminBlock = '/admin/block';
   static const adminBlockCreate = '/admin/block/create';
   static const adminBlockUpdate = '/admin/block/update';

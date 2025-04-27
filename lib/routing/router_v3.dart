@@ -7,12 +7,15 @@ import 'package:go_router/go_router.dart';
 import 'package:sirnawa_mobile/config/auth_providers.dart';
 import 'package:sirnawa_mobile/domain/model/block/block_model.dart';
 import 'package:sirnawa_mobile/domain/model/resident/resident_model.dart';
+import 'package:sirnawa_mobile/domain/model/rw/rw_model.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/admin/block/widget/block_form_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/block/widget/block_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/resident/widget/resident_form_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/resident/widget/resident_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/rt/widget/rt_screen.dart';
+import 'package:sirnawa_mobile/ui/admin/rw/widget/rw_form_screen.dart';
+import 'package:sirnawa_mobile/ui/admin/rw/widget/rw_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/widgets/admin_screen.dart';
 import 'package:sirnawa_mobile/ui/auth/login/widgets/login_screen.dart';
 import 'package:sirnawa_mobile/ui/community/widgets/community_screen.dart';
@@ -87,10 +90,29 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.admin,
         builder: (context, state) => const AdminScreen(),
       ),
+      //  ===== RT =====
       GoRoute(
         path: Routes.adminRt,
         builder: (context, state) => const RtScreen(),
       ),
+      //  ===== RW =====
+      GoRoute(
+        path: Routes.adminRw,
+        builder: (context, state) => const RwScreen(),
+      ),
+      GoRoute(
+        path: Routes.adminRwCreate,
+        builder: (context, state) => const RwFormScreen(),
+      ),
+      GoRoute(
+        path: Routes.adminRwUpdate,
+        builder: (context, state) {
+          final data = state.extra as RwModel;
+
+          return RwFormScreen(rw: data);
+        },
+      ),
+      //  ===== BLOCK =====
       GoRoute(
         path: Routes.adminBlock,
         builder: (context, state) => const BlockScreen(),
@@ -106,6 +128,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           return BlockFormScreen(block: block);
         },
       ),
+      //  ===== RESIDENT =====
       GoRoute(
         path: Routes.adminResident,
         builder: (context, state) => const ResidentScreen(), // Create mode

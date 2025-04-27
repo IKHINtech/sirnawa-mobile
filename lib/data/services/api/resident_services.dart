@@ -3,6 +3,7 @@ import 'package:sirnawa_mobile/data/services/api/api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
 import 'package:sirnawa_mobile/data/services/api/model/resident/resident_request_model.dart';
 import 'package:sirnawa_mobile/domain/model/resident/resident_model.dart';
+import 'package:sirnawa_mobile/utils/error_parser.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
 
 class ResidentService {
@@ -29,7 +30,7 @@ class ResidentService {
 
       return Result.ok(data);
     } catch (e) {
-      return Result.error(Exception(_parseDioError(e)));
+      return Result.error(Exception(parseDioError(e)));
     }
   }
 
@@ -50,7 +51,7 @@ class ResidentService {
 
       return Result.ok(data);
     } catch (e) {
-      return Result.error(Exception(_parseDioError(e)));
+      return Result.error(Exception(parseDioError(e)));
     }
   }
 
@@ -72,7 +73,7 @@ class ResidentService {
 
       return Result.ok(data);
     } catch (e) {
-      return Result.error(Exception(_parseDioError(e)));
+      return Result.error(Exception(parseDioError(e)));
     }
   }
 
@@ -82,15 +83,7 @@ class ResidentService {
       await apiClient.delete('/resident/$id');
       return Result.ok(null);
     } catch (e) {
-      return Result.error(Exception(_parseDioError(e)));
+      return Result.error(Exception(parseDioError(e)));
     }
-  }
-
-  // Helper untuk handle error dengan lebih rapi (opsional)
-  String? _parseDioError(Object error) {
-    if (error is DioException) {
-      return error.message;
-    }
-    return error.toString();
   }
 }

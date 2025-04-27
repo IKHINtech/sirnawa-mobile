@@ -9,6 +9,7 @@ class RwModel with _$RwModel {
     required String id,
     @JsonKey(name: 'created_at') required DateTime createdAt,
     @JsonKey(name: 'updated_at') required DateTime updatedAt,
+    @JsonKey(name: 'housing_area_id') required String housingAreaId,
     required String name,
   }) = _RwModel;
 

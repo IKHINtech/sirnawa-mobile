@@ -1,5 +1,6 @@
 import 'package:sirnawa_mobile/data/repositories/rw/rw_repository.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
+import 'package:sirnawa_mobile/data/services/api/model/rw/rw_request_model.dart';
 import 'package:sirnawa_mobile/data/services/api/rw_services.dart';
 import 'package:sirnawa_mobile/domain/model/rw/rw_model.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
@@ -20,7 +21,7 @@ class RwRepositoryRemote implements RwRepository {
   }
 
   @override
-  Future<Result<void>> createRw(RwModel rw) async {
+  Future<Result<void>> createRw(RwRequestModel rw) async {
     try {
       return await _rwService.createRw(rw);
     } on Exception catch (e) {
@@ -29,7 +30,7 @@ class RwRepositoryRemote implements RwRepository {
   }
 
   @override
-  Future<Result<void>> updateRw(String id, RwModel rw) async {
+  Future<Result<void>> updateRw(String id, RwRequestModel rw) async {
     try {
       return await _rwService.updateRw(id, rw);
     } on Exception catch (e) {

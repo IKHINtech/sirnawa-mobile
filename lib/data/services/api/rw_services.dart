@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:sirnawa_mobile/data/services/api/api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
+import 'package:sirnawa_mobile/data/services/api/model/rw/rw_request_model.dart';
 import 'package:sirnawa_mobile/domain/model/rw/rw_model.dart';
+import 'package:sirnawa_mobile/utils/error_parser.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
 
 class RwService {
@@ -26,12 +28,12 @@ class RwService {
 
       return Result.ok(data);
     } catch (e) {
-      return Result.error(Exception(_parseDioError(e)));
+      return Result.error(Exception(parseDioError(e)));
     }
   }
 
   // ✅ POST /rw
-  Future<Result<ApiResponse<RwModel>>> createRw(RwModel rw) async {
+  Future<Result<ApiResponse<RwModel>>> createRw(RwRequestModel rw) async {
     try {
       final response = await apiClient.post('/rw', data: rw.toJson());
 
@@ -42,12 +44,15 @@ class RwService {
 
       return Result.ok(data);
     } catch (e) {
-      return Result.error(Exception(_parseDioError(e)));
+      return Result.error(Exception(parseDioError(e)));
     }
   }
 
   // ✅ PUT /rw/{id}
-  Future<Result<ApiResponse<RwModel>>> updateRw(String id, RwModel rw) async {
+  Future<Result<ApiResponse<RwModel>>> updateRw(
+    String id,
+    RwRequestModel rw,
+  ) async {
     try {
       final response = await apiClient.put('/rw/$id', data: rw.toJson());
 
@@ -58,7 +63,7 @@ class RwService {
 
       return Result.ok(data);
     } catch (e) {
-      return Result.error(Exception(_parseDioError(e)));
+      return Result.error(Exception(parseDioError(e)));
     }
   }
 
@@ -68,15 +73,9 @@ class RwService {
       await apiClient.delete('/rw/$id');
       return Result.ok(null);
     } catch (e) {
-      return Result.error(Exception(_parseDioError(e)));
+      return Result.error(Exception(parseDioError(e)));
     }
   }
 
   // Helper error parser
-  String? _parseDioError(Object error) {
-    if (error is DioException) {
-      return error.message;
-    }
-    return error.toString();
-  }
 }

@@ -7,6 +7,8 @@ import 'package:sirnawa_mobile/data/repositories/resident/resident_repository.da
 import 'package:sirnawa_mobile/data/repositories/resident/resident_repository_remote.dart';
 import 'package:sirnawa_mobile/data/repositories/rt/rt_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/rt/rt_repository_remote.dart';
+import 'package:sirnawa_mobile/data/repositories/rw/rw_repository.dart';
+import 'package:sirnawa_mobile/data/repositories/rw/rw_repository_remote.dart';
 import 'package:sirnawa_mobile/data/repositories/user/user_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/user/user_repository_remote.dart';
 import 'package:sirnawa_mobile/data/services/api/api_client.dart';
@@ -14,11 +16,13 @@ import 'package:sirnawa_mobile/data/services/api/auth_api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/block_services.dart';
 import 'package:sirnawa_mobile/data/services/api/resident_services.dart';
 import 'package:sirnawa_mobile/data/services/api/rt_services.dart';
+import 'package:sirnawa_mobile/data/services/api/rw_services.dart';
 import 'package:sirnawa_mobile/data/services/api/user_services.dart';
 import 'package:sirnawa_mobile/data/services/share_preference_service.dart';
 import 'package:sirnawa_mobile/ui/admin/block/block_view_model/block_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/resident/resident_view_model/resident_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/rt/rt_viewmodel/rt_viewmodel.dart';
+import 'package:sirnawa_mobile/ui/admin/rw/rw_viewmodel/rw_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/auth/login/view_models/login_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/home/view_models/home_viewmodel.dart';
 
@@ -47,6 +51,19 @@ final rtRepositoryProvider = Provider<RtRepository>((ref) {
 
 final rtViewModelProvider = StateNotifierProvider<RtViewModel, RtState>((ref) {
   return RtViewModel(repository: ref.read(rtRepositoryProvider));
+});
+
+// ========== RW ==========
+final rwServiceProvider = Provider<RwService>((ref) {
+  return RwService(ref.read(apiClientProvider));
+});
+
+final rwRepositoryProvider = Provider<RwRepository>((ref) {
+  return RwRepositoryRemote(rwService: ref.read(rwServiceProvider));
+});
+
+final rwViewModelProvider = StateNotifierProvider<RwViewModel, RwState>((ref) {
+  return RwViewModel(repository: ref.read(rwRepositoryProvider));
 });
 //===== RESIDENT =========//
 final residentServiceProvider = Provider<ResidentService>((ref) {

@@ -28,6 +28,13 @@ class _AdminScreenState extends State<AdminScreen> {
               children: <Widget>[
                 _itemAdmin(
                   onClick: () {
+                    context.push(Routes.adminRw);
+                  },
+                  icon: Icons.map,
+                  title: "Data RW",
+                ),
+                _itemAdmin(
+                  onClick: () {
                     context.push(Routes.adminRt);
                   },
                   icon: Icons.group,
