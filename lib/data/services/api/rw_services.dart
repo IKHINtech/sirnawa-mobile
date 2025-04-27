@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:sirnawa_mobile/data/services/api/api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
 import 'package:sirnawa_mobile/data/services/api/model/rw/rw_request_model.dart';
