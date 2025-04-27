@@ -1,5 +1,6 @@
 import 'package:sirnawa_mobile/data/services/api/api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
+import 'package:sirnawa_mobile/data/services/api/model/house/house_request_model.dart';
 import 'package:sirnawa_mobile/domain/model/house/house_model.dart';
 import 'package:sirnawa_mobile/utils/error_parser.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
@@ -31,7 +32,9 @@ class HouseService {
   }
 
   // ✅ POST /house
-  Future<Result<ApiResponse<HouseModel>>> createHouse(HouseModel house) async {
+  Future<Result<ApiResponse<HouseModel>>> createHouse(
+    HouseRequestModel house,
+  ) async {
     try {
       final response = await apiClient.post('/house', data: house.toJson());
 
@@ -49,7 +52,7 @@ class HouseService {
   // ✅ PUT /house/{id}
   Future<Result<ApiResponse<HouseModel>>> updateHouse(
     String id,
-    HouseModel house,
+    HouseRequestModel house,
   ) async {
     try {
       final response = await apiClient.put('/house/$id', data: house.toJson());
