@@ -8,8 +8,12 @@ abstract final class Routes {
   static const adminRt = '/admin/rt';
   static const adminRw = '/admin/rw';
   static const adminBlock = '/admin/block';
+  static const adminBlockCreate = '/admin/block/create';
+  static const adminBlockUpdate = '/admin/block/update';
   static const adminHome = '/admin/home';
   static const adminResident = '/admin/resident';
+  static const adminResidentCreate = '/admin/resident/create';
+  static const adminResidentEdit = '/admin/resident/edit';
   static const search = '/$searchRelative';
   static const searchRelative = 'search';
   static const results = '/$resultsRelative';

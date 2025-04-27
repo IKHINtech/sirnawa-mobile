@@ -1,5 +1,6 @@
 import 'package:sirnawa_mobile/data/repositories/resident/resident_repository.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
+import 'package:sirnawa_mobile/data/services/api/model/resident/resident_request_model.dart';
 import 'package:sirnawa_mobile/data/services/api/resident_services.dart';
 import 'package:sirnawa_mobile/domain/model/resident/resident_model.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
@@ -22,7 +23,7 @@ class ResidentRepositoryRemote implements ResidentRepository {
   }
 
   @override
-  Future<Result<void>> createResident(ResidentModel resident) async {
+  Future<Result<void>> createResident(ResidentRequestModel resident) async {
     try {
       return await _residentService.createResident(resident);
     } on Exception catch (e) {
@@ -31,7 +32,10 @@ class ResidentRepositoryRemote implements ResidentRepository {
   }
 
   @override
-  Future<Result<void>> updateResident(String id, ResidentModel resident) async {
+  Future<Result<void>> updateResident(
+    String id,
+    ResidentRequestModel resident,
+  ) async {
     try {
       return await _residentService.updateResident(id, resident);
     } on Exception catch (e) {

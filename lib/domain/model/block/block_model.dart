@@ -7,6 +7,7 @@ part 'block_model.g.dart';
 class BlockModel with _$BlockModel {
   const factory BlockModel({
     required String id,
+    @JsonKey(name: 'rt_id') required String rtId,
     @JsonKey(name: 'created_at') required DateTime createdAt,
     @JsonKey(name: 'updated_at') required DateTime updatedAt,
     required String name,

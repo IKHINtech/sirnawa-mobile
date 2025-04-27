@@ -1,30 +1,30 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sirnawa_mobile/data/repositories/resident/resident_repository.dart';
+import 'package:sirnawa_mobile/data/repositories/block/block_repository.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
-import 'package:sirnawa_mobile/data/services/api/model/resident/resident_request_model.dart';
-import 'package:sirnawa_mobile/domain/model/resident/resident_model.dart';
+import 'package:sirnawa_mobile/data/services/api/model/block/block_request_model.dart';
+import 'package:sirnawa_mobile/domain/model/block/block_model.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
 
-class ResidentState {
+class BlockState {
   final bool isLoading;
   final String? error;
-  final List<ResidentModel> list;
+  final List<BlockModel> list;
   final bool hasNextPage;
 
-  const ResidentState({
+  const BlockState({
     required this.isLoading,
     required this.error,
     required this.list,
     required this.hasNextPage,
   });
 
-  ResidentState copyWith({
+  BlockState copyWith({
     bool? isLoading,
     String? error,
-    List<ResidentModel>? list,
+    List<BlockModel>? list,
     bool? hasNextPage,
   }) {
-    return ResidentState(
+    return BlockState(
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
       list: list ?? this.list,
@@ -33,16 +33,16 @@ class ResidentState {
   }
 }
 
-class ResidentViewModel extends StateNotifier<ResidentState> {
-  final ResidentRepository _repository;
+class BlockViewModel extends StateNotifier<BlockState> {
+  final BlockRepository _repository;
   int _currentPage = 1;
   final int _limit = 10;
   int _totalPages = 1;
 
-  ResidentViewModel({required ResidentRepository repository})
+  BlockViewModel({required BlockRepository repository})
     : _repository = repository,
       super(
-        const ResidentState(
+        const BlockState(
           isLoading: false,
           error: null,
           list: [],
@@ -50,13 +50,13 @@ class ResidentViewModel extends StateNotifier<ResidentState> {
         ),
       );
 
-  Future<void> fetchListResident({bool reset = false}) async {
+  Future<void> fetchListBlock({bool reset = false}) async {
     if (state.isLoading) return;
 
     try {
       state =
           reset
-              ? const ResidentState(
+              ? const BlockState(
                 isLoading: true,
                 error: null,
                 list: [],
@@ -69,16 +69,16 @@ class ResidentViewModel extends StateNotifier<ResidentState> {
         _totalPages = 1;
       }
 
-      final result = await _repository.getResidents({
+      final result = await _repository.getListBlock({
         "page": _currentPage,
         "page_size": _limit,
       });
 
       switch (result) {
-        case Ok<ApiResponse<List<ResidentModel>>>():
+        case Ok<ApiResponse<List<BlockModel>>>():
           _currentPage++;
           _totalPages = result.value.meta?.totalPages ?? 1;
-          state = ResidentState(
+          state = BlockState(
             isLoading: false,
             error: null,
             list:
@@ -88,7 +88,7 @@ class ResidentViewModel extends StateNotifier<ResidentState> {
             hasNextPage: _currentPage < _totalPages,
           );
           break;
-        case Error<ApiResponse<List<ResidentModel>>>():
+        case Error<ApiResponse<List<BlockModel>>>():
           state = state.copyWith(
             isLoading: false,
             error: result.error.toString(),
@@ -102,17 +102,17 @@ class ResidentViewModel extends StateNotifier<ResidentState> {
 
   Future<void> loadMore() async {
     if (!(_currentPage < _totalPages) || state.isLoading) return;
-    await fetchListResident();
+    await fetchListBlock();
   }
 
-  Future<void> createResident(ResidentRequestModel resident) async {
+  Future<void> createBlock(BlockRequestModel resident) async {
     state = state.copyWith(isLoading: true);
     try {
-      final result = await _repository.createResident(resident);
+      final result = await _repository.createBlock(resident);
       switch (result) {
         case Ok():
           // Opsional: setelah create, refresh list
-          await fetchListResident(reset: true);
+          await fetchListBlock(reset: true);
           break;
         case Error():
           state = state.copyWith(
@@ -126,13 +126,13 @@ class ResidentViewModel extends StateNotifier<ResidentState> {
     }
   }
 
-  Future<void> updateResident(String id, ResidentRequestModel resident) async {
+  Future<void> updateBlock(String id, BlockRequestModel resident) async {
     state = state.copyWith(isLoading: true);
     try {
-      final result = await _repository.updateResident(id, resident);
+      final result = await _repository.updateBlock(id, resident);
       switch (result) {
         case Ok():
-          await fetchListResident(reset: true);
+          await fetchListBlock(reset: true);
           break;
         case Error():
           state = state.copyWith(
@@ -146,13 +146,13 @@ class ResidentViewModel extends StateNotifier<ResidentState> {
     }
   }
 
-  Future<void> deleteResident(String id) async {
+  Future<void> deleteBlock(String id) async {
     state = state.copyWith(isLoading: true);
     try {
-      final result = await _repository.deleteResident(id);
+      final result = await _repository.delete(id);
       switch (result) {
         case Ok():
-          await fetchListResident(reset: true);
+          await fetchListBlock(reset: true);
           break;
         case Error():
           state = state.copyWith(

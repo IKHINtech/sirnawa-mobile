@@ -5,7 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sirnawa_mobile/config/auth_providers.dart';
+import 'package:sirnawa_mobile/domain/model/block/block_model.dart';
+import 'package:sirnawa_mobile/domain/model/resident/resident_model.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
+import 'package:sirnawa_mobile/ui/admin/block/widget/block_form_screen.dart';
+import 'package:sirnawa_mobile/ui/admin/block/widget/block_screen.dart';
+import 'package:sirnawa_mobile/ui/admin/resident/widget/resident_form_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/resident/widget/resident_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/rt/widget/rt_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/widgets/admin_screen.dart';
@@ -86,10 +91,36 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.adminRt,
         builder: (context, state) => const RtScreen(),
       ),
-
+      GoRoute(
+        path: Routes.adminBlock,
+        builder: (context, state) => const BlockScreen(),
+      ),
+      GoRoute(
+        path: Routes.adminBlockCreate,
+        builder: (context, state) => const BlockFormScreen(),
+      ),
+      GoRoute(
+        path: Routes.adminBlockUpdate,
+        builder: (context, state) {
+          final block = state.extra as BlockModel;
+          return BlockFormScreen(block: block);
+        },
+      ),
       GoRoute(
         path: Routes.adminResident,
-        builder: (context, state) => const ResidentScreen(),
+        builder: (context, state) => const ResidentScreen(), // Create mode
+      ),
+      GoRoute(
+        path: Routes.adminResidentCreate,
+        builder: (context, state) => const ResidentFormScreen(), // Create mode
+      ),
+      GoRoute(
+        path: Routes.adminResidentEdit,
+        builder: (context, state) {
+          final resident =
+              state.extra as ResidentModel; // extra untuk passing data
+          return ResidentFormScreen(resident: resident); // Edit mode
+        },
       ),
       ShellRoute(
         builder: (context, state, child) => HomeShell(child: child),

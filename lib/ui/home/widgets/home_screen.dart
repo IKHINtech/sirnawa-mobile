@@ -82,13 +82,34 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           left: 16,
                           right: 16,
                         ),
-                        child: Column(
-                          children: [
-                            _title(context, state),
-                            const SizedBox(height: 8),
-                            _userLogin(context, state, notifier),
-                          ],
-                        ),
+                        child:
+                            state.user == null
+                                ? Card(
+                                  child: ListTile(
+                                    textColor: Colors.red,
+                                    title: Row(
+                                      children: [
+                                        Text("Terjadi Kesalahan"),
+                                        SizedBox(width: 8),
+                                        Icon(Icons.error, color: Colors.red),
+                                      ],
+                                    ),
+                                    trailing: IconButton(
+                                      onPressed: () => notifier.logout(),
+                                      icon: Icon(
+                                        Icons.logout,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                : Column(
+                                  children: [
+                                    _title(context, state),
+                                    const SizedBox(height: 8),
+                                    _userLogin(context, state, notifier),
+                                  ],
+                                ),
                       ),
                     ],
                   ),

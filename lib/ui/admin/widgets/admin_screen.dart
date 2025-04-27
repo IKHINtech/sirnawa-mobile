@@ -49,7 +49,7 @@ class _AdminScreenState extends State<AdminScreen> {
                 ),
                 _itemAdmin(
                   onClick: () {
-                    context.push(Routes.adminResident);
+                    context.push(Routes.adminBlock);
                   },
                   icon: Icons.apartment,
                   title: "Data Blok",

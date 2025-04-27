@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:sirnawa_mobile/data/services/api/api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
+import 'package:sirnawa_mobile/data/services/api/model/block/block_request_model.dart';
 import 'package:sirnawa_mobile/domain/model/block/block_model.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
 
@@ -31,7 +32,9 @@ class BlockService {
   }
 
   // ✅ POST /block
-  Future<Result<ApiResponse<BlockModel>>> createBlock(BlockModel block) async {
+  Future<Result<ApiResponse<BlockModel>>> createBlock(
+    BlockRequestModel block,
+  ) async {
     try {
       final response = await apiClient.post('/block', data: block.toJson());
 
@@ -49,7 +52,7 @@ class BlockService {
   // ✅ PUT /block/{id}
   Future<Result<ApiResponse<BlockModel>>> updateBlock(
     String id,
-    BlockModel block,
+    BlockRequestModel block,
   ) async {
     try {
       final response = await apiClient.put('/block/$id', data: block.toJson());

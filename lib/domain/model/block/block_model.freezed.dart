@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$BlockModel {
 
- String get id;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt; String get name;
+ String get id;@JsonKey(name: 'rt_id') String get rtId;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt; String get name;
 /// Create a copy of BlockModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $BlockModelCopyWith<BlockModel> get copyWith => _$BlockModelCopyWithImpl<BlockMo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BlockModel&&(identical(other.id, id) || other.id == id)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.name, name) || other.name == name));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BlockModel&&(identical(other.id, id) || other.id == id)&&(identical(other.rtId, rtId) || other.rtId == rtId)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.name, name) || other.name == name));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,createdAt,updatedAt,name);
+int get hashCode => Object.hash(runtimeType,id,rtId,createdAt,updatedAt,name);
 
 @override
 String toString() {
-  return 'BlockModel(id: $id, createdAt: $createdAt, updatedAt: $updatedAt, name: $name)';
+  return 'BlockModel(id: $id, rtId: $rtId, createdAt: $createdAt, updatedAt: $updatedAt, name: $name)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $BlockModelCopyWith<$Res>  {
   factory $BlockModelCopyWith(BlockModel value, $Res Function(BlockModel) _then) = _$BlockModelCopyWithImpl;
 @useResult
 $Res call({
- String id,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt, String name
+ String id,@JsonKey(name: 'rt_id') String rtId,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt, String name
 });
 
 
@@ -66,9 +66,10 @@ class _$BlockModelCopyWithImpl<$Res>
 
 /// Create a copy of BlockModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? createdAt = null,Object? updatedAt = null,Object? name = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? rtId = null,Object? createdAt = null,Object? updatedAt = null,Object? name = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,rtId: null == rtId ? _self.rtId : rtId // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -83,10 +84,11 @@ as String,
 @JsonSerializable()
 
 class _BlockModel implements BlockModel {
-  const _BlockModel({required this.id, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt, required this.name});
+  const _BlockModel({required this.id, @JsonKey(name: 'rt_id') required this.rtId, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt, required this.name});
   factory _BlockModel.fromJson(Map<String, dynamic> json) => _$BlockModelFromJson(json);
 
 @override final  String id;
+@override@JsonKey(name: 'rt_id') final  String rtId;
 @override@JsonKey(name: 'created_at') final  DateTime createdAt;
 @override@JsonKey(name: 'updated_at') final  DateTime updatedAt;
 @override final  String name;
@@ -104,16 +106,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BlockModel&&(identical(other.id, id) || other.id == id)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.name, name) || other.name == name));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BlockModel&&(identical(other.id, id) || other.id == id)&&(identical(other.rtId, rtId) || other.rtId == rtId)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.name, name) || other.name == name));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,createdAt,updatedAt,name);
+int get hashCode => Object.hash(runtimeType,id,rtId,createdAt,updatedAt,name);
 
 @override
 String toString() {
-  return 'BlockModel(id: $id, createdAt: $createdAt, updatedAt: $updatedAt, name: $name)';
+  return 'BlockModel(id: $id, rtId: $rtId, createdAt: $createdAt, updatedAt: $updatedAt, name: $name)';
 }
 
 
@@ -124,7 +126,7 @@ abstract mixin class _$BlockModelCopyWith<$Res> implements $BlockModelCopyWith<$
   factory _$BlockModelCopyWith(_BlockModel value, $Res Function(_BlockModel) _then) = __$BlockModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt, String name
+ String id,@JsonKey(name: 'rt_id') String rtId,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt, String name
 });
 
 
@@ -141,9 +143,10 @@ class __$BlockModelCopyWithImpl<$Res>
 
 /// Create a copy of BlockModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? createdAt = null,Object? updatedAt = null,Object? name = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? rtId = null,Object? createdAt = null,Object? updatedAt = null,Object? name = null,}) {
   return _then(_BlockModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,rtId: null == rtId ? _self.rtId : rtId // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable

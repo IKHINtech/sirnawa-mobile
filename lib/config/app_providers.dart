@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sirnawa_mobile/config/app_config.dart';
 import 'package:sirnawa_mobile/config/auth_providers.dart';
+import 'package:sirnawa_mobile/data/repositories/block/block_repository.dart';
+import 'package:sirnawa_mobile/data/repositories/block/block_repository_remote.dart';
 import 'package:sirnawa_mobile/data/repositories/resident/resident_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/resident/resident_repository_remote.dart';
 import 'package:sirnawa_mobile/data/repositories/rt/rt_repository.dart';
@@ -9,10 +11,12 @@ import 'package:sirnawa_mobile/data/repositories/user/user_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/user/user_repository_remote.dart';
 import 'package:sirnawa_mobile/data/services/api/api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/auth_api_client.dart';
+import 'package:sirnawa_mobile/data/services/api/block_services.dart';
 import 'package:sirnawa_mobile/data/services/api/resident_services.dart';
 import 'package:sirnawa_mobile/data/services/api/rt_services.dart';
 import 'package:sirnawa_mobile/data/services/api/user_services.dart';
 import 'package:sirnawa_mobile/data/services/share_preference_service.dart';
+import 'package:sirnawa_mobile/ui/admin/block/block_view_model/block_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/resident/resident_view_model/resident_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/rt/rt_viewmodel/rt_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/auth/login/view_models/login_viewmodel.dart';
@@ -62,7 +66,22 @@ final residentViewModelProvider =
       );
     });
 
-//===== USER =========//
+//========== BLOCK ==========//
+
+final blockServiceProvider = Provider<BlockService>((ref) {
+  return BlockService(ref.read(apiClientProvider));
+});
+
+final blockRepositoryProvider = Provider<BlockRepository>((ref) {
+  return BlockRepositoryRemote(blockService: ref.read(blockServiceProvider));
+});
+
+final blockViewModelProvider =
+    StateNotifierProvider<BlockViewModel, BlockState>((ref) {
+      return BlockViewModel(repository: ref.read(blockRepositoryProvider));
+    });
+
+//========== USER ==========//
 final userServiceProvider = Provider<UserService>((ref) {
   return UserService(ref.read(apiClientProvider));
 });

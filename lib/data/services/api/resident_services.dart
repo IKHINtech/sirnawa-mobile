@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:sirnawa_mobile/data/services/api/api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
+import 'package:sirnawa_mobile/data/services/api/model/resident/resident_request_model.dart';
 import 'package:sirnawa_mobile/domain/model/resident/resident_model.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
 
@@ -34,7 +35,7 @@ class ResidentService {
 
   // ✅ POST /resident
   Future<Result<ApiResponse<ResidentModel>>> createResident(
-    ResidentModel resident,
+    ResidentRequestModel resident,
   ) async {
     try {
       final response = await apiClient.post(
@@ -56,7 +57,7 @@ class ResidentService {
   // ✅ PUT /resident/{id}
   Future<Result<ApiResponse<ResidentModel>>> updateResident(
     String id,
-    ResidentModel resident,
+    ResidentRequestModel resident,
   ) async {
     try {
       final response = await apiClient.put(
