@@ -1,3 +1,3 @@
 class AppConfig {
-  static String get apiBaseUrl => "https://example.my.id";
+  static String get apiBaseUrl => "https://sirnawa-api.ikhintech.my.id";
 }
