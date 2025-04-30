@@ -398,7 +398,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             child: CustomPlaceholder(height: 12, width: 50),
                           )
                           : Text(
-                            viewmodel.user?.role.toUpperCase() ?? "-",
+                            viewmodel.userRtModel?.role.toUpperCase() ?? "-",
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                     ],

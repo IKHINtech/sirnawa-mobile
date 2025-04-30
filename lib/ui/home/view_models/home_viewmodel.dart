@@ -4,6 +4,7 @@ import 'package:sirnawa_mobile/data/repositories/user/user_repository.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
 import 'package:sirnawa_mobile/domain/model/resident_house/resident_house_model.dart';
 import 'package:sirnawa_mobile/domain/model/user/user_model.dart';
+import 'package:sirnawa_mobile/domain/model/user_rt/user_rt_model.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
 
 class HomeState {
@@ -11,6 +12,7 @@ class HomeState {
   final String? error;
   final UserModel? user;
   final ResidentHouseModel? residentHouse;
+  final UserRtModel? userRtModel;
   final List<ResidentHouseModel> listHouse;
   final AsyncValue<void> loadStatus;
 
@@ -21,6 +23,7 @@ class HomeState {
     required this.loadStatus,
     required this.residentHouse,
     required this.listHouse,
+    required this.userRtModel,
   });
 
   HomeState copyWith({
@@ -29,6 +32,7 @@ class HomeState {
     UserModel? user,
     AsyncValue<void>? loadStatus,
     ResidentHouseModel? residentHouse,
+    UserRtModel? userRtModel,
     List<ResidentHouseModel>? listHouse,
   }) {
     return HomeState(
@@ -38,6 +42,7 @@ class HomeState {
       loadStatus: loadStatus ?? this.loadStatus,
       residentHouse: residentHouse ?? this.residentHouse,
       listHouse: listHouse ?? this.listHouse,
+      userRtModel: userRtModel ?? this.userRtModel, 
     );
   }
 
@@ -49,6 +54,7 @@ class HomeState {
       residentHouse: null,
       loadStatus: AsyncValue.data(null),
       listHouse: [],
+      userRtModel: null
     );
   }
 }
@@ -77,11 +83,13 @@ class HomeViewModel extends StateNotifier<HomeState> {
       case Ok<ApiResponse<UserModel>>():
         final primaryHouse = result.value.data?.resident?.residentHouses
             ?.firstWhere((house) => house.isPrimary == true);
+            final userRt = result.value.data?.userRTs?.firstWhere((userRt) => userRt.rtId == primaryHouse?.house.rtId);   
         state = state.copyWith(
           isLoading: false,
           residentHouse: primaryHouse,
           listHouse: result.value.data?.resident?.residentHouses ?? [],
           user: result.value.data,
+          userRtModel: userRt,
           loadStatus: const AsyncValue.data(null),
         );
       case Error():
@@ -103,6 +111,9 @@ class HomeViewModel extends StateNotifier<HomeState> {
   }
 
   void changeHouse(ResidentHouseModel house) {
-    state = state.copyWith(residentHouse: house);
+    final userRt = state.user?.userRTs?.firstWhere((userRt) => userRt.rtId == house.house.rtId);
+    state = state.copyWith(residentHouse: house,
+    userRtModel: userRt,
+    );
   }
 }

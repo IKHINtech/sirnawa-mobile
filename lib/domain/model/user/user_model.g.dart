@@ -15,6 +15,10 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
       json['resident'] == null
           ? null
           : ResidentModel.fromJson(json['resident'] as Map<String, dynamic>),
+  userRTs:
+      (json['user_rt'] as List<dynamic>?)
+          ?.map((e) => UserRtModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
 );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
@@ -24,4 +28,5 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'role': instance.role,
       'resident_id': instance.residentId,
       'resident': instance.resident,
+      'user_rt': instance.userRTs,
     };
