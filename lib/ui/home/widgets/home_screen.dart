@@ -257,21 +257,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             children: <Widget>[
               _fitureItem(
                 title: "IPL",
-                icon: Icons.receipt_long,
+                icon: LucideIcons.newspaper,
                 color: Colors.green[200]!,
                 content: "3",
                 onClick: () {},
               ),
               _fitureItem(
                 title: "Rumah",
-                icon: Icons.home,
+                icon: Icons.cottage,
                 color: Colors.blue[200]!,
                 content: "3",
                 onClick: () {},
               ),
               _fitureItem(
                 title: "Warga",
-                icon: Icons.person,
+                icon: Icons.groups_2,
                 color: Colors.yellow[200]!,
                 content: "100",
                 onClick: () {},
@@ -319,14 +319,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 context,
                 title: "Rumah",
                 color: Colors.green,
-                icon: Icons.home,
+                icon: Icons.cottage_rounded,
               ),
               _menuItem(
                 onTab: () {},
                 context,
                 title: "Ronda",
                 color: Colors.redAccent,
-                icon: Icons.security,
+                icon: Icons.groups_2,
               ),
               _menuItem(
                 onTab: () {
