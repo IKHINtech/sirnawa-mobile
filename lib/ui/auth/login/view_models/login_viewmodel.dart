@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:sirnawa_mobile/data/repositories/auth/auth_repository.dart';
+import 'package:sirnawa_mobile/data/services/api/model/login_response/login_response.dart';
+import 'package:sirnawa_mobile/utils/result.dart';
 
 class LoginState {
   final bool isLoading;
@@ -52,11 +54,19 @@ class LoginViewModel extends StateNotifier<LoginState> {
     final result = await AsyncValue.guard(
       () => _authRepository.login(email: email, password: password),
     );
-
+    // TODO: lanjut disini
+    switch (result) {
+      case Ok<Result<LoginResponse>>():
+        _log.info('User logged in');
+        break;
+      case Error<LoginResponse>():
+        _log.warning('Login failed: ${result.error}');
+        break;
+    }
     state = state.copyWith(
       isLoading: false,
       loginStatus: result,
-      error: result.hasError ? result.error.toString() : null,
+      error: result.error.toString(),
     );
 
     if (result.hasError) {

@@ -87,7 +87,7 @@ class AuthRepositoryRemote implements AuthRepository {
   }
 
   @override
-  Future<Result<void>> login({
+  Future<Result<LoginResponse>> login({
     required String email,
     required String password,
   }) async {
@@ -102,7 +102,7 @@ class AuthRepositoryRemote implements AuthRepository {
           _authToken = result.value.accessToken.token;
           await _sharedPreferencesService.saveToken(_authToken);
           _updateAuthState(true);
-          return const Result.ok(null);
+          return Result.ok(result.value);
         case Error<LoginResponse>():
           _log.warning('Login failed: ${result.error}');
           _updateAuthState(false);

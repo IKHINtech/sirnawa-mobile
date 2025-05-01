@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:sirnawa_mobile/config/app_config.dart';
 import 'package:sirnawa_mobile/data/services/api/model/login_request/login_request.dart';
 import 'package:sirnawa_mobile/data/services/api/model/login_response/login_response.dart';
+import 'package:sirnawa_mobile/utils/error_parser.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
 
 class AuthApiClient {
@@ -24,9 +25,9 @@ class AuthApiClient {
         return Result.error(Exception("Login error"));
       }
     } on DioException catch (error) {
-      return Result.error(error);
+      return Result.error(Exception(parseDioError(error)));
     } catch (error) {
-      return Result.error(Exception(error));
+      return Result.error(Exception(parseDioError(error)));
     }
   }
 

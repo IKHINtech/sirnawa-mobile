@@ -1,3 +1,4 @@
+import 'package:sirnawa_mobile/data/services/api/model/login_response/login_response.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
 
 abstract class AuthRepository {
@@ -7,7 +8,10 @@ abstract class AuthRepository {
   Stream<bool> get authStateChanges;
 
   /// Perform login
-  Future<Result<void>> login({required String email, required String password});
+  Future<Result<LoginResponse>> login({
+    required String email,
+    required String password,
+  });
 
   /// Perform logout
   Future<Result<void>> logout();
