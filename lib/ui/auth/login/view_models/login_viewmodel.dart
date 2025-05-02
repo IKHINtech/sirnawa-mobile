@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:sirnawa_mobile/data/repositories/auth/auth_repository.dart';
-import 'package:sirnawa_mobile/data/services/api/model/login_response/login_response.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
 
 class LoginState {
@@ -18,11 +17,12 @@ class LoginState {
   LoginState copyWith({
     bool? isLoading,
     String? error,
+    bool clearError = false,
     AsyncValue<void>? loginStatus,
   }) {
     return LoginState(
       isLoading: isLoading ?? this.isLoading,
-      error: error ?? this.error,
+      error: clearError ? null : error ?? this.error, 
       loginStatus: loginStatus ?? this.loginStatus,
     );
   }
@@ -44,33 +44,49 @@ class LoginViewModel extends StateNotifier<LoginState> {
     : _authRepository = authRepository,
       super(LoginState.initial());
 
-  Future<void> login(String email, String password) async {
+  Future<bool> login(String email, String password) async {
     state = state.copyWith(
       isLoading: true,
       error: null,
+      clearError: true,
       loginStatus: const AsyncValue.loading(),
     );
 
     final result = await AsyncValue.guard(
       () => _authRepository.login(email: email, password: password),
     );
-    // TODO: lanjut disini
-    switch (result) {
-      case Ok<Result<LoginResponse>>():
-        _log.info('User logged in');
-        break;
-      case Error<LoginResponse>():
-        _log.warning('Login failed: ${result.error}');
-        break;
-    }
-    state = state.copyWith(
-      isLoading: false,
-      loginStatus: result,
-      error: result.error.toString(),
-    );
 
-    if (result.hasError) {
-      _log.warning('Login failed! ${result.error}');
-    }
+    return result.when(
+      data: (response) {
+        switch (response) {
+          case Ok():
+            _log.info('User logged in');
+            state = state.copyWith(
+              isLoading: false,
+              loginStatus: result,
+              error: null,
+            );
+            return true;
+          case Error():
+            _log.warning('Login failed: ${response.error}');
+            state = state.copyWith(
+              isLoading: false,
+              loginStatus: result,
+              error: response.error.toString(),
+            );
+            return false;
+        }
+      },
+      error: (err, stack) {
+        _log.severe('Login threw exception: $err');
+        state = state.copyWith(
+          isLoading: false,
+          loginStatus: result,
+          error: err.toString(),
+        );
+        return false;
+      },
+      loading: () => false, // tidak akan pernah terjadi di sini
+    );
   }
 }

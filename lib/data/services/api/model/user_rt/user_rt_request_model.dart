@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:sirnawa_mobile/domain/model/rt/rt_model.dart';
 
 part 'user_rt_request_model.freezed.dart';
 part 'user_rt_request_model.g.dart';

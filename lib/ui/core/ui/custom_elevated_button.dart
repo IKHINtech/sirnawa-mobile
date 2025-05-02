@@ -4,10 +4,12 @@ class CustomElevatedButton extends StatelessWidget {
   const CustomElevatedButton({
     super.key,
     required this.onPressed,
-    required this.title,
+     this.title,
+     this.child
   });
-  final String title;
+  final String? title;
   final VoidCallback onPressed;
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,14 @@ class CustomElevatedButton extends StatelessWidget {
         ),
       ),
       onPressed: onPressed,
-      child: Text(title),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          title != null ? Text(title!) : SizedBox(),
+          child ?? SizedBox(),
+        ],
+      ),
     );
   }
 }

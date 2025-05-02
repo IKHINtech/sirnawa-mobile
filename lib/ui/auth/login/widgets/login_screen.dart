@@ -1,24 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
+import 'package:sirnawa_mobile/ui/auth/login/view_models/login_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_elevated_button.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_text_field.dart';
 
-class LoginScreen extends ConsumerWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
+  @override
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends ConsumerState<LoginScreen> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  bool _obscureText = true;
+  FocusNode emailFocusNode = FocusNode();
+  FocusNode passwordFocusNode = FocusNode();
+  final _formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ref.listen<LoginState>(loginViewModelProvider, (previous, next) {
+      if (next.error != null && next.error != previous?.error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 2),
+            content: Text(next.error!),
+            backgroundColor: Theme.of(context).colorScheme.error,
+            action: SnackBarAction(
+              label: 'Close',
+              textColor: Colors.white,
+              onPressed: () {},
+            ),
+          ),
+        );
+      }
+    });
     final state = ref.watch(loginViewModelProvider);
     final viewModel = ref.read(loginViewModelProvider.notifier);
-    final emailController = TextEditingController();
-    final passwordController = TextEditingController();
 
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.green, Theme.of(context).colorScheme.primary],
+            colors: [Colors.white, Theme.of(context).colorScheme.primary],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -27,7 +61,8 @@ class LoginScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(16.0),
           child: Center(
             child: SingleChildScrollView(
-              child: Center(
+              child: Form(
+                key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -42,6 +77,7 @@ class LoginScreen extends ConsumerWidget {
                         controller: emailController,
                         value: emailController.text,
                         labelText: 'Email',
+                        require: true,
                         suffixIcon: Icon(Icons.email),
                       ),
                     ),
@@ -52,32 +88,60 @@ class LoginScreen extends ConsumerWidget {
                       ),
                       child: CustomTextField(
                         controller: passwordController,
-                        isPassword: true,
+                        isPassword: _obscureText,
                         value: passwordController.text,
                         labelText: 'Password',
                         maxLength: 1,
                         maxLines: 1,
-                        suffixIcon: Icon(Icons.lock),
+                        require: true,
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _obscureText = !_obscureText;
+                            });
+                          },
+                          icon:
+                              _obscureText
+                                  ? const Icon(Icons.visibility_off)
+                                  : const Icon(Icons.visibility),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 30),
-                    state.loginStatus.when(
-                      loading: () => const CircularProgressIndicator(),
-                      error:
-                          (error, stack) => Text(
-                            'Error: ${error.toString()}',
-                            style: const TextStyle(color: Colors.red),
-                          ),
-                      data:
-                          (_) => CustomElevatedButton(
-                            title: "Login",
-                            onPressed: () {
-                              viewModel.login(
-                                emailController.text,
-                                passwordController.text,
-                              );
+                    CustomElevatedButton(
+                      title: state.loginStatus.when(
+                        data: (_) => "Login",
+                        error: (_, __) => "Login",
+                        loading: () => null,
+                      ),
+                      onPressed: state.loginStatus.when(
+                        data:
+                            (_) => () {
+                              if (_formKey.currentState!.validate()) {
+                                try {
+                                  _formKey.currentState!.save();
+                                  viewModel.login(
+                                    emailController.text,
+                                    passwordController.text,
+                                  );
+                                } catch (e) {
+                                  print(e);
+                                }
+                              }
                             },
-                          ),
+                        error: (_, __) => () {},
+                        loading: () => () {},
+                      ),
+                      child: state.loginStatus.when(
+                        data: (_) => null,
+                        error: (_, __) => null,
+                        loading:
+                            () => const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(),
+                            ),
+                      ),
                     ),
                     const SizedBox(height: 20),
                     _buildSignUpText(),
@@ -121,7 +185,7 @@ class LoginScreen extends ConsumerWidget {
         // Arahkan ke screen signup
       },
       child: Text(
-        'Belum punya akun? Daftar sekarang!',
+        'Akun belum aktif ? Aktifkan akun di sini',
         style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
     );

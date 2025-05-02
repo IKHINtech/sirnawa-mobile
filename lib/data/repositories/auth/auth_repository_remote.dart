@@ -111,7 +111,7 @@ class AuthRepositoryRemote implements AuthRepository {
     } catch (e) {
       _log.severe('Login exception', e);
       _updateAuthState(false);
-      return Result.error(Exception('Login failed'));
+      return Result.error(Exception(e));
     }
   }
 
