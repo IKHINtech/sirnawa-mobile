@@ -83,13 +83,13 @@ class HomeViewModel extends StateNotifier<HomeState> {
       case Ok<ApiResponse<UserModel>>():
         final primaryHouse = result.value.data?.resident?.residentHouses
             ?.firstWhere((house) => house.isPrimary == true);
-            final userRt = result.value.data?.userRTs?.firstWhere((userRt) => userRt.rtId == primaryHouse?.house.rtId);   
+            // final userRt = result.value.data?.userRTs?.firstWhere((userRt) => userRt.rtId == primaryHouse?.house.rtId);   
         state = state.copyWith(
           isLoading: false,
           residentHouse: primaryHouse,
           listHouse: result.value.data?.resident?.residentHouses ?? [],
           user: result.value.data,
-          userRtModel: userRt,
+          userRtModel: null,
           loadStatus: const AsyncValue.data(null),
         );
       case Error():

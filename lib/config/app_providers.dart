@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sirnawa_mobile/config/app_config.dart';
 import 'package:sirnawa_mobile/config/auth_providers.dart';
 import 'package:sirnawa_mobile/data/repositories/block/block_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/block/block_repository_remote.dart';
@@ -30,7 +29,7 @@ import 'package:sirnawa_mobile/ui/home/view_models/home_viewmodel.dart';
 final authApiClientProvider = Provider<AuthApiClient>((ref) => AuthApiClient());
 
 final apiClientProvider = Provider<ApiClient>((ref) {
-  return ApiClient(baseUrl: AppConfig.apiBaseUrl);
+  return ApiClient();
 });
 
 final sharedPreferencesServiceProvider = Provider<SharedPreferencesService>((

@@ -21,9 +21,9 @@ class UserService {
         return Result.error(Exception("Login error"));
       }
     } on DioException catch (error) {
-      return Result.error(error);
+      return Result.error(Exception(parseDioError(error)));
     } catch (error) {
-      return Result.error(Exception(error));
+      return Result.error(Exception(parseDioError(error)));
     }
   }
 

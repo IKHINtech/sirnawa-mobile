@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:sirnawa_mobile/config/app_config.dart';
+import 'package:sirnawa_mobile/data/services/api/dio_client.dart';
 import 'package:sirnawa_mobile/data/services/api/model/login_request/login_request.dart';
 import 'package:sirnawa_mobile/data/services/api/model/login_response/login_response.dart';
 import 'package:sirnawa_mobile/utils/error_parser.dart';
@@ -7,7 +8,7 @@ import 'package:sirnawa_mobile/utils/result.dart';
 
 class AuthApiClient {
   AuthApiClient({Dio? dio})
-    : _dio = dio ?? Dio(BaseOptions(baseUrl: AppConfig.apiBaseUrl));
+    : _dio = dio ?? DioClient.create(baseUrl: AppConfig.apiBaseUrl);
 
   final Dio _dio;
 
