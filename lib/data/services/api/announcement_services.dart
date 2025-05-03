@@ -2,8 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:sirnawa_mobile/data/services/api/api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/model/announcement/announcement_request_model.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
-import 'package:sirnawa_mobile/data/services/api/model/announcement/announcement_request_model.dart';
-import 'package:sirnawa_mobile/domain/model/announcement/announcement_model.dart';
 import 'package:sirnawa_mobile/domain/model/announcement/announcement_model.dart';
 import 'package:sirnawa_mobile/utils/error_parser.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
