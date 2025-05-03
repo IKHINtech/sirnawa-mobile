@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sirnawa_mobile/config/auth_providers.dart';
+import 'package:sirnawa_mobile/data/repositories/auth/auth_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/block/block_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/block/block_repository_remote.dart';
 import 'package:sirnawa_mobile/data/repositories/resident/resident_repository.dart';
@@ -25,98 +26,130 @@ import 'package:sirnawa_mobile/ui/admin/rw/rw_viewmodel/rw_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/auth/login/view_models/login_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/home/view_models/home_viewmodel.dart';
 
-// ========== Services Providers ==========
-final authApiClientProvider = Provider<AuthApiClient>((ref) => AuthApiClient());
+// ========== Services Providers ========== //
+final Provider<AuthApiClient> authApiClientProvider = Provider<AuthApiClient>(
+  (Ref<AuthApiClient> ref) => AuthApiClient(),
+);
 
-final apiClientProvider = Provider<ApiClient>((ref) {
+final Provider<ApiClient> apiClientProvider = Provider<ApiClient>((
+  Ref<ApiClient> ref,
+) {
   return ApiClient();
 });
 
-final sharedPreferencesServiceProvider = Provider<SharedPreferencesService>((
-  ref,
+final Provider<SharedPreferencesService> sharedPreferencesServiceProvider =
+    Provider<SharedPreferencesService>((Ref<SharedPreferencesService> ref) {
+      return SharedPreferencesService();
+    });
+
+// ========== RT ========== //
+final Provider<RtService> rtServiceProvider = Provider<RtService>((
+  Ref<RtService> ref,
 ) {
-  return SharedPreferencesService();
+  return RtService(ref.read<ApiClient>(apiClientProvider));
 });
 
-// ========== RT ==========
-
-final rtServiceProvider = Provider<RtService>((ref) {
-  return RtService(ref.read(apiClientProvider));
+final Provider<RtRepository> rtRepositoryProvider = Provider<RtRepository>((
+  Ref<RtRepository> ref,
+) {
+  return RtRepositoryRemote(rtService: ref.read<RtService>(rtServiceProvider));
 });
 
-final rtRepositoryProvider = Provider<RtRepository>((ref) {
-  return RtRepositoryRemote(rtService: ref.read(rtServiceProvider));
-});
-
-final rtViewModelProvider = StateNotifierProvider<RtViewModel, RtState>((ref) {
-  return RtViewModel(repository: ref.read(rtRepositoryProvider));
-});
-
-// ========== RW ==========
-final rwServiceProvider = Provider<RwService>((ref) {
-  return RwService(ref.read(apiClientProvider));
-});
-
-final rwRepositoryProvider = Provider<RwRepository>((ref) {
-  return RwRepositoryRemote(rwService: ref.read(rwServiceProvider));
-});
-
-final rwViewModelProvider = StateNotifierProvider<RwViewModel, RwState>((ref) {
-  return RwViewModel(repository: ref.read(rwRepositoryProvider));
-});
-//===== RESIDENT =========//
-final residentServiceProvider = Provider<ResidentService>((ref) {
-  return ResidentService(ref.read(apiClientProvider));
-});
-
-final residentRepositoryProvider = Provider<ResidentRepository>((ref) {
-  return ResidentRepositoryRemote(
-    residentService: ref.read(residentServiceProvider),
-  );
-});
-
-final residentViewModelProvider =
-    StateNotifierProvider<ResidentViewModel, ResidentState>((ref) {
-      return ResidentViewModel(
-        repository: ref.read(residentRepositoryProvider),
+final StateNotifierProvider<RtViewModel, RtState> rtViewModelProvider =
+    StateNotifierProvider<RtViewModel, RtState>((ref) {
+      return RtViewModel(
+        repository: ref.read<RtRepository>(rtRepositoryProvider),
       );
     });
 
-//========== BLOCK ==========//
-
-final blockServiceProvider = Provider<BlockService>((ref) {
-  return BlockService(ref.read(apiClientProvider));
+// ========== RW ========== //
+final Provider<RwService> rwServiceProvider = Provider<RwService>((
+  Ref<RwService> ref,
+) {
+  return RwService(ref.read<ApiClient>(apiClientProvider));
 });
 
-final blockRepositoryProvider = Provider<BlockRepository>((ref) {
-  return BlockRepositoryRemote(blockService: ref.read(blockServiceProvider));
+final Provider<RwRepository> rwRepositoryProvider = Provider<RwRepository>((
+  Ref<RwRepository> ref,
+) {
+  return RwRepositoryRemote(rwService: ref.read<RwService>(rwServiceProvider));
 });
 
-final blockViewModelProvider =
-    StateNotifierProvider<BlockViewModel, BlockState>((ref) {
-      return BlockViewModel(repository: ref.read(blockRepositoryProvider));
+final StateNotifierProvider<RwViewModel, RwState> rwViewModelProvider =
+    StateNotifierProvider<RwViewModel, RwState>((ref) {
+      return RwViewModel(
+        repository: ref.read<RwRepository>(rwRepositoryProvider),
+      );
     });
 
-//========== USER ==========//
-final userServiceProvider = Provider<UserService>((ref) {
-  return UserService(ref.read(apiClientProvider));
-});
-final userRepositoryProvider = Provider<UserRepository>((ref) {
-  return UserRepositoryRemote(userService: ref.read(userServiceProvider));
-});
+// ===== RESIDENT ========= //
+final Provider<ResidentService> residentServiceProvider =
+    Provider<ResidentService>((Ref<ResidentService> ref) {
+      return ResidentService(ref.read<ApiClient>(apiClientProvider));
+    });
 
-// ========== HOME  ==========
-final homeViewModelProvider = StateNotifierProvider<HomeViewModel, HomeState>((
-  ref,
+final Provider<ResidentRepository> residentRepositoryProvider =
+    Provider<ResidentRepository>((Ref<ResidentRepository> ref) {
+      return ResidentRepositoryRemote(
+        residentService: ref.read<ResidentService>(residentServiceProvider),
+      );
+    });
+
+final StateNotifierProvider<ResidentViewModel, ResidentState>
+residentViewModelProvider =
+    StateNotifierProvider<ResidentViewModel, ResidentState>((ref) {
+      return ResidentViewModel(
+        repository: ref.read<ResidentRepository>(residentRepositoryProvider),
+      );
+    });
+
+// ========== BLOCK ========== //
+final Provider<BlockService> blockServiceProvider = Provider<BlockService>((
+  Ref<BlockService> ref,
 ) {
-  return HomeViewModel(
-    userRepo: ref.read(userRepositoryProvider),
-    authRepository: ref.read(authRepositoryProvider),
-  );
+  return BlockService(ref.read<ApiClient>(apiClientProvider));
 });
 
-// ========= Login View Model =========
-final loginViewModelProvider =
+final Provider<BlockRepository> blockRepositoryProvider =
+    Provider<BlockRepository>((Ref<BlockRepository> ref) {
+      return BlockRepositoryRemote(
+        blockService: ref.read<BlockService>(blockServiceProvider),
+      );
+    });
+
+final StateNotifierProvider<BlockViewModel, BlockState> blockViewModelProvider =
+    StateNotifierProvider<BlockViewModel, BlockState>((ref) {
+      return BlockViewModel(
+        repository: ref.read<BlockRepository>(blockRepositoryProvider),
+      );
+    });
+
+// ========== USER ========== //
+final Provider<UserService> userServiceProvider = Provider<UserService>((
+  Ref<UserService> ref,
+) {
+  return UserService(ref.read<ApiClient>(apiClientProvider));
+});
+final Provider<UserRepository> userRepositoryProvider =
+    Provider<UserRepository>((Ref<UserRepository> ref) {
+      return UserRepositoryRemote(
+        userService: ref.read<UserService>(userServiceProvider),
+      );
+    });
+
+// ========== HOME  ========== //
+final StateNotifierProvider<HomeViewModel, HomeState> homeViewModelProvider =
+    StateNotifierProvider<HomeViewModel, HomeState>((ref) {
+      return HomeViewModel(
+        userRepo: ref.read<UserRepository>(userRepositoryProvider),
+        authRepository: ref.read<AuthRepository>(authRepositoryProvider),
+      );
+    });
+
+// ========= Login View Model =========  //
+final StateNotifierProvider<LoginViewModel, LoginState> loginViewModelProvider =
     StateNotifierProvider<LoginViewModel, LoginState>((ref) {
-      return LoginViewModel(authRepository: ref.watch(authRepositoryProvider));
+      return LoginViewModel(
+        authRepository: ref.watch<AuthRepository>(authRepositoryProvider),
+      );
     });
