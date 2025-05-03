@@ -5,6 +5,12 @@ abstract final class Routes {
   static const profile = '/profile';
   static const login = '/login';
   static const admin = '/admin';
+  static const adminAnnouncment = '/admin/announcement';
+  static const adminAnnouncmentCreate = '/admin/announcement/create';
+  static const adminAnnouncmentUpdate = '/admin/announcement/update';
+  static const adminRondaGroup = '/admin/ronda-group';
+  static const adminRondaGroupCreate = '/admin/ronda-group/create';
+  static const adminRondaGroupUpdate = '/admin/ronda-group/update';
   static const adminHosuingArea = '/admin/housing-area';
   static const adminHosuingAreaCreate = '/admin/housing-area/create';
   static const adminHosuingAreaUpdate = '/admin/housing-area/update';

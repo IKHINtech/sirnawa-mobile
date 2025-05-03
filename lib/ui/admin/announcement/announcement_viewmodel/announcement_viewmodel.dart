@@ -1,0 +1,171 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sirnawa_mobile/data/repositories/announcement/announcement_repository.dart';
+import 'package:sirnawa_mobile/data/services/api/model/announcement/announcement_request_model.dart';
+import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
+import 'package:sirnawa_mobile/domain/model/announcement/announcement_model.dart';
+import 'package:sirnawa_mobile/utils/result.dart';
+
+class AnnouncementState {
+  final bool isLoading;
+  final String? error;
+  final List<AnnouncementModel> list;
+  final bool hasNextPage;
+
+  const AnnouncementState({
+    required this.isLoading,
+    required this.error,
+    required this.list,
+    required this.hasNextPage,
+  });
+
+  AnnouncementState copyWith({
+    bool? isLoading,
+    String? error,
+    List<AnnouncementModel>? list,
+    bool? hasNextPage,
+  }) {
+    return AnnouncementState(
+      isLoading: isLoading ?? this.isLoading,
+      error: error ?? this.error,
+      list: list ?? this.list,
+      hasNextPage: hasNextPage ?? this.hasNextPage,
+    );
+  }
+}
+
+class AnnouncementViewModel extends StateNotifier<AnnouncementState> {
+  final AnnouncementRepository _repository;
+  int _currentPage = 1;
+  final int _limit = 10;
+  int _totalPages = 1;
+
+  AnnouncementViewModel({required AnnouncementRepository repository})
+    : _repository = repository,
+      super(
+        const AnnouncementState(
+          isLoading: false,
+          error: null,
+          list: [],
+          hasNextPage: true,
+        ),
+      );
+
+  Future<void> fetchListAnnouncement({bool reset = false}) async {
+    try {
+      state =
+          reset
+              ? const AnnouncementState(
+                isLoading: true,
+                error: null,
+                list: [],
+                hasNextPage: true,
+              )
+              : state.copyWith(isLoading: true);
+
+      if (reset) {
+        _currentPage = 1;
+        _totalPages = 1;
+      }
+
+      final result = await _repository.getListAnnouncement({
+        "page": _currentPage,
+        "page_size": _limit,
+      });
+
+      switch (result) {
+        case Ok<ApiResponse<List<AnnouncementModel>>>():
+          _currentPage++;
+          _totalPages = result.value.meta?.totalPages ?? 1;
+          state = AnnouncementState(
+            isLoading: false,
+            error: null,
+            list:
+                reset
+                    ? result.value.data ?? []
+                    : [...state.list, ...?result.value.data],
+            hasNextPage: _currentPage < _totalPages,
+          );
+          break;
+        case Error<ApiResponse<List<AnnouncementModel>>>():
+          state = state.copyWith(
+            isLoading: false,
+            error: result.error.toString(),
+          );
+          break;
+      }
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: "Exception: $e");
+    }
+  }
+
+  Future<void> loadMore() async {
+    if (!(_currentPage < _totalPages) || state.isLoading) return;
+    await fetchListAnnouncement();
+  }
+
+  Future<bool> createAnnouncement(AnnouncementRequestModel resident) async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final result = await _repository.createAnnouncement(resident);
+      switch (result) {
+        case Ok():
+          // Opsional: setelah create, refresh list
+          await fetchListAnnouncement(reset: true);
+          return true;
+        case Error():
+          state = state.copyWith(
+            isLoading: false,
+            error: result.error.toString(),
+          );
+          return false;
+      }
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: "Exception: $e");
+      return false;
+    }
+  }
+
+  Future<bool> updateAnnouncement(
+    String id,
+    AnnouncementRequestModel resident,
+  ) async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final result = await _repository.updateAnnouncement(id, resident);
+      switch (result) {
+        case Ok():
+          await fetchListAnnouncement(reset: true);
+          return true;
+        case Error():
+          state = state.copyWith(
+            isLoading: false,
+            error: result.error.toString(),
+          );
+          return false;
+      }
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: "Exception: $e");
+      return false;
+    }
+  }
+
+  Future<void> deleteAnnouncement(String id) async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final result = await _repository.delete(id);
+      switch (result) {
+        case Ok():
+          await fetchListAnnouncement(reset: true);
+          break;
+        case Error():
+          state = state.copyWith(
+            isLoading: false,
+            error: result.error.toString(),
+          );
+          break;
+      }
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: "Exception: $e");
+    }
+  }
+}

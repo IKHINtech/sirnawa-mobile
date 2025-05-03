@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sirnawa_mobile/config/auth_providers.dart';
+import 'package:sirnawa_mobile/data/repositories/announcement/announcement_repository.dart';
+import 'package:sirnawa_mobile/data/repositories/announcement/announcement_repository_remote.dart';
 import 'package:sirnawa_mobile/data/repositories/auth/auth_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/block/block_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/block/block_repository_remote.dart';
@@ -15,6 +17,7 @@ import 'package:sirnawa_mobile/data/repositories/rw/rw_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/rw/rw_repository_remote.dart';
 import 'package:sirnawa_mobile/data/repositories/user/user_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/user/user_repository_remote.dart';
+import 'package:sirnawa_mobile/data/services/api/announcement_services.dart';
 import 'package:sirnawa_mobile/data/services/api/api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/auth_api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/block_services.dart';
@@ -25,6 +28,7 @@ import 'package:sirnawa_mobile/data/services/api/rt_services.dart';
 import 'package:sirnawa_mobile/data/services/api/rw_services.dart';
 import 'package:sirnawa_mobile/data/services/api/user_services.dart';
 import 'package:sirnawa_mobile/data/services/share_preference_service.dart';
+import 'package:sirnawa_mobile/ui/admin/announcement/announcement_viewmodel/announcement_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/block/block_view_model/block_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/housing_area/housing_area_viewmodel/housing_area_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/resident/resident_view_model/resident_viewmodel.dart';
@@ -116,6 +120,31 @@ rondaGroupViewModelProvider =
       return RondaGroupViewModel(
         repository: ref.read<RondaGroupRepository>(
           rondaGroupRepositoryProvider,
+        ),
+      );
+    });
+
+// ========== Announcement ========== //
+final Provider<AnnouncementService> announcementServiceProvider =
+    Provider<AnnouncementService>((Ref<AnnouncementService> ref) {
+      return AnnouncementService(ref.read<ApiClient>(apiClientProvider));
+    });
+
+final Provider<AnnouncementRepository> announcementRepositoryProvider =
+    Provider<AnnouncementRepository>((Ref<AnnouncementRepository> ref) {
+      return AnnouncementRepositoryRemote(
+        announcementService: ref.read<AnnouncementService>(
+          announcementServiceProvider,
+        ),
+      );
+    });
+
+final StateNotifierProvider<AnnouncementViewModel, AnnouncementState>
+announcementViewModelProvider =
+    StateNotifierProvider<AnnouncementViewModel, AnnouncementState>((ref) {
+      return AnnouncementViewModel(
+        repository: ref.read<AnnouncementRepository>(
+          announcementRepositoryProvider,
         ),
       );
     });
