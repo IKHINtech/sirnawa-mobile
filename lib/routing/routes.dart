@@ -5,6 +5,9 @@ abstract final class Routes {
   static const profile = '/profile';
   static const login = '/login';
   static const admin = '/admin';
+  static const adminHosuingArea = '/admin/housing-area';
+  static const adminHosuingAreaCreate = '/admin/housing-area/create';
+  static const adminHosuingAreaUpdate = '/admin/housing-area/update';
   static const adminRt = '/admin/rt';
   static const adminRw = '/admin/rw';
   static const adminRwCreate = '/admin/rw/create';

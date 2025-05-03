@@ -3,6 +3,8 @@ import 'package:sirnawa_mobile/config/auth_providers.dart';
 import 'package:sirnawa_mobile/data/repositories/auth/auth_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/block/block_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/block/block_repository_remote.dart';
+import 'package:sirnawa_mobile/data/repositories/housing_area/housing_area_reposiory_remote.dart';
+import 'package:sirnawa_mobile/data/repositories/housing_area/housing_area_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/resident/resident_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/resident/resident_repository_remote.dart';
 import 'package:sirnawa_mobile/data/repositories/rt/rt_repository.dart';
@@ -14,12 +16,14 @@ import 'package:sirnawa_mobile/data/repositories/user/user_repository_remote.dar
 import 'package:sirnawa_mobile/data/services/api/api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/auth_api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/block_services.dart';
+import 'package:sirnawa_mobile/data/services/api/housing_area_services.dart';
 import 'package:sirnawa_mobile/data/services/api/resident_services.dart';
 import 'package:sirnawa_mobile/data/services/api/rt_services.dart';
 import 'package:sirnawa_mobile/data/services/api/rw_services.dart';
 import 'package:sirnawa_mobile/data/services/api/user_services.dart';
 import 'package:sirnawa_mobile/data/services/share_preference_service.dart';
 import 'package:sirnawa_mobile/ui/admin/block/block_view_model/block_viewmodel.dart';
+import 'package:sirnawa_mobile/ui/admin/housing_area/housing_area_viewmodel/housing_area_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/resident/resident_view_model/resident_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/rt/rt_viewmodel/rt_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/rw/rw_viewmodel/rw_viewmodel.dart';
@@ -40,6 +44,31 @@ final Provider<ApiClient> apiClientProvider = Provider<ApiClient>((
 final Provider<SharedPreferencesService> sharedPreferencesServiceProvider =
     Provider<SharedPreferencesService>((Ref<SharedPreferencesService> ref) {
       return SharedPreferencesService();
+    });
+
+// ========== Housing Area ========== //
+final Provider<HousingAreaService> housingAreaServiceProvider =
+    Provider<HousingAreaService>((Ref<HousingAreaService> ref) {
+      return HousingAreaService(ref.read<ApiClient>(apiClientProvider));
+    });
+
+final Provider<HousingAreaRepository> housingAreaRepositoryProvider =
+    Provider<HousingAreaRepository>((Ref<HousingAreaRepository> ref) {
+      return HousingAreaRepositoryRemote(
+        housingAreaService: ref.read<HousingAreaService>(
+          housingAreaServiceProvider,
+        ),
+      );
+    });
+
+final StateNotifierProvider<HousingAreaViewModel, HousingAreaState>
+housingAreaViewModelProvider =
+    StateNotifierProvider<HousingAreaViewModel, HousingAreaState>((ref) {
+      return HousingAreaViewModel(
+        repository: ref.read<HousingAreaRepository>(
+          housingAreaRepositoryProvider,
+        ),
+      );
     });
 
 // ========== RT ========== //

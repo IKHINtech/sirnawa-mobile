@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:sirnawa_mobile/data/services/api/api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
+import 'package:sirnawa_mobile/data/services/api/model/housing_area/housing_area_request_model.dart';
 import 'package:sirnawa_mobile/domain/model/housing_area/housing_area_model.dart';
 import 'package:sirnawa_mobile/utils/error_parser.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
@@ -42,7 +43,7 @@ class HousingAreaService {
 
   // ✅ POST /housing-area
   Future<Result<ApiResponse<HousingAreaModel>>> createHousingArea(
-    HousingAreaModel area,
+    HousingAreaRequestModel area,
   ) async {
     try {
       final Response<dynamic> response = await apiClient.post(
@@ -67,7 +68,7 @@ class HousingAreaService {
   // ✅ PUT /housing-area/{id}
   Future<Result<ApiResponse<HousingAreaModel>>> updateHousingArea(
     String id,
-    HousingAreaModel area,
+    HousingAreaRequestModel area,
   ) async {
     try {
       final Response<dynamic> response = await apiClient.put(
