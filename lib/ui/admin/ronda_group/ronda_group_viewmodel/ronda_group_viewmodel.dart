@@ -1,30 +1,30 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sirnawa_mobile/data/repositories/housing_area/housing_area_repository.dart';
+import 'package:sirnawa_mobile/data/repositories/ronda_group/ronda_group_repository.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
-import 'package:sirnawa_mobile/data/services/api/model/housing_area/housing_area_request_model.dart';
-import 'package:sirnawa_mobile/domain/model/housing_area/housing_area_model.dart';
+import 'package:sirnawa_mobile/data/services/api/model/ronda_group/ronda_group_request_model.dart';
+import 'package:sirnawa_mobile/domain/model/ronda_group/ronda_group_model.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
 
-class HousingAreaState {
+class RondaGroupState {
   final bool isLoading;
   final String? error;
-  final List<HousingAreaModel> list;
+  final List<RondaGroupModel> list;
   final bool hasNextPage;
 
-  const HousingAreaState({
+  const RondaGroupState({
     required this.isLoading,
     required this.error,
     required this.list,
     required this.hasNextPage,
   });
 
-  HousingAreaState copyWith({
+  RondaGroupState copyWith({
     bool? isLoading,
     String? error,
-    List<HousingAreaModel>? list,
+    List<RondaGroupModel>? list,
     bool? hasNextPage,
   }) {
-    return HousingAreaState(
+    return RondaGroupState(
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
       list: list ?? this.list,
@@ -33,16 +33,16 @@ class HousingAreaState {
   }
 }
 
-class HousingAreaViewModel extends StateNotifier<HousingAreaState> {
-  final HousingAreaRepository _repository;
+class RondaGroupViewModel extends StateNotifier<RondaGroupState> {
+  final RondaGroupRepository _repository;
   int _currentPage = 1;
   final int _limit = 10;
   int _totalPages = 1;
 
-  HousingAreaViewModel({required HousingAreaRepository repository})
+  RondaGroupViewModel({required RondaGroupRepository repository})
     : _repository = repository,
       super(
-        const HousingAreaState(
+        const RondaGroupState(
           isLoading: false,
           error: null,
           list: [],
@@ -50,11 +50,11 @@ class HousingAreaViewModel extends StateNotifier<HousingAreaState> {
         ),
       );
 
-  Future<void> fetchListHousingArea({bool reset = false}) async {
+  Future<void> fetchListRondaGroup({bool reset = false}) async {
     try {
       state =
           reset
-              ? const HousingAreaState(
+              ? const RondaGroupState(
                 isLoading: true,
                 error: null,
                 list: [],
@@ -67,16 +67,16 @@ class HousingAreaViewModel extends StateNotifier<HousingAreaState> {
         _totalPages = 1;
       }
 
-      final result = await _repository.getListHouseArea({
+      final result = await _repository.getListRondaGroup({
         "page": _currentPage,
         "page_size": _limit,
       });
 
       switch (result) {
-        case Ok<ApiResponse<List<HousingAreaModel>>>():
+        case Ok<ApiResponse<List<RondaGroupModel>>>():
           _currentPage++;
           _totalPages = result.value.meta?.totalPages ?? 1;
-          state = HousingAreaState(
+          state = RondaGroupState(
             isLoading: false,
             error: null,
             list:
@@ -86,7 +86,7 @@ class HousingAreaViewModel extends StateNotifier<HousingAreaState> {
             hasNextPage: _currentPage < _totalPages,
           );
           break;
-        case Error<ApiResponse<List<HousingAreaModel>>>():
+        case Error<ApiResponse<List<RondaGroupModel>>>():
           state = state.copyWith(
             isLoading: false,
             error: result.error.toString(),
@@ -100,17 +100,17 @@ class HousingAreaViewModel extends StateNotifier<HousingAreaState> {
 
   Future<void> loadMore() async {
     if (!(_currentPage < _totalPages) || state.isLoading) return;
-    await fetchListHousingArea();
+    await fetchListRondaGroup();
   }
 
-  Future<bool> createHousingArea(HousingAreaRequestModel resident) async {
+  Future<bool> createRondaGroup(RondaGroupRequestModel rondaGroup) async {
     state = state.copyWith(isLoading: true);
     try {
-      final result = await _repository.createHouseArea(resident);
+      final result = await _repository.createRondaGroup(rondaGroup);
       switch (result) {
         case Ok():
           // Opsional: setelah create, refresh list
-          await fetchListHousingArea(reset: true);
+          await fetchListRondaGroup(reset: true);
           return true;
         case Error():
           state = state.copyWith(
@@ -125,16 +125,16 @@ class HousingAreaViewModel extends StateNotifier<HousingAreaState> {
     }
   }
 
-  Future<bool> updateHousingArea(
+  Future<bool> updateRondaGroup(
     String id,
-    HousingAreaRequestModel resident,
+    RondaGroupRequestModel rondaGroup,
   ) async {
     state = state.copyWith(isLoading: true);
     try {
-      final result = await _repository.updateHouseArea(id, resident);
+      final result = await _repository.updateRondaGroup(id, rondaGroup);
       switch (result) {
         case Ok():
-          await fetchListHousingArea(reset: true);
+          await fetchListRondaGroup(reset: true);
           return true;
         case Error():
           state = state.copyWith(
@@ -149,13 +149,13 @@ class HousingAreaViewModel extends StateNotifier<HousingAreaState> {
     }
   }
 
-  Future<void> deleteHousingArea(String id) async {
+  Future<void> deleteRondaGroup(String id) async {
     state = state.copyWith(isLoading: true);
     try {
       final result = await _repository.delete(id);
       switch (result) {
         case Ok():
-          await fetchListHousingArea(reset: true);
+          await fetchListRondaGroup(reset: true);
           break;
         case Error():
           state = state.copyWith(

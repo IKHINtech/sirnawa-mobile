@@ -7,6 +7,8 @@ import 'package:sirnawa_mobile/data/repositories/housing_area/housing_area_repos
 import 'package:sirnawa_mobile/data/repositories/housing_area/housing_area_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/resident/resident_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/resident/resident_repository_remote.dart';
+import 'package:sirnawa_mobile/data/repositories/ronda_group/ronda_group_repository.dart';
+import 'package:sirnawa_mobile/data/repositories/ronda_group/ronda_group_repository_remote.dart';
 import 'package:sirnawa_mobile/data/repositories/rt/rt_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/rt/rt_repository_remote.dart';
 import 'package:sirnawa_mobile/data/repositories/rw/rw_repository.dart';
@@ -18,6 +20,7 @@ import 'package:sirnawa_mobile/data/services/api/auth_api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/block_services.dart';
 import 'package:sirnawa_mobile/data/services/api/housing_area_services.dart';
 import 'package:sirnawa_mobile/data/services/api/resident_services.dart';
+import 'package:sirnawa_mobile/data/services/api/ronda_group_services.dart';
 import 'package:sirnawa_mobile/data/services/api/rt_services.dart';
 import 'package:sirnawa_mobile/data/services/api/rw_services.dart';
 import 'package:sirnawa_mobile/data/services/api/user_services.dart';
@@ -25,6 +28,7 @@ import 'package:sirnawa_mobile/data/services/share_preference_service.dart';
 import 'package:sirnawa_mobile/ui/admin/block/block_view_model/block_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/housing_area/housing_area_viewmodel/housing_area_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/resident/resident_view_model/resident_viewmodel.dart';
+import 'package:sirnawa_mobile/ui/admin/ronda_group/ronda_group_viewmodel/ronda_group_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/rt/rt_viewmodel/rt_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/rw/rw_viewmodel/rw_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/auth/login/view_models/login_viewmodel.dart';
@@ -88,6 +92,31 @@ final StateNotifierProvider<RtViewModel, RtState> rtViewModelProvider =
     StateNotifierProvider<RtViewModel, RtState>((ref) {
       return RtViewModel(
         repository: ref.read<RtRepository>(rtRepositoryProvider),
+      );
+    });
+
+// ========== Ronda Group ========== //
+final Provider<RondaGroupService> rondaGroupServiceProvider =
+    Provider<RondaGroupService>((Ref<RondaGroupService> ref) {
+      return RondaGroupService(ref.read<ApiClient>(apiClientProvider));
+    });
+
+final Provider<RondaGroupRepository> rondaGroupRepositoryProvider =
+    Provider<RondaGroupRepository>((Ref<RondaGroupRepository> ref) {
+      return RondaGroupRepositoryRemote(
+        rondaGroupService: ref.read<RondaGroupService>(
+          rondaGroupServiceProvider,
+        ),
+      );
+    });
+
+final StateNotifierProvider<RondaGroupViewModel, RondaGroupState>
+rondaGroupViewModelProvider =
+    StateNotifierProvider<RondaGroupViewModel, RondaGroupState>((ref) {
+      return RondaGroupViewModel(
+        repository: ref.read<RondaGroupRepository>(
+          rondaGroupRepositoryProvider,
+        ),
       );
     });
 
