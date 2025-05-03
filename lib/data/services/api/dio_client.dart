@@ -14,7 +14,19 @@ class DioClient {
       ),
     );
 
-    if (!kIsWeb) {
+    // Untuk web, gunakan Interceptor khusus
+    if (kIsWeb) {
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) async {
+            // Pastikan credentials disertakan untuk web
+            options.extra['withCredentials'] = true;
+            return handler.next(options);
+          },
+        ),
+      );
+    } else {
+      // Untuk mobile/native, gunakan CookieManager
       dio.interceptors.add(CookieManager(_cookieJar));
     }
 

@@ -16,6 +16,7 @@ class ResidentRequestModel with _$ResidentRequestModel {
     @JsonKey(name: 'gender') required String gender,
     @JsonKey(name: 'job') required String job,
     @JsonKey(name: 'is_head_of_family') required bool isHeadOfFamily,
+    @JsonKey(name: 'rt_id') required String rtId,
     @JsonKey(name: 'role')
     required String role, // Ex: 'warga', 'admin_rt', etc.
   }) = _ResidentRequestModel;

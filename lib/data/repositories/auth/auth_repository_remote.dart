@@ -41,6 +41,7 @@ class AuthRepositoryRemote implements AuthRepository {
 
   bool? _isAuthenticated;
   String? _authToken;
+  String? _refreshTokenValue;
   late final StreamController<bool> _authController;
 
   // Helper method to update auth state and notify listeners
@@ -53,18 +54,35 @@ class AuthRepositoryRemote implements AuthRepository {
   Stream<bool> get authStateChanges => _authController.stream;
 
   Future<String?> _refreshToken() async {
-    final result = await _userService.refreshToken();
-    switch (result) {
-      case Ok<LoginResponse>():
-        _log.info('Token refreshed');
-        _authToken = result.value.accessToken.token;
-        await _sharedPreferencesService.saveToken(_authToken);
-        _updateAuthState(true);
-        return _authToken;
-      case Error<LoginResponse>():
-        _log.warning('Error refreshing token: ${result.error}');
-        _updateAuthState(false);
+    try {
+      final Result<String?> refreshToken =
+          await _sharedPreferencesService.fetchRefreshToken();
+      if (refreshToken is Error<String?>) {
         return null;
+      }
+
+      if (refreshToken is Ok<String?> && refreshToken.value != null) {
+        final result = await _userService.refreshToken(
+          refreshToken: refreshToken.value!,
+        );
+        switch (result) {
+          case Ok<LoginResponse>():
+            _log.info('Token refreshed');
+            _authToken = result.value.accessToken.token;
+            await _sharedPreferencesService.saveToken(_authToken);
+            _updateAuthState(true);
+            return _authToken;
+          case Error<LoginResponse>():
+            _log.warning('Error refreshing token: ${result.error}');
+            _updateAuthState(false);
+            return null;
+        }
+      }
+      return null;
+    } catch (e) {
+      _log.warning('Error refreshing token: $e');
+      _updateAuthState(false);
+      return null;
     }
   }
 
@@ -100,7 +118,9 @@ class AuthRepositoryRemote implements AuthRepository {
         case Ok<LoginResponse>():
           _log.info('User logged in');
           _authToken = result.value.accessToken.token;
+          _refreshTokenValue = result.value.accessToken.refreshToken;
           await _sharedPreferencesService.saveToken(_authToken);
+          await _sharedPreferencesService.saveRefreshToken(_refreshTokenValue);
           _updateAuthState(true);
           return Result.ok(result.value);
         case Error<LoginResponse>():
@@ -123,6 +143,12 @@ class AuthRepositoryRemote implements AuthRepository {
       if (result is Error<void>) {
         _log.severe('Failed to clear token');
         return result;
+      }
+
+      final resultval = await _sharedPreferencesService.saveRefreshToken(null);
+      if (result is Error<void>) {
+        _log.severe('Failed to clear token');
+        return resultval;
       }
 
       _authToken = null;

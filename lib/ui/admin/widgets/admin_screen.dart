@@ -17,7 +17,9 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
   Widget build(BuildContext context) {
     final mainState = ref.watch(homeViewModelProvider);
     return Scaffold(
-      appBar: CustomAppBar(title: "Admin"),
+      appBar: CustomAppBar(
+        title: "Admin ${mainState.userRtModel?.rt.name ?? ""}",
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -30,7 +32,6 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
               crossAxisCount: 3,
               children: <Widget>[
                 if (mainState.user?.role == "admin_rt") ...[
-
                   _itemAdmin(
                     onClick: () {
                       context.push(Routes.adminRw);

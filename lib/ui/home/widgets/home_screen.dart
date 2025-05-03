@@ -330,7 +330,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               _menuItem(
                 onTab: () {
-                  if (state.user?.role == "warga") {
+                  if (state.userRtModel?.role == "warga") {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text("Akses admin hanya untuk pengurus"),

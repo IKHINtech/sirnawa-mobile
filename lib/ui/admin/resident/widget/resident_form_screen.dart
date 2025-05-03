@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
 import 'package:sirnawa_mobile/data/services/api/model/resident/resident_request_model.dart';
 import 'package:sirnawa_mobile/domain/model/resident/resident_model.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';
 
-// TODO: ini belum dites
 class ResidentFormScreen extends ConsumerStatefulWidget {
   final ResidentModel? resident;
 
@@ -52,6 +52,7 @@ class _ResidentFormScreenState extends ConsumerState<ResidentFormScreen> {
   @override
   Widget build(BuildContext context) {
     final viewModel = ref.read(residentViewModelProvider.notifier);
+    final mainState = ref.read(homeViewModelProvider);
 
     return Scaffold(
       appBar: CustomAppBar(title: isEdit ? 'Edit Warga' : 'Tambah Warga'),
@@ -130,10 +131,13 @@ class _ResidentFormScreenState extends ConsumerState<ResidentFormScreen> {
                     nik: _nikController.text,
                     phoneNumber: _phoneController.text,
                     job: _jobController.text,
-                    birthDate: _birthDate.toString(),
+                    birthDate: DateFormat(
+                      "yyyy-MM-dd'T'HH:mm:ss.SSS'+07:00'",
+                    ).format(_birthDate!),
                     gender: _gender,
                     isHeadOfFamily: false,
                     role: "warga",
+                    rtId: mainState.residentHouse!.house.rtId,
                   );
 
                   if (isEdit) {

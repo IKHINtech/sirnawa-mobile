@@ -10,6 +10,7 @@ class AccessToken with _$AccessToken {
     required String token,
     // token expiresIn
     @JsonKey(name: 'expires_in') required int expiresIn,
+    @JsonKey(name: 'refresh_token') required String refreshToken,
   }) = _AccessToken;
 
   factory AccessToken.fromJson(Map<String, dynamic> json) =>

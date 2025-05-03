@@ -11,10 +11,13 @@ class UserService {
 
   UserService(this.apiClient);
 
-  Future<Result<LoginResponse>> refreshToken() async {
+  Future<Result<LoginResponse>> refreshToken({
+    required String refreshToken,
+  }) async {
     try {
-      final Response<dynamic> response = await apiClient.get(
+      final Response<dynamic> response = await apiClient.post(
         '/auth/refresh-token',
+        data: {"refresh_token": refreshToken},
       );
 
       if (response.statusCode == 200) {

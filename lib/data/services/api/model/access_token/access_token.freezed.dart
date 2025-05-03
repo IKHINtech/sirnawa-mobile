@@ -18,7 +18,7 @@ mixin _$AccessToken {
 
 // Token data
  String get token;// token expiresIn
-@JsonKey(name: 'expires_in') int get expiresIn;
+@JsonKey(name: 'expires_in') int get expiresIn;@JsonKey(name: 'refresh_token') String get refreshToken;
 /// Create a copy of AccessToken
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -31,16 +31,16 @@ $AccessTokenCopyWith<AccessToken> get copyWith => _$AccessTokenCopyWithImpl<Acce
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AccessToken&&(identical(other.token, token) || other.token == token)&&(identical(other.expiresIn, expiresIn) || other.expiresIn == expiresIn));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AccessToken&&(identical(other.token, token) || other.token == token)&&(identical(other.expiresIn, expiresIn) || other.expiresIn == expiresIn)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,token,expiresIn);
+int get hashCode => Object.hash(runtimeType,token,expiresIn,refreshToken);
 
 @override
 String toString() {
-  return 'AccessToken(token: $token, expiresIn: $expiresIn)';
+  return 'AccessToken(token: $token, expiresIn: $expiresIn, refreshToken: $refreshToken)';
 }
 
 
@@ -51,7 +51,7 @@ abstract mixin class $AccessTokenCopyWith<$Res>  {
   factory $AccessTokenCopyWith(AccessToken value, $Res Function(AccessToken) _then) = _$AccessTokenCopyWithImpl;
 @useResult
 $Res call({
- String token,@JsonKey(name: 'expires_in') int expiresIn
+ String token,@JsonKey(name: 'expires_in') int expiresIn,@JsonKey(name: 'refresh_token') String refreshToken
 });
 
 
@@ -68,11 +68,12 @@ class _$AccessTokenCopyWithImpl<$Res>
 
 /// Create a copy of AccessToken
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? token = null,Object? expiresIn = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? token = null,Object? expiresIn = null,Object? refreshToken = null,}) {
   return _then(_self.copyWith(
 token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
 as String,expiresIn: null == expiresIn ? _self.expiresIn : expiresIn // ignore: cast_nullable_to_non_nullable
-as int,
+as int,refreshToken: null == refreshToken ? _self.refreshToken : refreshToken // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
@@ -83,13 +84,14 @@ as int,
 @JsonSerializable()
 
 class _AccessToken implements AccessToken {
-  const _AccessToken({required this.token, @JsonKey(name: 'expires_in') required this.expiresIn});
+  const _AccessToken({required this.token, @JsonKey(name: 'expires_in') required this.expiresIn, @JsonKey(name: 'refresh_token') required this.refreshToken});
   factory _AccessToken.fromJson(Map<String, dynamic> json) => _$AccessTokenFromJson(json);
 
 // Token data
 @override final  String token;
 // token expiresIn
 @override@JsonKey(name: 'expires_in') final  int expiresIn;
+@override@JsonKey(name: 'refresh_token') final  String refreshToken;
 
 /// Create a copy of AccessToken
 /// with the given fields replaced by the non-null parameter values.
@@ -104,16 +106,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AccessToken&&(identical(other.token, token) || other.token == token)&&(identical(other.expiresIn, expiresIn) || other.expiresIn == expiresIn));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AccessToken&&(identical(other.token, token) || other.token == token)&&(identical(other.expiresIn, expiresIn) || other.expiresIn == expiresIn)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,token,expiresIn);
+int get hashCode => Object.hash(runtimeType,token,expiresIn,refreshToken);
 
 @override
 String toString() {
-  return 'AccessToken(token: $token, expiresIn: $expiresIn)';
+  return 'AccessToken(token: $token, expiresIn: $expiresIn, refreshToken: $refreshToken)';
 }
 
 
@@ -124,7 +126,7 @@ abstract mixin class _$AccessTokenCopyWith<$Res> implements $AccessTokenCopyWith
   factory _$AccessTokenCopyWith(_AccessToken value, $Res Function(_AccessToken) _then) = __$AccessTokenCopyWithImpl;
 @override @useResult
 $Res call({
- String token,@JsonKey(name: 'expires_in') int expiresIn
+ String token,@JsonKey(name: 'expires_in') int expiresIn,@JsonKey(name: 'refresh_token') String refreshToken
 });
 
 
@@ -141,11 +143,12 @@ class __$AccessTokenCopyWithImpl<$Res>
 
 /// Create a copy of AccessToken
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? token = null,Object? expiresIn = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? token = null,Object? expiresIn = null,Object? refreshToken = null,}) {
   return _then(_AccessToken(
 token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
 as String,expiresIn: null == expiresIn ? _self.expiresIn : expiresIn // ignore: cast_nullable_to_non_nullable
-as int,
+as int,refreshToken: null == refreshToken ? _self.refreshToken : refreshToken // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

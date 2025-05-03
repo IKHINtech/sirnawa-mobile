@@ -18,6 +18,7 @@ _ResidentRequestModel _$ResidentRequestModelFromJson(
   gender: json['gender'] as String,
   job: json['job'] as String,
   isHeadOfFamily: json['is_head_of_family'] as bool,
+  rtId: json['rt_id'] as String,
   role: json['role'] as String,
 );
 
@@ -33,5 +34,6 @@ Map<String, dynamic> _$ResidentRequestModelToJson(
   'gender': instance.gender,
   'job': instance.job,
   'is_head_of_family': instance.isHeadOfFamily,
+  'rt_id': instance.rtId,
   'role': instance.role,
 };
