@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:sirnawa_mobile/data/services/api/api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
 import 'package:sirnawa_mobile/data/services/api/model/block/block_request_model.dart';
@@ -15,19 +16,27 @@ class BlockService {
     Map<String, dynamic>? queryParams,
   ) async {
     try {
-      final response = await apiClient.get('/block', queryParams: queryParams);
-
-      final data = ApiResponse<List<BlockModel>>.fromJson(
-        response.data,
-        (json) =>
-            (json as List)
-                .map((e) => BlockModel.fromJson(e as Map<String, dynamic>))
-                .toList(),
+      final Response<dynamic> response = await apiClient.get(
+        '/block',
+        queryParams: queryParams,
       );
 
-      return Result.ok(data);
+      final ApiResponse<List<BlockModel>> data =
+          ApiResponse<List<BlockModel>>.fromJson(
+            response.data,
+            (json) =>
+                (json as List<dynamic>)
+                    .map<BlockModel>(
+                      (e) => BlockModel.fromJson(e as Map<String, dynamic>),
+                    )
+                    .toList(),
+          );
+
+      return Result<ApiResponse<List<BlockModel>>>.ok(data);
     } catch (e) {
-      return Result.error(Exception(parseDioError(e)));
+      return Result<ApiResponse<List<BlockModel>>>.error(
+        Exception(parseDioError(e)),
+      );
     }
   }
 
@@ -36,16 +45,19 @@ class BlockService {
     BlockRequestModel block,
   ) async {
     try {
-      final response = await apiClient.post('/block', data: block.toJson());
+      final Response<dynamic> response = await apiClient.post(
+        '/block',
+        data: block.toJson(),
+      );
 
-      final data = ApiResponse<BlockModel>.fromJson(
+      final ApiResponse<BlockModel> data = ApiResponse<BlockModel>.fromJson(
         response.data,
         (json) => BlockModel.fromJson(json as Map<String, dynamic>),
       );
 
-      return Result.ok(data);
+      return Result<ApiResponse<BlockModel>>.ok(data);
     } catch (e) {
-      return Result.error(Exception(parseDioError(e)));
+      return Result<ApiResponse<BlockModel>>.error(Exception(parseDioError(e)));
     }
   }
 
@@ -55,16 +67,19 @@ class BlockService {
     BlockRequestModel block,
   ) async {
     try {
-      final response = await apiClient.put('/block/$id', data: block.toJson());
+      final Response<dynamic> response = await apiClient.put(
+        '/block/$id',
+        data: block.toJson(),
+      );
 
-      final data = ApiResponse<BlockModel>.fromJson(
+      final ApiResponse<BlockModel> data = ApiResponse<BlockModel>.fromJson(
         response.data,
         (json) => BlockModel.fromJson(json as Map<String, dynamic>),
       );
 
-      return Result.ok(data);
+      return Result<ApiResponse<BlockModel>>.ok(data);
     } catch (e) {
-      return Result.error(Exception(parseDioError(e)));
+      return Result<ApiResponse<BlockModel>>.error(Exception(parseDioError(e)));
     }
   }
 

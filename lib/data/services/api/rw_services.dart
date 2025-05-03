@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:sirnawa_mobile/data/services/api/api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
 import 'package:sirnawa_mobile/data/services/api/model/rw/rw_request_model.dart';
@@ -15,35 +16,46 @@ class RwService {
     Map<String, dynamic>? queryParams,
   ) async {
     try {
-      final response = await apiClient.get('/rw', queryParams: queryParams);
-
-      final data = ApiResponse<List<RwModel>>.fromJson(
-        response.data,
-        (json) =>
-            (json as List)
-                .map((e) => RwModel.fromJson(e as Map<String, dynamic>))
-                .toList(),
+      final Response<dynamic> response = await apiClient.get(
+        '/rw',
+        queryParams: queryParams,
       );
 
-      return Result.ok(data);
+      final ApiResponse<List<RwModel>> data =
+          ApiResponse<List<RwModel>>.fromJson(
+            response.data,
+            (json) =>
+                (json as List)
+                    .map<RwModel>(
+                      (e) => RwModel.fromJson(e as Map<String, dynamic>),
+                    )
+                    .toList(),
+          );
+
+      return Result<ApiResponse<List<RwModel>>>.ok(data);
     } catch (e) {
-      return Result.error(Exception(parseDioError(e)));
+      return Result<ApiResponse<List<RwModel>>>.error(
+        Exception(parseDioError(e)),
+      );
     }
   }
 
   // ✅ POST /rw
   Future<Result<ApiResponse<RwModel>>> createRw(RwRequestModel rw) async {
     try {
-      final response = await apiClient.post('/rw', data: rw.toJson());
+      final Response<dynamic> response = await apiClient.post(
+        '/rw',
+        data: rw.toJson(),
+      );
 
-      final data = ApiResponse<RwModel>.fromJson(
+      final ApiResponse<RwModel> data = ApiResponse<RwModel>.fromJson(
         response.data,
         (json) => RwModel.fromJson(json as Map<String, dynamic>),
       );
 
-      return Result.ok(data);
+      return Result<ApiResponse<RwModel>>.ok(data);
     } catch (e) {
-      return Result.error(Exception(parseDioError(e)));
+      return Result<ApiResponse<RwModel>>.error(Exception(parseDioError(e)));
     }
   }
 
@@ -53,16 +65,19 @@ class RwService {
     RwRequestModel rw,
   ) async {
     try {
-      final response = await apiClient.put('/rw/$id', data: rw.toJson());
+      final Response<dynamic> response = await apiClient.put(
+        '/rw/$id',
+        data: rw.toJson(),
+      );
 
-      final data = ApiResponse<RwModel>.fromJson(
+      final ApiResponse<RwModel> data = ApiResponse<RwModel>.fromJson(
         response.data,
         (json) => RwModel.fromJson(json as Map<String, dynamic>),
       );
 
-      return Result.ok(data);
+      return Result<ApiResponse<RwModel>>.ok(data);
     } catch (e) {
-      return Result.error(Exception(parseDioError(e)));
+      return Result<ApiResponse<RwModel>>.error(Exception(parseDioError(e)));
     }
   }
 

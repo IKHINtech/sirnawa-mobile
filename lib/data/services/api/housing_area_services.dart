@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:sirnawa_mobile/data/services/api/api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
 import 'package:sirnawa_mobile/domain/model/housing_area/housing_area_model.dart';
@@ -14,24 +15,28 @@ class HousingAreaService {
     Map<String, dynamic>? queryParams,
   ) async {
     try {
-      final response = await apiClient.get(
+      final Response<dynamic> response = await apiClient.get(
         '/housing-area',
         queryParams: queryParams,
       );
 
-      final data = ApiResponse<List<HousingAreaModel>>.fromJson(
-        response.data,
-        (json) =>
-            (json as List)
-                .map(
-                  (e) => HousingAreaModel.fromJson(e as Map<String, dynamic>),
-                )
-                .toList(),
-      );
+      final ApiResponse<List<HousingAreaModel>> data =
+          ApiResponse<List<HousingAreaModel>>.fromJson(
+            response.data,
+            (json) =>
+                (json as List<dynamic>)
+                    .map<HousingAreaModel>(
+                      (e) =>
+                          HousingAreaModel.fromJson(e as Map<String, dynamic>),
+                    )
+                    .toList(),
+          );
 
-      return Result.ok(data);
+      return Result<ApiResponse<List<HousingAreaModel>>>.ok(data);
     } catch (e) {
-      return Result.error(Exception(parseDioError(e)));
+      return Result<ApiResponse<List<HousingAreaModel>>>.error(
+        Exception(parseDioError(e)),
+      );
     }
   }
 
@@ -40,19 +45,22 @@ class HousingAreaService {
     HousingAreaModel area,
   ) async {
     try {
-      final response = await apiClient.post(
+      final Response<dynamic> response = await apiClient.post(
         '/housing-area',
         data: area.toJson(),
       );
 
-      final data = ApiResponse<HousingAreaModel>.fromJson(
-        response.data,
-        (json) => HousingAreaModel.fromJson(json as Map<String, dynamic>),
-      );
+      final ApiResponse<HousingAreaModel> data =
+          ApiResponse<HousingAreaModel>.fromJson(
+            response.data,
+            (json) => HousingAreaModel.fromJson(json as Map<String, dynamic>),
+          );
 
-      return Result.ok(data);
+      return Result<ApiResponse<HousingAreaModel>>.ok(data);
     } catch (e) {
-      return Result.error(Exception(parseDioError(e)));
+      return Result<ApiResponse<HousingAreaModel>>.error(
+        Exception(parseDioError(e)),
+      );
     }
   }
 
@@ -62,19 +70,22 @@ class HousingAreaService {
     HousingAreaModel area,
   ) async {
     try {
-      final response = await apiClient.put(
+      final Response<dynamic> response = await apiClient.put(
         '/housing-area/$id',
         data: area.toJson(),
       );
 
-      final data = ApiResponse<HousingAreaModel>.fromJson(
-        response.data,
-        (json) => HousingAreaModel.fromJson(json as Map<String, dynamic>),
-      );
+      final ApiResponse<HousingAreaModel> data =
+          ApiResponse<HousingAreaModel>.fromJson(
+            response.data,
+            (json) => HousingAreaModel.fromJson(json as Map<String, dynamic>),
+          );
 
-      return Result.ok(data);
+      return Result<ApiResponse<HousingAreaModel>>.ok(data);
     } catch (e) {
-      return Result.error(Exception(parseDioError(e)));
+      return Result<ApiResponse<HousingAreaModel>>.error(
+        Exception(parseDioError(e)),
+      );
     }
   }
 

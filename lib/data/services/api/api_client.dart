@@ -6,7 +6,6 @@ import 'package:sirnawa_mobile/data/services/api/dio_client.dart';
 
 typedef AuthHeaderProvider = String? Function();
 
-
 class ApiClient {
   final Dio _dio;
   AuthHeaderProvider? _authHeaderProvider;
@@ -15,14 +14,14 @@ class ApiClient {
   final List<Function()> _retryQueue = [];
 
   ApiClient({Dio? dio})
-      : _dio = dio ?? DioClient.create(baseUrl: AppConfig.apiBaseUrl) {
+    : _dio = dio ?? DioClient.create(baseUrl: AppConfig.apiBaseUrl) {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onError: (DioException error, ErrorInterceptorHandler handler) async {
           if (_isTokenExpiredError(error)) {
             if (!_isRefreshing) {
               _isRefreshing = true;
-              final newToken = await _refreshTokenCallback?.call();
+              final String? newToken = await _refreshTokenCallback?.call();
               _isRefreshing = false;
 
               if (newToken != null) {
@@ -36,18 +35,20 @@ class ApiClient {
               }
             }
 
-            final requestOptions = error.requestOptions;
-            final completer = Completer<Response>();
+            final RequestOptions requestOptions = error.requestOptions;
+            final Completer<Response<dynamic>> completer =
+                Completer<Response<dynamic>>();
 
             _retryQueue.add(() async {
               try {
-                final response = await _dio.request(
+                final Response<dynamic> response = await _dio.request<dynamic>(
                   requestOptions.path,
                   data: requestOptions.data,
                   queryParameters: requestOptions.queryParameters,
                   options: Options(
                     method: requestOptions.method,
-                    headers: await _getAuthOptions().then((opt) => opt.headers),
+                    headers: await _getAuthOptions()
+                        .then<Map<String, dynamic>?>((opt) => opt.headers),
                   ),
                 );
                 completer.complete(response);
@@ -69,7 +70,8 @@ class ApiClient {
     _refreshTokenCallback = callback;
   }
 
-  bool _isTokenExpiredError(DioException error) => error.response?.statusCode == 401;
+  bool _isTokenExpiredError(DioException error) =>
+      error.response?.statusCode == 401;
 
   set authHeaderProvider(AuthHeaderProvider authHeaderProvider) {
     _authHeaderProvider = authHeaderProvider;
@@ -77,27 +79,70 @@ class ApiClient {
 
   Future<Options> _getAuthOptions([Options? options]) async {
     final token = _authHeaderProvider?.call();
-    final headers = <String, String>{if (token != null) 'Authorization': token};
-    return options?.copyWith(headers: {...?options.headers, ...headers}) ?? Options(headers: headers);
+    final Map<String, dynamic> headers = <String, String>{
+      if (token != null) 'Authorization': token,
+    };
+    return options?.copyWith(headers: {...?options.headers, ...headers}) ??
+        Options(headers: headers);
   }
 
-  Future<Response> get(String path, {Map<String, dynamic>? queryParams, Options? options}) async {
-    return await _dio.get(path, queryParameters: queryParams, options: await _getAuthOptions(options));
+  Future<Response<dynamic>> get(
+    String path, {
+    Map<String, dynamic>? queryParams,
+    Options? options,
+  }) async {
+    return await _dio.get<dynamic>(
+      path,
+      queryParameters: queryParams,
+      options: await _getAuthOptions(options),
+    );
   }
 
-  Future<Response> post(String path, {dynamic data, Options? options}) async {
-    return await _dio.post(path, data: data, options: await _getAuthOptions(options));
+  Future<Response<dynamic>> post(
+    String path, {
+    dynamic data,
+    Options? options,
+  }) async {
+    return await _dio.post<dynamic>(
+      path,
+      data: data,
+      options: await _getAuthOptions(options),
+    );
   }
 
-  Future<Response> put(String path, {dynamic data, Options? options}) async {
-    return await _dio.put(path, data: data, options: await _getAuthOptions(options));
+  Future<Response<dynamic>> put(
+    String path, {
+    dynamic data,
+    Options? options,
+  }) async {
+    return await _dio.put<dynamic>(
+      path,
+      data: data,
+      options: await _getAuthOptions(options),
+    );
   }
 
-  Future<Response> delete(String path, {dynamic data, Options? options}) async {
-    return await _dio.delete(path, data: data, options: await _getAuthOptions(options));
+  Future<Response<dynamic>> delete(
+    String path, {
+    dynamic data,
+    Options? options,
+  }) async {
+    return await _dio.delete<dynamic>(
+      path,
+      data: data,
+      options: await _getAuthOptions(options),
+    );
   }
 
-  Future<Response> patch(String path, {dynamic data, Options? options}) async {
-    return await _dio.patch(path, data: data, options: await _getAuthOptions(options));
+  Future<Response<dynamic>> patch(
+    String path, {
+    dynamic data,
+    Options? options,
+  }) async {
+    return await _dio.patch<dynamic>(
+      path,
+      data: data,
+      options: await _getAuthOptions(options),
+    );
   }
 }

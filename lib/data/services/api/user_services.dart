@@ -13,32 +13,36 @@ class UserService {
 
   Future<Result<LoginResponse>> refreshToken() async {
     try {
-      final response = await apiClient.get('/auth/refresh-token');
+      final Response<dynamic> response = await apiClient.get(
+        '/auth/refresh-token',
+      );
 
       if (response.statusCode == 200) {
-        return Result.ok(LoginResponse.fromJson(response.data["data"]));
+        return Result<LoginResponse>.ok(
+          LoginResponse.fromJson(response.data["data"]),
+        );
       } else {
-        return Result.error(Exception("Login error"));
+        return Result<LoginResponse>.error(Exception("Login error"));
       }
     } on DioException catch (error) {
-      return Result.error(Exception(parseDioError(error)));
+      return Result<LoginResponse>.error(Exception(parseDioError(error)));
     } catch (error) {
-      return Result.error(Exception(parseDioError(error)));
+      return Result<LoginResponse>.error(Exception(parseDioError(error)));
     }
   }
 
   Future<Result<ApiResponse<UserModel>>> getCurrentUser() async {
     try {
-      final response = await apiClient.get('/auth/me');
+      final Response<dynamic> response = await apiClient.get('/auth/me');
 
-      final data = ApiResponse<UserModel>.fromJson(
+      final ApiResponse<UserModel> data = ApiResponse<UserModel>.fromJson(
         response.data,
         (json) => UserModel.fromJson(json as Map<String, dynamic>),
       );
 
-      return Result.ok(data);
+      return Result<ApiResponse<UserModel>>.ok(data);
     } catch (e) {
-      return Result.error(Exception(parseDioError(e)));
+      return Result<ApiResponse<UserModel>>.error(Exception(parseDioError(e)));
     }
   }
 }

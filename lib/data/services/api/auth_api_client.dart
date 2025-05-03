@@ -14,40 +14,44 @@ class AuthApiClient {
 
   Future<Result<LoginResponse>> login(LoginRequest loginRequest) async {
     try {
-      final response = await _dio.post(
+      final Response<dynamic> response = await _dio.post(
         '/auth/login',
         data: loginRequest.toJson(),
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
 
       if (response.statusCode == 200) {
-        return Result.ok(LoginResponse.fromJson(response.data["data"]));
+        return Result<LoginResponse>.ok(
+          LoginResponse.fromJson(response.data["data"]),
+        );
       } else {
-        return Result.error(Exception("Login error"));
+        return Result<LoginResponse>.error(Exception("Login error"));
       }
     } on DioException catch (error) {
-      return Result.error(Exception(parseDioError(error)));
+      return Result<LoginResponse>.error(Exception(parseDioError(error)));
     } catch (error) {
-      return Result.error(Exception(parseDioError(error)));
+      return Result<LoginResponse>.error(Exception(parseDioError(error)));
     }
   }
 
   Future<Result<LoginResponse>> refreshToken() async {
     try {
-      final response = await _dio.post(
+      final Response<dynamic> response = await _dio.post(
         '/auth/refresh-token',
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
 
       if (response.statusCode == 200) {
-        return Result.ok(LoginResponse.fromJson(response.data["data"]));
+        return Result<LoginResponse>.ok(
+          LoginResponse.fromJson(response.data["data"]),
+        );
       } else {
-        return Result.error(Exception("Login error"));
+        return Result<LoginResponse>.error(Exception("Login error"));
       }
     } on DioException catch (error) {
-      return Result.error(error);
+      return Result<LoginResponse>.error(error);
     } catch (error) {
-      return Result.error(Exception(error));
+      return Result<LoginResponse>.error(Exception(error));
     }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:sirnawa_mobile/data/services/api/api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
 import 'package:sirnawa_mobile/data/services/api/model/resident/resident_request_model.dart';
@@ -14,22 +15,27 @@ class ResidentService {
     Map<String, dynamic>? queryParams,
   ) async {
     try {
-      final response = await apiClient.get(
+      final Response<dynamic> response = await apiClient.get(
         '/resident',
         queryParams: queryParams,
       );
 
-      final data = ApiResponse<List<ResidentModel>>.fromJson(
-        response.data,
-        (json) =>
-            (json as List)
-                .map((e) => ResidentModel.fromJson(e as Map<String, dynamic>))
-                .toList(),
-      );
+      final ApiResponse<List<ResidentModel>> data =
+          ApiResponse<List<ResidentModel>>.fromJson(
+            response.data,
+            (json) =>
+                (json as List)
+                    .map<ResidentModel>(
+                      (e) => ResidentModel.fromJson(e as Map<String, dynamic>),
+                    )
+                    .toList(),
+          );
 
-      return Result.ok(data);
+      return Result<ApiResponse<List<ResidentModel>>>.ok(data);
     } catch (e) {
-      return Result.error(Exception(parseDioError(e)));
+      return Result<ApiResponse<List<ResidentModel>>>.error(
+        Exception(parseDioError(e)),
+      );
     }
   }
 
@@ -38,19 +44,22 @@ class ResidentService {
     ResidentRequestModel resident,
   ) async {
     try {
-      final response = await apiClient.post(
+      final Response<dynamic> response = await apiClient.post(
         '/resident',
         data: resident.toJson(),
       );
 
-      final data = ApiResponse<ResidentModel>.fromJson(
-        response.data,
-        (json) => ResidentModel.fromJson(json as Map<String, dynamic>),
-      );
+      final ApiResponse<ResidentModel> data =
+          ApiResponse<ResidentModel>.fromJson(
+            response.data,
+            (json) => ResidentModel.fromJson(json as Map<String, dynamic>),
+          );
 
-      return Result.ok(data);
+      return Result<ApiResponse<ResidentModel>>.ok(data);
     } catch (e) {
-      return Result.error(Exception(parseDioError(e)));
+      return Result<ApiResponse<ResidentModel>>.error(
+        Exception(parseDioError(e)),
+      );
     }
   }
 
@@ -60,19 +69,22 @@ class ResidentService {
     ResidentRequestModel resident,
   ) async {
     try {
-      final response = await apiClient.put(
+      final Response<dynamic> response = await apiClient.put(
         '/resident/$id',
         data: resident.toJson(),
       );
 
-      final data = ApiResponse<ResidentModel>.fromJson(
-        response.data,
-        (json) => ResidentModel.fromJson(json as Map<String, dynamic>),
-      );
+      final ApiResponse<ResidentModel> data =
+          ApiResponse<ResidentModel>.fromJson(
+            response.data,
+            (json) => ResidentModel.fromJson(json as Map<String, dynamic>),
+          );
 
-      return Result.ok(data);
+      return Result<ApiResponse<ResidentModel>>.ok(data);
     } catch (e) {
-      return Result.error(Exception(parseDioError(e)));
+      return Result<ApiResponse<ResidentModel>>.error(
+        Exception(parseDioError(e)),
+      );
     }
   }
 

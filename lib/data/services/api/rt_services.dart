@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:sirnawa_mobile/data/services/api/api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
 import 'package:sirnawa_mobile/domain/model/rt/rt_model.dart';
@@ -14,51 +15,65 @@ class RtService {
     Map<String, dynamic>? queryParams,
   ) async {
     try {
-      final response = await apiClient.get('/rt', queryParams: queryParams);
-
-      final data = ApiResponse<List<RtModel>>.fromJson(
-        response.data,
-        (json) =>
-            (json as List)
-                .map((e) => RtModel.fromJson(e as Map<String, dynamic>))
-                .toList(),
+      final Response<dynamic> response = await apiClient.get(
+        '/rt',
+        queryParams: queryParams,
       );
 
-      return Result.ok(data);
+      final ApiResponse<List<RtModel>> data =
+          ApiResponse<List<RtModel>>.fromJson(
+            response.data,
+            (json) =>
+                (json as List)
+                    .map<RtModel>(
+                      (e) => RtModel.fromJson(e as Map<String, dynamic>),
+                    )
+                    .toList(),
+          );
+
+      return Result<ApiResponse<List<RtModel>>>.ok(data);
     } catch (e) {
-      return Result.error(Exception(parseDioError(e)));
+      return Result<ApiResponse<List<RtModel>>>.error(
+        Exception(parseDioError(e)),
+      );
     }
   }
 
   // ✅ POST /rt
   Future<Result<ApiResponse<RtModel>>> createRt(RtModel rt) async {
     try {
-      final response = await apiClient.post('/rt', data: rt.toJson());
+      final Response<dynamic> response = await apiClient.post(
+        '/rt',
+        data: rt.toJson(),
+      );
 
-      final data = ApiResponse<RtModel>.fromJson(
+      final ApiResponse<RtModel> data = ApiResponse<RtModel>.fromJson(
         response.data,
         (json) => RtModel.fromJson(json as Map<String, dynamic>),
       );
 
-      return Result.ok(data);
+      return Result<ApiResponse<RtModel>>.ok(data);
     } catch (e) {
-      return Result.error(Exception(parseDioError(e)));
+      return Result<ApiResponse<RtModel>>.error(Exception(parseDioError(e)));
     }
   }
 
   // ✅ PUT /rt/{id}
   Future<Result<ApiResponse<RtModel>>> updateRt(String id, RtModel rt) async {
     try {
-      final response = await apiClient.put('/rt/$id', data: rt.toJson());
+      final Response<dynamic> response = await apiClient.put(
+        '/rt/$id',
+        data: rt.toJson(),
+      );
 
-      final data = ApiResponse<RtModel>.fromJson(
+      final ApiResponse<RtModel> data = ApiResponse<RtModel>.fromJson(
         response.data,
         (json) => RtModel.fromJson(json as Map<String, dynamic>),
       );
 
-      return Result.ok(data);
+      return Result<ApiResponse<RtModel>>.ok(data);
     } catch (e) {
-      return Result.error(Exception(parseDioError(e)));
+      return Result<ApiResponse<RtModel>>.error(Exception(parseDioError(e)));
     }
   }
 
