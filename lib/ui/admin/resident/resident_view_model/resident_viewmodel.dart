@@ -51,8 +51,6 @@ class ResidentViewModel extends StateNotifier<ResidentState> {
       );
 
   Future<void> fetchListResident({bool reset = false}) async {
-    if (state.isLoading) return;
-
     try {
       state =
           reset
@@ -105,7 +103,7 @@ class ResidentViewModel extends StateNotifier<ResidentState> {
     await fetchListResident();
   }
 
-  Future<void> createResident(ResidentRequestModel resident) async {
+  Future<bool> createResident(ResidentRequestModel resident) async {
     state = state.copyWith(isLoading: true);
     try {
       final result = await _repository.createResident(resident);
@@ -113,36 +111,38 @@ class ResidentViewModel extends StateNotifier<ResidentState> {
         case Ok():
           // Opsional: setelah create, refresh list
           await fetchListResident(reset: true);
-          break;
+          return true;
         case Error():
           state = state.copyWith(
             isLoading: false,
             error: result.error.toString(),
           );
-          break;
+          return false;
       }
     } catch (e) {
       state = state.copyWith(isLoading: false, error: "Exception: $e");
+      return false;
     }
   }
 
-  Future<void> updateResident(String id, ResidentRequestModel resident) async {
+  Future<bool> updateResident(String id, ResidentRequestModel resident) async {
     state = state.copyWith(isLoading: true);
     try {
       final result = await _repository.updateResident(id, resident);
       switch (result) {
         case Ok():
           await fetchListResident(reset: true);
-          break;
+          return true;
         case Error():
           state = state.copyWith(
             isLoading: false,
             error: result.error.toString(),
           );
-          break;
+          return false;
       }
     } catch (e) {
       state = state.copyWith(isLoading: false, error: "Exception: $e");
+      return false;
     }
   }
 

@@ -23,7 +23,8 @@ class _ResidentFormScreenState extends ConsumerState<ResidentFormScreen> {
   late TextEditingController _phoneController;
   late TextEditingController _jobController;
   DateTime? _birthDate;
-  String _gender = "Laki-laki"; // default
+  String _gender = "male"; // default
+  bool _isHeadOfFamily = false;
 
   bool get isEdit => widget.resident != null;
 
@@ -37,7 +38,7 @@ class _ResidentFormScreenState extends ConsumerState<ResidentFormScreen> {
     );
     _jobController = TextEditingController(text: widget.resident?.job ?? '');
     _birthDate = widget.resident?.birthDate;
-    _gender = widget.resident?.gender ?? "Laki-laki";
+    _gender = widget.resident?.gender ?? "male";
   }
 
   @override
@@ -52,6 +53,7 @@ class _ResidentFormScreenState extends ConsumerState<ResidentFormScreen> {
   @override
   Widget build(BuildContext context) {
     final viewModel = ref.read(residentViewModelProvider.notifier);
+    final state = ref.watch(residentViewModelProvider);
     final mainState = ref.read(homeViewModelProvider);
 
     return Scaffold(
@@ -105,20 +107,41 @@ class _ResidentFormScreenState extends ConsumerState<ResidentFormScreen> {
               DropdownButtonFormField<String>(
                 value: _gender,
                 items: const [
-                  DropdownMenuItem(
-                    value: "Laki-laki",
-                    child: Text('Laki-laki'),
-                  ),
-                  DropdownMenuItem(
-                    value: "Perempuan",
-                    child: Text('Perempuan'),
-                  ),
+                  DropdownMenuItem(value: "male", child: Text('Laki-laki')),
+                  DropdownMenuItem(value: "female", child: Text('Perempuan')),
                 ],
                 onChanged:
                     (value) => setState(() {
                       _gender = value!;
                     }),
                 decoration: const InputDecoration(labelText: 'Jenis Kelamin'),
+              ),
+              const SizedBox(height: 16),
+              const Text('Status Kepala Keluarga:'),
+              Row(
+                children: [
+                  Radio<bool>(
+                    value: true,
+                    groupValue: _isHeadOfFamily,
+                    onChanged: (value) {
+                      setState(() {
+                        _isHeadOfFamily = value!;
+                      });
+                    },
+                  ),
+                  const Text('Ya'),
+                  const SizedBox(width: 20),
+                  Radio<bool>(
+                    value: false,
+                    groupValue: _isHeadOfFamily,
+                    onChanged: (value) {
+                      setState(() {
+                        _isHeadOfFamily = value!;
+                      });
+                    },
+                  ),
+                  const Text('Tidak'),
+                ],
               ),
               const SizedBox(height: 24),
               ElevatedButton(
@@ -141,9 +164,52 @@ class _ResidentFormScreenState extends ConsumerState<ResidentFormScreen> {
                   );
 
                   if (isEdit) {
-                    await viewModel.updateResident(resident.id!, resident);
+                    final success = await viewModel.updateResident(
+                      resident.id!,
+                      resident,
+                    );
+                    if (success) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Berhasil memperbarui Data Warga'),
+                          backgroundColor: Colors.green,
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                      // Optionally: navigate back atau reset form
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Gagal memperbarui Data Warga ${state.error}',
+                          ),
+                          backgroundColor: Colors.red,
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    }
                   } else {
-                    await viewModel.createResident(resident);
+                    final success = await viewModel.createResident(resident);
+                    if (success) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Berhasil menambahkan Data Warga'),
+                          backgroundColor: Colors.green,
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                      // Optionally: navigate back atau reset form
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Gagal menambahkan Data Warga ${state.error}',
+                          ),
+                          backgroundColor: Colors.red,
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    }
                   }
 
                   if (mounted) {

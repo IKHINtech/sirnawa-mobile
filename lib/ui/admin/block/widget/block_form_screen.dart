@@ -68,8 +68,9 @@ class _BlockFormScreenState extends ConsumerState<BlockFormScreen> {
 
                   if (isEdit) {
                     final success = await viewModel.updateBlock(
-                      resident.id!,
-                      resident,
+                      id: resident.id!,
+                      resident: resident,
+                      rtId: homeState.residentHouse!.house.rtId,
                     );
                     if (success) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -90,7 +91,10 @@ class _BlockFormScreenState extends ConsumerState<BlockFormScreen> {
                       );
                     }
                   } else {
-                    final success = await viewModel.createBlock(resident);
+                    final success = await viewModel.createBlock(
+                      resident: resident,
+                      rtId: homeState.residentHouse!.house.rtId,
+                    );
                     if (success) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

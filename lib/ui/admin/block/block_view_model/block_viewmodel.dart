@@ -50,7 +50,10 @@ class BlockViewModel extends StateNotifier<BlockState> {
         ),
       );
 
-  Future<void> fetchListBlock({bool reset = false}) async {
+  Future<void> fetchListBlock({
+    bool reset = false,
+    required String rtId,
+  }) async {
     try {
       state =
           reset
@@ -70,6 +73,7 @@ class BlockViewModel extends StateNotifier<BlockState> {
       final result = await _repository.getListBlock({
         "page": _currentPage,
         "page_size": _limit,
+        "rt_id": rtId,
       });
 
       switch (result) {
@@ -98,19 +102,22 @@ class BlockViewModel extends StateNotifier<BlockState> {
     }
   }
 
-  Future<void> loadMore() async {
+  Future<void> loadMore({required String rtId}) async {
     if (!(_currentPage < _totalPages) || state.isLoading) return;
-    await fetchListBlock();
+    await fetchListBlock(rtId: rtId);
   }
 
-  Future<bool> createBlock(BlockRequestModel resident) async {
+  Future<bool> createBlock({
+    required BlockRequestModel resident,
+    required String rtId,
+  }) async {
     state = state.copyWith(isLoading: true);
     try {
       final result = await _repository.createBlock(resident);
       switch (result) {
         case Ok():
           // Opsional: setelah create, refresh list
-          await fetchListBlock(reset: true);
+          await fetchListBlock(reset: true, rtId: rtId);
           return true;
         case Error():
           state = state.copyWith(
@@ -125,13 +132,17 @@ class BlockViewModel extends StateNotifier<BlockState> {
     }
   }
 
-  Future<bool> updateBlock(String id, BlockRequestModel resident) async {
+  Future<bool> updateBlock({
+    required String rtId,
+    required String id,
+    required BlockRequestModel resident,
+  }) async {
     state = state.copyWith(isLoading: true);
     try {
       final result = await _repository.updateBlock(id, resident);
       switch (result) {
         case Ok():
-          await fetchListBlock(reset: true);
+          await fetchListBlock(reset: true, rtId: rtId);
           return true;
         case Error():
           state = state.copyWith(
@@ -146,13 +157,13 @@ class BlockViewModel extends StateNotifier<BlockState> {
     }
   }
 
-  Future<void> deleteBlock(String id) async {
+  Future<void> deleteBlock(String id, {required String rtId}) async {
     state = state.copyWith(isLoading: true);
     try {
       final result = await _repository.delete(id);
       switch (result) {
         case Ok():
-          await fetchListBlock(reset: true);
+          await fetchListBlock(reset: true, rtId: rtId);
           break;
         case Error():
           state = state.copyWith(

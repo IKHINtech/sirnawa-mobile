@@ -5,6 +5,7 @@ import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/admin/block/block_view_model/block_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sirnawa_mobile/ui/home/view_models/home_viewmodel.dart';
 
 class BlockScreen extends ConsumerStatefulWidget {
   const BlockScreen({super.key});
@@ -17,8 +18,15 @@ class _BlockScreenState extends ConsumerState<BlockScreen> {
   @override
   void initState() {
     super.initState();
+
+    final homeState = ref.read(homeViewModelProvider);
     Future.microtask(() {
-      ref.read(blockViewModelProvider.notifier).fetchListBlock(reset: true);
+      ref
+          .read(blockViewModelProvider.notifier)
+          .fetchListBlock(
+            reset: true,
+            rtId: homeState.residentHouse?.house.rt?.id ?? "",
+          );
     });
   }
 
@@ -32,7 +40,7 @@ class _BlockScreenState extends ConsumerState<BlockScreen> {
       appBar: CustomAppBar(
         title: 'Data Blok ${homeState.residentHouse?.house.rt?.name ?? ""}',
       ),
-      body: _buildBody(state, viewModel, context),
+      body: _buildBody(state, viewModel, context, homeState),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           context.push(Routes.adminBlockCreate);
@@ -46,6 +54,7 @@ class _BlockScreenState extends ConsumerState<BlockScreen> {
     BlockState state,
     BlockViewModel viewModel,
     BuildContext context,
+    HomeState homeState,
   ) {
     if (state.isLoading && state.list.isEmpty) {
       return const Center(child: CircularProgressIndicator());
@@ -58,7 +67,11 @@ class _BlockScreenState extends ConsumerState<BlockScreen> {
           children: [
             Text("Error: ${state.error}"),
             ElevatedButton(
-              onPressed: () => viewModel.fetchListBlock(reset: true),
+              onPressed:
+                  () => viewModel.fetchListBlock(
+                    reset: true,
+                    rtId: homeState.residentHouse?.house.rt?.id ?? "",
+                  ),
               child: const Text("Retry"),
             ),
           ],
@@ -67,7 +80,11 @@ class _BlockScreenState extends ConsumerState<BlockScreen> {
     }
 
     return RefreshIndicator(
-      onRefresh: () => viewModel.fetchListBlock(reset: true),
+      onRefresh:
+          () => viewModel.fetchListBlock(
+            reset: true,
+            rtId: homeState.residentHouse?.house.rt?.id ?? "",
+          ),
       child: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount:
