@@ -5,6 +5,8 @@ import 'package:sirnawa_mobile/data/repositories/announcement/announcement_repos
 import 'package:sirnawa_mobile/data/repositories/auth/auth_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/block/block_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/block/block_repository_remote.dart';
+import 'package:sirnawa_mobile/data/repositories/house/house_repository.dart';
+import 'package:sirnawa_mobile/data/repositories/house/house_repository_remote.dart';
 import 'package:sirnawa_mobile/data/repositories/housing_area/housing_area_reposiory_remote.dart';
 import 'package:sirnawa_mobile/data/repositories/housing_area/housing_area_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/resident/resident_repository.dart';
@@ -21,6 +23,7 @@ import 'package:sirnawa_mobile/data/services/api/announcement_services.dart';
 import 'package:sirnawa_mobile/data/services/api/api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/auth_api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/block_services.dart';
+import 'package:sirnawa_mobile/data/services/api/house_services.dart';
 import 'package:sirnawa_mobile/data/services/api/housing_area_services.dart';
 import 'package:sirnawa_mobile/data/services/api/resident_services.dart';
 import 'package:sirnawa_mobile/data/services/api/ronda_group_services.dart';
@@ -28,8 +31,10 @@ import 'package:sirnawa_mobile/data/services/api/rt_services.dart';
 import 'package:sirnawa_mobile/data/services/api/rw_services.dart';
 import 'package:sirnawa_mobile/data/services/api/user_services.dart';
 import 'package:sirnawa_mobile/data/services/share_preference_service.dart';
+import 'package:sirnawa_mobile/domain/model/block/block_model.dart';
 import 'package:sirnawa_mobile/ui/admin/announcement/announcement_viewmodel/announcement_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/block/block_view_model/block_viewmodel.dart';
+import 'package:sirnawa_mobile/ui/admin/house/house_viewmodel/house_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/housing_area/housing_area_viewmodel/housing_area_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/resident/resident_view_model/resident_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/ronda_group/ronda_group_viewmodel/ronda_group_viewmodel.dart';
@@ -169,6 +174,26 @@ final StateNotifierProvider<RwViewModel, RwState> rwViewModelProvider =
       );
     });
 
+// ========== House ========== //
+final Provider<HouseService> houseServiceProvider = Provider<HouseService>((
+  Ref<HouseService> ref,
+) {
+  return HouseService(ref.read<ApiClient>(apiClientProvider));
+});
+
+final Provider<HouseRepository> houseRepositoryProvider =
+    Provider<HouseRepository>((Ref<HouseRepository> ref) {
+      return HouseRepositoryRemote(
+        houseService: ref.read<HouseService>(houseServiceProvider),
+      );
+    });
+
+final StateNotifierProvider<HouseViewModel, HouseState> houseViewModelProvider =
+    StateNotifierProvider<HouseViewModel, HouseState>((ref) {
+      return HouseViewModel(
+        repository: ref.read<HouseRepository>(houseRepositoryProvider),
+      );
+    });
 // ===== RESIDENT ========= //
 final Provider<ResidentService> residentServiceProvider =
     Provider<ResidentService>((Ref<ResidentService> ref) {
@@ -210,6 +235,13 @@ final StateNotifierProvider<BlockViewModel, BlockState> blockViewModelProvider =
         repository: ref.read<BlockRepository>(blockRepositoryProvider),
       );
     });
+
+final blocksProvider = FutureProvider<List<BlockModel>>((ref) async {
+  final rtid =
+      ref.watch(homeViewModelProvider).residentHouse?.house.rt?.id ?? "";
+  await ref.read(blockViewModelProvider.notifier).fetchBlockOptions(rtId: rtid);
+  return ref.read(blockViewModelProvider).blockOptions;
+});
 
 // ========== USER ========== //
 final Provider<UserService> userServiceProvider = Provider<UserService>((

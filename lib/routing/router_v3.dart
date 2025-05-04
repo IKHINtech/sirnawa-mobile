@@ -6,11 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sirnawa_mobile/config/auth_providers.dart';
 import 'package:sirnawa_mobile/domain/model/block/block_model.dart';
+import 'package:sirnawa_mobile/domain/model/house/house_model.dart';
 import 'package:sirnawa_mobile/domain/model/resident/resident_model.dart';
 import 'package:sirnawa_mobile/domain/model/rw/rw_model.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/admin/block/widget/block_form_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/block/widget/block_screen.dart';
+import 'package:sirnawa_mobile/ui/admin/house/widgets/house_form_screen.dart';
+import 'package:sirnawa_mobile/ui/admin/house/widgets/house_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/resident/widget/resident_form_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/resident/widget/resident_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/rt/widget/rt_screen.dart';
@@ -143,6 +146,22 @@ final routerProvider = Provider<GoRouter>((ref) {
           final resident =
               state.extra as ResidentModel; // extra untuk passing data
           return ResidentFormScreen(resident: resident); // Edit mode
+        },
+      ),
+      //  ===== HOUSE  =====
+      GoRoute(
+        path: Routes.adminHouse,
+        builder: (context, state) => const HouseScreen(), // Create mode
+      ),
+      GoRoute(
+        path: Routes.adminHouseCreate,
+        builder: (context, state) => const HouseFormScreen(), // Create mode
+      ),
+      GoRoute(
+        path: Routes.adminHouseUpdate,
+        builder: (context, state) {
+          final house = state.extra as HouseModel; // extra untuk passing data
+          return HouseFormScreen(house: house); // Edit mode
         },
       ),
       ShellRoute(

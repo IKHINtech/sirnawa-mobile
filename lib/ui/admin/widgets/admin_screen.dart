@@ -63,7 +63,7 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
                 ),
                 _itemAdmin(
                   onClick: () {
-                    context.push(Routes.adminResident);
+                    context.push(Routes.adminHouse);
                   },
                   icon: Icons.home,
                   title: "Data Rumah",
