@@ -19,22 +19,6 @@ class ApiClient {
       InterceptorsWrapper(
         onError: (DioException error, ErrorInterceptorHandler handler) async {
           if (_isTokenExpiredError(error)) {
-            if (!_isRefreshing) {
-              _isRefreshing = true;
-              final String? newToken = await _refreshTokenCallback?.call();
-              _isRefreshing = false;
-
-              if (newToken != null) {
-                _authHeaderProvider = () => newToken;
-                for (final retry in _retryQueue) {
-                  retry();
-                }
-                _retryQueue.clear();
-              } else {
-                return handler.reject(error);
-              }
-            }
-
             final RequestOptions requestOptions = error.requestOptions;
             final Completer<Response<dynamic>> completer =
                 Completer<Response<dynamic>>();
@@ -51,15 +35,41 @@ class ApiClient {
                         .then<Map<String, dynamic>?>((opt) => opt.headers),
                   ),
                 );
-                completer.complete(response);
+                if (!completer.isCompleted) {
+                  completer.complete(response);
+                }
               } catch (e) {
-                completer.completeError(e);
+                if (!completer.isCompleted) {
+                  completer.completeError(e);
+                }
               }
             });
 
+            if (!_isRefreshing) {
+              _isRefreshing = true;
+              try {
+                final String? newToken = await _refreshTokenCallback?.call();
+
+                if (newToken != null) {
+                  _authHeaderProvider = () => newToken;
+                  final retries = _retryQueue.toList();
+                  _retryQueue.clear();
+                  for (final retry in retries) {
+                    retry();
+                  }
+                } else {
+                  _retryQueue.clear();
+                  return handler.reject(error);
+                }
+              } catch (e) {
+                _retryQueue.clear();
+                return handler.reject(error);
+              } finally {
+                _isRefreshing = false;
+              }
+            }
             return handler.resolve(await completer.future);
           }
-
           return handler.next(error);
         },
       ),
@@ -80,7 +90,7 @@ class ApiClient {
   Future<Options> _getAuthOptions([Options? options]) async {
     final token = _authHeaderProvider?.call();
     final Map<String, dynamic> headers = <String, String>{
-      if (token != null) 'Authorization': token,
+      if (token != null) 'Authorization': "Bearer $token",
     };
     return options?.copyWith(headers: {...?options.headers, ...headers}) ??
         Options(headers: headers);

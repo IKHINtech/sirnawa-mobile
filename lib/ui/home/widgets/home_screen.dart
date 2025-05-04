@@ -291,15 +291,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
       child: Column(
         children: [
-          Center(
-            child: Text(
-              "Menu",
-              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                fontWeight: FontWeight.bold,
-                fontSize: 23,
-              ),
-            ),
-          ),
+          // Center(
+          //   child: Text(
+          //     "Menu",
+          //     style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+          //       fontWeight: FontWeight.bold,
+          //       fontSize: 23,
+          //     ),
+          //   ),
+          // ),
           GridView.count(
             primary: false,
             shrinkWrap: true,
