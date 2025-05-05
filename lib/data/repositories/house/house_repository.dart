@@ -9,5 +9,6 @@ abstract class HouseRepository {
   );
   Future<Result<void>> createHouse(HouseRequestModel house);
   Future<Result<void>> updateHouse(String id, HouseRequestModel house);
+  Future<HouseModel?> getDetailHouse(String id);
   Future<Result<void>> delete(String id);
 }

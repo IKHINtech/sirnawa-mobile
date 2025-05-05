@@ -40,6 +40,23 @@ class HouseService {
     }
   }
 
+  Future<Result<ApiResponse<HouseModel>>> getDetailHouse({
+    required String houseID,
+  }) async {
+    try {
+      final Response<dynamic> response = await apiClient.get('/house/$houseID');
+
+      final ApiResponse<HouseModel> data = ApiResponse<HouseModel>.fromJson(
+        response.data,
+        (json) => HouseModel.fromJson(json as Map<String, dynamic>),
+      );
+
+      return Result<ApiResponse<HouseModel>>.ok(data);
+    } catch (e) {
+      return Result<ApiResponse<HouseModel>>.error(Exception(parseDioError(e)));
+    }
+  }
+
   // ✅ POST /house
   Future<Result<ApiResponse<HouseModel>>> createHouse(
     HouseRequestModel house,

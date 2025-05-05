@@ -9,106 +9,37 @@ class HouseState {
   final bool isLoading;
   final String? error;
   final List<HouseModel> list;
-  final bool hasNextPage;
 
   const HouseState({
     required this.isLoading,
     required this.error,
     required this.list,
-    required this.hasNextPage,
   });
 
   HouseState copyWith({
     bool? isLoading,
     String? error,
     List<HouseModel>? list,
-    bool? hasNextPage,
+    HouseModel? detail,
   }) {
     return HouseState(
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
       list: list ?? this.list,
-      hasNextPage: hasNextPage ?? this.hasNextPage,
     );
   }
 }
 
 class HouseViewModel extends StateNotifier<HouseState> {
   final HouseRepository _repository;
-  int _currentPage = 1;
-  final int _limit = 10;
-  int _totalPages = 1;
 
   HouseViewModel({required HouseRepository repository})
     : _repository = repository,
-      super(
-        const HouseState(
-          isLoading: false,
-          error: null,
-          list: [],
-          hasNextPage: true,
-        ),
-      );
-
-  Future<void> fetchListHouse({
-    required String rtId,
-    bool reset = false,
-  }) async {
-    try {
-      state =
-          reset
-              ? const HouseState(
-                isLoading: true,
-                error: null,
-                list: [],
-                hasNextPage: true,
-              )
-              : state.copyWith(isLoading: true);
-
-      if (reset) {
-        _currentPage = 1;
-        _totalPages = 1;
-      }
-
-      final result = await _repository.getListHouse({
-        "page": _currentPage,
-        "page_size": _limit,
-        "rt_id": rtId,
-      });
-
-      switch (result) {
-        case Ok<ApiResponse<List<HouseModel>>>():
-          _currentPage++;
-          _totalPages = result.value.meta?.totalPages ?? 1;
-          state = HouseState(
-            isLoading: false,
-            error: null,
-            list:
-                reset
-                    ? result.value.data ?? []
-                    : [...state.list, ...?result.value.data],
-            hasNextPage: _currentPage < _totalPages,
-          );
-          break;
-        case Error<ApiResponse<List<HouseModel>>>():
-          state = state.copyWith(
-            isLoading: false,
-            error: result.error.toString(),
-          );
-          break;
-      }
-    } catch (e) {
-      state = state.copyWith(isLoading: false, error: "Exception: $e");
-    }
-  }
-
-  Future<void> loadMore({required String rtId}) async {
-    if (!(_currentPage < _totalPages) || state.isLoading) return;
-    await fetchListHouse(rtId: rtId);
-  }
+      super(const HouseState(isLoading: false, error: null, list: []));
 
   Future<bool> createHouse({
     required String rtId,
+    required String blockId,
     required HouseRequestModel resident,
   }) async {
     state = state.copyWith(isLoading: true);
@@ -117,7 +48,6 @@ class HouseViewModel extends StateNotifier<HouseState> {
       switch (result) {
         case Ok():
           // Opsional: setelah create, refresh list
-          await fetchListHouse(reset: true, rtId: rtId);
           return true;
         case Error():
           state = state.copyWith(
@@ -129,12 +59,15 @@ class HouseViewModel extends StateNotifier<HouseState> {
     } catch (e) {
       state = state.copyWith(isLoading: false, error: "Exception: $e");
       return false;
+    } finally {
+      state = state.copyWith(isLoading: false);
     }
   }
 
   Future<bool> updateHouse({
     required String id,
     required String rtID,
+    required String blockId,
     required HouseRequestModel resident,
   }) async {
     state = state.copyWith(isLoading: true);
@@ -142,7 +75,6 @@ class HouseViewModel extends StateNotifier<HouseState> {
       final result = await _repository.updateHouse(id, resident);
       switch (result) {
         case Ok():
-          await fetchListHouse(rtId: rtID, reset: true);
           return true;
         case Error():
           state = state.copyWith(
@@ -154,16 +86,22 @@ class HouseViewModel extends StateNotifier<HouseState> {
     } catch (e) {
       state = state.copyWith(isLoading: false, error: "Exception: $e");
       return false;
+    } finally {
+      state = state.copyWith(isLoading: false);
     }
   }
 
-  Future<void> deleteHouse({required String id, required String rtId}) async {
+  Future<void> deleteHouse({
+    required String id,
+    required String blockId,
+    required String rtId,
+  }) async {
     state = state.copyWith(isLoading: true);
     try {
       final result = await _repository.delete(id);
       switch (result) {
         case Ok():
-          await fetchListHouse(reset: true, rtId: rtId);
+          state = state.copyWith(isLoading: false);
           break;
         case Error():
           state = state.copyWith(
@@ -175,5 +113,118 @@ class HouseViewModel extends StateNotifier<HouseState> {
     } catch (e) {
       state = state.copyWith(isLoading: false, error: "Exception: $e");
     }
+  }
+
+  Future<void> getHouseListHouse() async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final result = await _repository.getListHouse({"paginated": false});
+      switch (result) {
+        case Ok():
+          state = state.copyWith(list: result.value.data ?? []);
+          break;
+        case Error():
+          state = state.copyWith(error: result.error.toString());
+          break;
+      }
+    } catch (e) {
+      state = state.copyWith(error: "Exception: $e");
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
+
+  void clearDetail() {
+    state = state.copyWith(detail: null);
+  }
+}
+
+class HouseListNotifier extends StateNotifier<AsyncValue<List<HouseModel>>> {
+  final HouseRepository repository;
+  final String rtId;
+  final String blockId;
+
+  int page = 1;
+  bool hasMore = true;
+  bool isLoading = false;
+
+  HouseListNotifier(this.repository, this.rtId, this.blockId)
+    : super(const AsyncValue.loading()) {
+    loadInitialData();
+  }
+
+  Future<void> loadInitialData() async {
+    state = const AsyncValue.loading();
+    try {
+      final houses = await repository.getListHouse({
+        "page": 1,
+        "page_size": 10,
+        "rt_id": rtId,
+        "block_id": blockId,
+      });
+
+      switch (houses) {
+        case Ok<ApiResponse<List<HouseModel>>>():
+          if (houses.value.data == null) {
+            state = AsyncValue.data([]);
+            return;
+          }
+          hasMore = houses.value.data?.length == 10;
+          state = AsyncValue.data(houses.value.data!);
+          break;
+        case Error<ApiResponse<List<HouseModel>>>():
+          state = AsyncValue.error(houses.error.toString(), StackTrace.empty);
+          return;
+      }
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
+  Future<void> loadMore() async {
+    if (!hasMore || isLoading) return;
+
+    isLoading = true;
+    try {
+      final newHouses = await repository.getListHouse({
+        "page": page + 1,
+        "page_size": 10,
+        "rt_id": rtId,
+        "block_id": blockId,
+      });
+      switch (newHouses) {
+        case Ok<ApiResponse<List<HouseModel>>>():
+          if (newHouses.value.data == null) {
+            hasMore = false;
+            state = state.whenData((houses) => [...houses]);
+            return;
+          }
+          hasMore = newHouses.value.meta!.totalPages > page;
+          if (hasMore) {
+            page++;
+          }
+
+          state = state.whenData(
+            (houses) => [...houses, ...newHouses.value.data!],
+          );
+          break;
+        case Error<ApiResponse<List<HouseModel>>>():
+          state = AsyncValue.error(
+            newHouses.error.toString(),
+            StackTrace.empty,
+          );
+          return;
+      }
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  Future<void> refresh() async {
+    page = 1;
+    hasMore = true;
+    await loadInitialData();
   }
 }

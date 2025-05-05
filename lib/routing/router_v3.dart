@@ -12,8 +12,9 @@ import 'package:sirnawa_mobile/domain/model/rw/rw_model.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/admin/block/widget/block_form_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/block/widget/block_screen.dart';
+import 'package:sirnawa_mobile/ui/admin/house/widgets/house_detail_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/house/widgets/house_form_screen.dart';
-import 'package:sirnawa_mobile/ui/admin/house/widgets/house_screen.dart';
+import 'package:sirnawa_mobile/ui/admin/house/widgets/house_screen_v2.dart';
 import 'package:sirnawa_mobile/ui/admin/resident/widget/resident_form_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/resident/widget/resident_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/rt/widget/rt_screen.dart';
@@ -150,17 +151,25 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       //  ===== HOUSE  =====
       GoRoute(
-        path: Routes.adminHouse,
-        builder: (context, state) => const HouseScreen(), // Create mode
+        path: Routes.houseList,
+        builder: (context, state) => const HouseScreenV2(), // Create mode
       ),
       GoRoute(
-        path: Routes.adminHouseCreate,
+        path: Routes.houseCreate,
         builder: (context, state) => const HouseFormScreen(), // Create mode
       ),
+
       GoRoute(
-        path: Routes.adminHouseUpdate,
+        path: "${Routes.houseDetail}/:id",
+        builder: (context, state) {
+          return HouseDetailScreen(houseId: state.pathParameters['id']!);
+        },
+      ),
+      GoRoute(
+        path: Routes.houseEdit,
         builder: (context, state) {
           final house = state.extra as HouseModel; // extra untuk passing data
+          // final houseId = state.pathParameters['id']!;
           return HouseFormScreen(house: house); // Edit mode
         },
       ),

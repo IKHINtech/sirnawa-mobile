@@ -32,6 +32,7 @@ import 'package:sirnawa_mobile/data/services/api/rw_services.dart';
 import 'package:sirnawa_mobile/data/services/api/user_services.dart';
 import 'package:sirnawa_mobile/data/services/share_preference_service.dart';
 import 'package:sirnawa_mobile/domain/model/block/block_model.dart';
+import 'package:sirnawa_mobile/domain/model/house/house_model.dart';
 import 'package:sirnawa_mobile/ui/admin/announcement/announcement_viewmodel/announcement_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/block/block_view_model/block_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/house/house_viewmodel/house_viewmodel.dart';
@@ -175,6 +176,33 @@ final StateNotifierProvider<RwViewModel, RwState> rwViewModelProvider =
     });
 
 // ========== House ========== //
+final houseDetailProvider = FutureProvider.autoDispose
+    .family<HouseModel?, String>((ref, houseId) async {
+      final repository = ref.watch(houseRepositoryProvider);
+      try {
+        final response = await repository.getDetailHouse(houseId);
+        return response;
+      } catch (e, _) {
+        // Simpan error untuk ditampilkan di UI
+        ref.read(houseErrorProvider.notifier).state = e.toString();
+        rethrow; // Tetap lempar error agar bisa ditangkap oleh AsyncValue
+      }
+    });
+
+final houseErrorProvider = StateProvider.autoDispose<String?>((ref) => null);
+
+final houseListProvider = StateNotifierProvider.autoDispose.family<
+  HouseListNotifier,
+  AsyncValue<List<HouseModel>>,
+  String
+>((ref, blockId) {
+  final repository = ref.watch(houseRepositoryProvider);
+  final rtId = ref.watch(
+    homeViewModelProvider.select((s) => s.residentHouse?.house.rt?.id ?? ""),
+  );
+  return HouseListNotifier(repository, rtId, blockId);
+});
+
 final Provider<HouseService> houseServiceProvider = Provider<HouseService>((
   Ref<HouseService> ref,
 ) {
@@ -236,17 +264,21 @@ final StateNotifierProvider<BlockViewModel, BlockState> blockViewModelProvider =
       );
     });
 
-final FutureProvider<List<BlockModel>> blocksProvider = FutureProvider<
-  List<BlockModel>
->((FutureProviderRef<List<BlockModel>> ref) async {
-  final String rtid =
-      ref.watch<HomeState>(homeViewModelProvider).residentHouse?.house.rt?.id ??
-      "";
-  await ref
-      .read<BlockViewModel>(blockViewModelProvider.notifier)
-      .fetchBlockOptions(rtId: rtid);
-  return ref.read<BlockState>(blockViewModelProvider).blockOptions;
-});
+final FutureProvider<List<BlockModel>> blocksProvider =
+    FutureProvider<List<BlockModel>>((Ref ref) async {
+      final String rtid =
+          ref
+              .watch<HomeState>(homeViewModelProvider)
+              .residentHouse
+              ?.house
+              .rt
+              ?.id ??
+          "";
+      await ref
+          .read<BlockViewModel>(blockViewModelProvider.notifier)
+          .fetchBlockOptions(rtId: rtid);
+      return ref.read<BlockState>(blockViewModelProvider).blockOptions;
+    });
 
 // ========== USER ========== //
 final Provider<UserService> userServiceProvider = Provider<UserService>((
@@ -270,6 +302,11 @@ final StateNotifierProvider<HomeViewModel, HomeState> homeViewModelProvider =
       );
     });
 
+final selectedBlockProvider = StateProvider<String>((ref) {
+  // Nilai default: block ID dari rumah resident
+  final homeState = ref.watch(homeViewModelProvider);
+  return homeState.residentHouse?.house.block?.id ?? "";
+});
 // ========= Login View Model =========  //
 final StateNotifierProvider<LoginViewModel, LoginState> loginViewModelProvider =
     StateNotifierProvider<LoginViewModel, LoginState>((ref) {

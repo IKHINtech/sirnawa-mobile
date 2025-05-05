@@ -125,7 +125,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     passwordController.text,
                                   );
                                 } catch (e) {
-                                  print(e);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Opps: ${e.toString()}'),
+                                      backgroundColor: Colors.red,
+                                      behavior: SnackBarBehavior.floating,
+                                    ),
+                                  );
                                 }
                               }
                             },

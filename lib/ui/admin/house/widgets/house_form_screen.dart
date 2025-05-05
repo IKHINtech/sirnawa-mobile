@@ -39,6 +39,7 @@ class _HouseFormScreenState extends ConsumerState<HouseFormScreen> {
   @override
   Widget build(BuildContext context) {
     final viewModel = ref.read(houseViewModelProvider.notifier);
+    final state = ref.watch(houseViewModelProvider);
     final mainState = ref.read(homeViewModelProvider);
     final blocksAsync = ref.watch(blocksProvider);
 
@@ -106,7 +107,6 @@ class _HouseFormScreenState extends ConsumerState<HouseFormScreen> {
                   ElevatedButton(
                     onPressed: () async {
                       if (_formKey.currentState?.validate() != true) return;
-
                       final house = HouseRequestModel(
                         id: widget.house?.id,
                         number: _numberController.text,
@@ -116,23 +116,84 @@ class _HouseFormScreenState extends ConsumerState<HouseFormScreen> {
                       );
 
                       if (isEdit) {
-                        await viewModel.updateHouse(
+                        final success = await viewModel.updateHouse(
                           id: house.id!,
                           resident: house,
                           rtID: mainState.residentHouse!.house.rtId,
+                          blockId: house.blockId,
                         );
+                        if (success) {
+                          ref.refresh(
+                            houseListProvider(
+                              mainState.residentHouse!.house.blockId,
+                            ),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Berhasil mengubah Data Rumah'),
+                              backgroundColor: Colors.green,
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                          // Optionally: navigate back atau reset form
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Gagal mengubah Data Rumah: ${state.error}',
+                              ),
+                              backgroundColor: Colors.red,
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                        }
                       } else {
-                        await viewModel.createHouse(
+                        final success = await viewModel.createHouse(
                           resident: house,
                           rtId: mainState.residentHouse!.house.rtId,
+                          blockId: house.blockId,
                         );
+                        if (success) {
+                          ref.refresh(
+                            houseListProvider(
+                              mainState.residentHouse!.house.blockId,
+                            ),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Berhasil menambahkan Data Rumah'),
+                              backgroundColor: Colors.green,
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                          // Optionally: navigate back atau reset form
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Gagal menambahkan Data Rumah: ${state.error}',
+                              ),
+                              backgroundColor: Colors.red,
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                        }
                       }
 
                       if (mounted) {
                         Navigator.pop(context);
                       }
                     },
-                    child: Text(isEdit ? 'Simpan Perubahan' : 'Tambah Rumah'),
+                    child:
+                        state.isLoading
+                            ? SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(),
+                            )
+                            : Text(
+                              isEdit ? 'Simpan Perubahan' : 'Tambah Rumah',
+                            ),
                   ),
                 ],
               ),

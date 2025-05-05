@@ -41,6 +41,21 @@ class HouseRepositoryRemote implements HouseRepository {
   }
 
   @override
+  Future<HouseModel?> getDetailHouse(String id) async {
+    try {
+      final res = await _houseService.getDetailHouse(houseID: id);
+      switch (res) {
+        case Ok():
+          return res.value.data;
+        case Error():
+          throw Exception('Failed to load house detail: ${res.error}');
+      }
+    } on Exception catch (e) {
+      throw Exception('Failed to load house detail: $e');
+    }
+  }
+
+  @override
   Future<Result<void>> delete(String id) async {
     try {
       return await _houseService.deleteHouse(id);
