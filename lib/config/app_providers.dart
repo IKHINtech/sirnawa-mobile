@@ -236,11 +236,16 @@ final StateNotifierProvider<BlockViewModel, BlockState> blockViewModelProvider =
       );
     });
 
-final blocksProvider = FutureProvider<List<BlockModel>>((ref) async {
-  final rtid =
-      ref.watch(homeViewModelProvider).residentHouse?.house.rt?.id ?? "";
-  await ref.read(blockViewModelProvider.notifier).fetchBlockOptions(rtId: rtid);
-  return ref.read(blockViewModelProvider).blockOptions;
+final FutureProvider<List<BlockModel>> blocksProvider = FutureProvider<
+  List<BlockModel>
+>((FutureProviderRef<List<BlockModel>> ref) async {
+  final String rtid =
+      ref.watch<HomeState>(homeViewModelProvider).residentHouse?.house.rt?.id ??
+      "";
+  await ref
+      .read<BlockViewModel>(blockViewModelProvider.notifier)
+      .fetchBlockOptions(rtId: rtid);
+  return ref.read<BlockState>(blockViewModelProvider).blockOptions;
 });
 
 // ========== USER ========== //

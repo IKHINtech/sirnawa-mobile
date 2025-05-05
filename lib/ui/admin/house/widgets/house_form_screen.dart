@@ -116,9 +116,16 @@ class _HouseFormScreenState extends ConsumerState<HouseFormScreen> {
                       );
 
                       if (isEdit) {
-                        await viewModel.updateHouse(house.id!, house);
+                        await viewModel.updateHouse(
+                          id: house.id!,
+                          resident: house,
+                          rtID: mainState.residentHouse!.house.rtId,
+                        );
                       } else {
-                        await viewModel.createHouse(house);
+                        await viewModel.createHouse(
+                          resident: house,
+                          rtId: mainState.residentHouse!.house.rtId,
+                        );
                       }
 
                       if (mounted) {

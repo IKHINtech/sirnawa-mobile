@@ -50,7 +50,10 @@ class HouseViewModel extends StateNotifier<HouseState> {
         ),
       );
 
-  Future<void> fetchListHouse({bool reset = false}) async {
+  Future<void> fetchListHouse({
+    required String rtId,
+    bool reset = false,
+  }) async {
     try {
       state =
           reset
@@ -70,6 +73,7 @@ class HouseViewModel extends StateNotifier<HouseState> {
       final result = await _repository.getListHouse({
         "page": _currentPage,
         "page_size": _limit,
+        "rt_id": rtId,
       });
 
       switch (result) {
@@ -98,19 +102,22 @@ class HouseViewModel extends StateNotifier<HouseState> {
     }
   }
 
-  Future<void> loadMore() async {
+  Future<void> loadMore({required String rtId}) async {
     if (!(_currentPage < _totalPages) || state.isLoading) return;
-    await fetchListHouse();
+    await fetchListHouse(rtId: rtId);
   }
 
-  Future<bool> createHouse(HouseRequestModel resident) async {
+  Future<bool> createHouse({
+    required String rtId,
+    required HouseRequestModel resident,
+  }) async {
     state = state.copyWith(isLoading: true);
     try {
       final result = await _repository.createHouse(resident);
       switch (result) {
         case Ok():
           // Opsional: setelah create, refresh list
-          await fetchListHouse(reset: true);
+          await fetchListHouse(reset: true, rtId: rtId);
           return true;
         case Error():
           state = state.copyWith(
@@ -125,13 +132,17 @@ class HouseViewModel extends StateNotifier<HouseState> {
     }
   }
 
-  Future<bool> updateHouse(String id, HouseRequestModel resident) async {
+  Future<bool> updateHouse({
+    required String id,
+    required String rtID,
+    required HouseRequestModel resident,
+  }) async {
     state = state.copyWith(isLoading: true);
     try {
       final result = await _repository.updateHouse(id, resident);
       switch (result) {
         case Ok():
-          await fetchListHouse(reset: true);
+          await fetchListHouse(rtId: rtID, reset: true);
           return true;
         case Error():
           state = state.copyWith(
@@ -146,13 +157,13 @@ class HouseViewModel extends StateNotifier<HouseState> {
     }
   }
 
-  Future<void> deleteHouse(String id) async {
+  Future<void> deleteHouse({required String id, required String rtId}) async {
     state = state.copyWith(isLoading: true);
     try {
       final result = await _repository.delete(id);
       switch (result) {
         case Ok():
-          await fetchListHouse(reset: true);
+          await fetchListHouse(reset: true, rtId: rtId);
           break;
         case Error():
           state = state.copyWith(

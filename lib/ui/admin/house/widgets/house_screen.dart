@@ -5,6 +5,7 @@ import 'package:sirnawa_mobile/config/app_providers.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/admin/house/house_viewmodel/house_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';
+import 'package:sirnawa_mobile/ui/home/view_models/home_viewmodel.dart';
 
 class HouseScreen extends ConsumerStatefulWidget {
   const HouseScreen({super.key});
@@ -18,7 +19,11 @@ class _HouseScreenState extends ConsumerState<HouseScreen> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      ref.read(houseViewModelProvider.notifier).fetchListHouse(reset: true);
+      final homeState = ref.read(homeViewModelProvider);
+      final rtId = homeState.residentHouse?.house.rt?.id;
+      ref
+          .read(houseViewModelProvider.notifier)
+          .fetchListHouse(reset: true, rtId: rtId ?? "");
     });
   }
 
@@ -31,7 +36,7 @@ class _HouseScreenState extends ConsumerState<HouseScreen> {
       appBar: CustomAppBar(
         title: 'Data Rumah ${homeState.residentHouse?.house.rt?.name}',
       ),
-      body: _buildBody(state, viewModel, context),
+      body: _buildBody(state, viewModel, context, homeState),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           context.push(Routes.adminHouseCreate);
@@ -45,6 +50,7 @@ class _HouseScreenState extends ConsumerState<HouseScreen> {
     HouseState state,
     HouseViewModel viewModel,
     BuildContext context,
+    HomeState homeState,
   ) {
     if (state.isLoading && state.list.isEmpty) {
       return const Center(child: CircularProgressIndicator());
@@ -57,7 +63,11 @@ class _HouseScreenState extends ConsumerState<HouseScreen> {
           children: [
             Text("Error: ${state.error}"),
             ElevatedButton(
-              onPressed: () => viewModel.fetchListHouse(reset: true),
+              onPressed:
+                  () => viewModel.fetchListHouse(
+                    reset: true,
+                    rtId: homeState.residentHouse?.house.rt?.id ?? "",
+                  ),
               child: const Text("Retry"),
             ),
           ],
@@ -66,7 +76,11 @@ class _HouseScreenState extends ConsumerState<HouseScreen> {
     }
 
     return RefreshIndicator(
-      onRefresh: () => viewModel.fetchListHouse(reset: true),
+      onRefresh:
+          () => viewModel.fetchListHouse(
+            reset: true,
+            rtId: homeState.residentHouse?.house.rt?.id ?? "",
+          ),
       child: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount:
