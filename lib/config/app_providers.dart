@@ -11,6 +11,8 @@ import 'package:sirnawa_mobile/data/repositories/housing_area/housing_area_repos
 import 'package:sirnawa_mobile/data/repositories/housing_area/housing_area_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/resident/resident_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/resident/resident_repository_remote.dart';
+import 'package:sirnawa_mobile/data/repositories/resident_house/resident_house_repository.dart';
+import 'package:sirnawa_mobile/data/repositories/resident_house/resident_house_repository_remote.dart';
 import 'package:sirnawa_mobile/data/repositories/ronda_group/ronda_group_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/ronda_group/ronda_group_repository_remote.dart';
 import 'package:sirnawa_mobile/data/repositories/rt/rt_repository.dart';
@@ -25,6 +27,7 @@ import 'package:sirnawa_mobile/data/services/api/auth_api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/block_services.dart';
 import 'package:sirnawa_mobile/data/services/api/house_services.dart';
 import 'package:sirnawa_mobile/data/services/api/housing_area_services.dart';
+import 'package:sirnawa_mobile/data/services/api/resident_house_services.dart';
 import 'package:sirnawa_mobile/data/services/api/resident_services.dart';
 import 'package:sirnawa_mobile/data/services/api/ronda_group_services.dart';
 import 'package:sirnawa_mobile/data/services/api/rt_services.dart';
@@ -33,11 +36,13 @@ import 'package:sirnawa_mobile/data/services/api/user_services.dart';
 import 'package:sirnawa_mobile/data/services/share_preference_service.dart';
 import 'package:sirnawa_mobile/domain/model/block/block_model.dart';
 import 'package:sirnawa_mobile/domain/model/house/house_model.dart';
+import 'package:sirnawa_mobile/domain/model/resident_house/resident_house_model.dart';
 import 'package:sirnawa_mobile/ui/admin/announcement/announcement_viewmodel/announcement_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/block/block_view_model/block_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/house/house_viewmodel/house_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/housing_area/housing_area_viewmodel/housing_area_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/resident/resident_view_model/resident_viewmodel.dart';
+import 'package:sirnawa_mobile/ui/admin/resident_house/resident_house_viewmodel/resident_house_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/ronda_group/ronda_group_viewmodel/ronda_group_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/rt/rt_viewmodel/rt_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/rw/rw_viewmodel/rw_viewmodel.dart';
@@ -198,7 +203,7 @@ final houseListProvider = StateNotifierProvider.autoDispose.family<
 >((ref, blockId) {
   final repository = ref.watch(houseRepositoryProvider);
   final rtId = ref.watch(
-    homeViewModelProvider.select((s) => s.residentHouse?.house.rt?.id ?? ""),
+    homeViewModelProvider.select((s) => s.residentHouse?.house!.rt?.id ?? ""),
   );
   return HouseListNotifier(repository, rtId, blockId);
 });
@@ -242,7 +247,52 @@ residentViewModelProvider =
         repository: ref.read<ResidentRepository>(residentRepositoryProvider),
       );
     });
+// ========== RESIDENT HOUSE ========== //
+final Provider<ResidentHouseService> residentHouseServiceProvider =
+    Provider<ResidentHouseService>((Ref<ResidentHouseService> ref) {
+      return ResidentHouseService(ref.read<ApiClient>(apiClientProvider));
+    });
 
+final Provider<ResidentHouseRepository> residentHouseRepositoryProvider =
+    Provider<ResidentHouseRepository>((Ref<ResidentHouseRepository> ref) {
+      return ResidentHouseRepositoryRemote(
+        residentHouseService: ref.read<ResidentHouseService>(
+          residentHouseServiceProvider,
+        ),
+      );
+    });
+
+final StateNotifierProvider<ResidentHouseViewModel, ResidentHouseState>
+residentHouseViewModelProvider =
+    StateNotifierProvider<ResidentHouseViewModel, ResidentHouseState>((ref) {
+      return ResidentHouseViewModel(
+        repository: ref.read<ResidentHouseRepository>(
+          residentHouseRepositoryProvider,
+        ),
+      );
+    });
+
+final listPenghuniProvider =
+    FutureProvider.family<List<ResidentHouseModel>, String>((
+      ref,
+      houseID,
+    ) async {
+      final viewModel = ref.read(residentHouseViewModelProvider.notifier);
+      await viewModel.fetchPenghuni(houseID: houseID);
+      return ref.read(residentHouseViewModelProvider).listPenghuni;
+    });
+
+final listResidentHouseProvider = StateNotifierProvider.autoDispose.family<
+  HouseListNotifier,
+  AsyncValue<List<HouseModel>>,
+  String
+>((ref, blockId) {
+  final repository = ref.watch(houseRepositoryProvider);
+  final rtId = ref.watch(
+    homeViewModelProvider.select((s) => s.residentHouse?.house!.rt?.id ?? ""),
+  );
+  return HouseListNotifier(repository, rtId, blockId);
+});
 // ========== BLOCK ========== //
 final Provider<BlockService> blockServiceProvider = Provider<BlockService>((
   Ref<BlockService> ref,
@@ -270,7 +320,7 @@ final FutureProvider<List<BlockModel>> blocksProvider =
           ref
               .watch<HomeState>(homeViewModelProvider)
               .residentHouse
-              ?.house
+              ?.house!
               .rt
               ?.id ??
           "";
@@ -305,7 +355,7 @@ final StateNotifierProvider<HomeViewModel, HomeState> homeViewModelProvider =
 final selectedBlockProvider = StateProvider<String>((ref) {
   // Nilai default: block ID dari rumah resident
   final homeState = ref.watch(homeViewModelProvider);
-  return homeState.residentHouse?.house.block?.id ?? "";
+  return homeState.residentHouse?.house!.block?.id ?? "";
 });
 // ========= Login View Model =========  //
 final StateNotifierProvider<LoginViewModel, LoginState> loginViewModelProvider =

@@ -63,14 +63,14 @@ class _BlockFormScreenState extends ConsumerState<BlockFormScreen> {
                   final resident = BlockRequestModel(
                     id: widget.block?.id, // kalau update pakai id
                     name: _nameController.text,
-                    rtId: homeState.residentHouse!.house.rtId,
+                    rtId: homeState.residentHouse!.house!.rtId,
                   );
 
                   if (isEdit) {
                     final success = await viewModel.updateBlock(
                       id: resident.id!,
                       resident: resident,
-                      rtId: homeState.residentHouse!.house.rtId,
+                      rtId: homeState.residentHouse!.house!.rtId,
                     );
                     if (success) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -93,7 +93,7 @@ class _BlockFormScreenState extends ConsumerState<BlockFormScreen> {
                   } else {
                     final success = await viewModel.createBlock(
                       resident: resident,
-                      rtId: homeState.residentHouse!.house.rtId,
+                      rtId: homeState.residentHouse!.house!.rtId,
                     );
                     if (success) {
                       ScaffoldMessenger.of(context).showSnackBar(

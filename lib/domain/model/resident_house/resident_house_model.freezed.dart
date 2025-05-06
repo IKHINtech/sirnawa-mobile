@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ResidentHouseModel {
 
- String get id;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt;@JsonKey(name: 'resident_id') String get residentId;@JsonKey(name: 'house_id') String get houseId;@JsonKey(name: 'is_primary') bool get isPrimary; HouseModel get house;
+ String get id;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt;@JsonKey(name: 'resident_id') String get residentId;@JsonKey(name: 'house_id') String get houseId;@JsonKey(name: 'is_primary') bool get isPrimary; HouseModel? get house; ResidentModel? get resident;
 /// Create a copy of ResidentHouseModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $ResidentHouseModelCopyWith<ResidentHouseModel> get copyWith => _$ResidentHouseM
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ResidentHouseModel&&(identical(other.id, id) || other.id == id)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.residentId, residentId) || other.residentId == residentId)&&(identical(other.houseId, houseId) || other.houseId == houseId)&&(identical(other.isPrimary, isPrimary) || other.isPrimary == isPrimary)&&(identical(other.house, house) || other.house == house));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ResidentHouseModel&&(identical(other.id, id) || other.id == id)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.residentId, residentId) || other.residentId == residentId)&&(identical(other.houseId, houseId) || other.houseId == houseId)&&(identical(other.isPrimary, isPrimary) || other.isPrimary == isPrimary)&&(identical(other.house, house) || other.house == house)&&(identical(other.resident, resident) || other.resident == resident));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,createdAt,updatedAt,residentId,houseId,isPrimary,house);
+int get hashCode => Object.hash(runtimeType,id,createdAt,updatedAt,residentId,houseId,isPrimary,house,resident);
 
 @override
 String toString() {
-  return 'ResidentHouseModel(id: $id, createdAt: $createdAt, updatedAt: $updatedAt, residentId: $residentId, houseId: $houseId, isPrimary: $isPrimary, house: $house)';
+  return 'ResidentHouseModel(id: $id, createdAt: $createdAt, updatedAt: $updatedAt, residentId: $residentId, houseId: $houseId, isPrimary: $isPrimary, house: $house, resident: $resident)';
 }
 
 
@@ -49,11 +49,11 @@ abstract mixin class $ResidentHouseModelCopyWith<$Res>  {
   factory $ResidentHouseModelCopyWith(ResidentHouseModel value, $Res Function(ResidentHouseModel) _then) = _$ResidentHouseModelCopyWithImpl;
 @useResult
 $Res call({
- String id,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt,@JsonKey(name: 'resident_id') String residentId,@JsonKey(name: 'house_id') String houseId,@JsonKey(name: 'is_primary') bool isPrimary, HouseModel house
+ String id,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt,@JsonKey(name: 'resident_id') String residentId,@JsonKey(name: 'house_id') String houseId,@JsonKey(name: 'is_primary') bool isPrimary, HouseModel? house, ResidentModel? resident
 });
 
 
-$HouseModelCopyWith<$Res> get house;
+$HouseModelCopyWith<$Res>? get house;$ResidentModelCopyWith<$Res>? get resident;
 
 }
 /// @nodoc
@@ -66,7 +66,7 @@ class _$ResidentHouseModelCopyWithImpl<$Res>
 
 /// Create a copy of ResidentHouseModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? createdAt = null,Object? updatedAt = null,Object? residentId = null,Object? houseId = null,Object? isPrimary = null,Object? house = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? createdAt = null,Object? updatedAt = null,Object? residentId = null,Object? houseId = null,Object? isPrimary = null,Object? house = freezed,Object? resident = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
@@ -74,18 +74,34 @@ as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore
 as DateTime,residentId: null == residentId ? _self.residentId : residentId // ignore: cast_nullable_to_non_nullable
 as String,houseId: null == houseId ? _self.houseId : houseId // ignore: cast_nullable_to_non_nullable
 as String,isPrimary: null == isPrimary ? _self.isPrimary : isPrimary // ignore: cast_nullable_to_non_nullable
-as bool,house: null == house ? _self.house : house // ignore: cast_nullable_to_non_nullable
-as HouseModel,
+as bool,house: freezed == house ? _self.house : house // ignore: cast_nullable_to_non_nullable
+as HouseModel?,resident: freezed == resident ? _self.resident : resident // ignore: cast_nullable_to_non_nullable
+as ResidentModel?,
   ));
 }
 /// Create a copy of ResidentHouseModel
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$HouseModelCopyWith<$Res> get house {
-  
-  return $HouseModelCopyWith<$Res>(_self.house, (value) {
+$HouseModelCopyWith<$Res>? get house {
+    if (_self.house == null) {
+    return null;
+  }
+
+  return $HouseModelCopyWith<$Res>(_self.house!, (value) {
     return _then(_self.copyWith(house: value));
+  });
+}/// Create a copy of ResidentHouseModel
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ResidentModelCopyWith<$Res>? get resident {
+    if (_self.resident == null) {
+    return null;
+  }
+
+  return $ResidentModelCopyWith<$Res>(_self.resident!, (value) {
+    return _then(_self.copyWith(resident: value));
   });
 }
 }
@@ -95,7 +111,7 @@ $HouseModelCopyWith<$Res> get house {
 @JsonSerializable()
 
 class _ResidentHouseModel implements ResidentHouseModel {
-  const _ResidentHouseModel({required this.id, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt, @JsonKey(name: 'resident_id') required this.residentId, @JsonKey(name: 'house_id') required this.houseId, @JsonKey(name: 'is_primary') required this.isPrimary, required this.house});
+  const _ResidentHouseModel({required this.id, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt, @JsonKey(name: 'resident_id') required this.residentId, @JsonKey(name: 'house_id') required this.houseId, @JsonKey(name: 'is_primary') required this.isPrimary, this.house, this.resident});
   factory _ResidentHouseModel.fromJson(Map<String, dynamic> json) => _$ResidentHouseModelFromJson(json);
 
 @override final  String id;
@@ -104,7 +120,8 @@ class _ResidentHouseModel implements ResidentHouseModel {
 @override@JsonKey(name: 'resident_id') final  String residentId;
 @override@JsonKey(name: 'house_id') final  String houseId;
 @override@JsonKey(name: 'is_primary') final  bool isPrimary;
-@override final  HouseModel house;
+@override final  HouseModel? house;
+@override final  ResidentModel? resident;
 
 /// Create a copy of ResidentHouseModel
 /// with the given fields replaced by the non-null parameter values.
@@ -119,16 +136,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResidentHouseModel&&(identical(other.id, id) || other.id == id)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.residentId, residentId) || other.residentId == residentId)&&(identical(other.houseId, houseId) || other.houseId == houseId)&&(identical(other.isPrimary, isPrimary) || other.isPrimary == isPrimary)&&(identical(other.house, house) || other.house == house));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResidentHouseModel&&(identical(other.id, id) || other.id == id)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.residentId, residentId) || other.residentId == residentId)&&(identical(other.houseId, houseId) || other.houseId == houseId)&&(identical(other.isPrimary, isPrimary) || other.isPrimary == isPrimary)&&(identical(other.house, house) || other.house == house)&&(identical(other.resident, resident) || other.resident == resident));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,createdAt,updatedAt,residentId,houseId,isPrimary,house);
+int get hashCode => Object.hash(runtimeType,id,createdAt,updatedAt,residentId,houseId,isPrimary,house,resident);
 
 @override
 String toString() {
-  return 'ResidentHouseModel(id: $id, createdAt: $createdAt, updatedAt: $updatedAt, residentId: $residentId, houseId: $houseId, isPrimary: $isPrimary, house: $house)';
+  return 'ResidentHouseModel(id: $id, createdAt: $createdAt, updatedAt: $updatedAt, residentId: $residentId, houseId: $houseId, isPrimary: $isPrimary, house: $house, resident: $resident)';
 }
 
 
@@ -139,11 +156,11 @@ abstract mixin class _$ResidentHouseModelCopyWith<$Res> implements $ResidentHous
   factory _$ResidentHouseModelCopyWith(_ResidentHouseModel value, $Res Function(_ResidentHouseModel) _then) = __$ResidentHouseModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt,@JsonKey(name: 'resident_id') String residentId,@JsonKey(name: 'house_id') String houseId,@JsonKey(name: 'is_primary') bool isPrimary, HouseModel house
+ String id,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt,@JsonKey(name: 'resident_id') String residentId,@JsonKey(name: 'house_id') String houseId,@JsonKey(name: 'is_primary') bool isPrimary, HouseModel? house, ResidentModel? resident
 });
 
 
-@override $HouseModelCopyWith<$Res> get house;
+@override $HouseModelCopyWith<$Res>? get house;@override $ResidentModelCopyWith<$Res>? get resident;
 
 }
 /// @nodoc
@@ -156,7 +173,7 @@ class __$ResidentHouseModelCopyWithImpl<$Res>
 
 /// Create a copy of ResidentHouseModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? createdAt = null,Object? updatedAt = null,Object? residentId = null,Object? houseId = null,Object? isPrimary = null,Object? house = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? createdAt = null,Object? updatedAt = null,Object? residentId = null,Object? houseId = null,Object? isPrimary = null,Object? house = freezed,Object? resident = freezed,}) {
   return _then(_ResidentHouseModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
@@ -164,8 +181,9 @@ as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore
 as DateTime,residentId: null == residentId ? _self.residentId : residentId // ignore: cast_nullable_to_non_nullable
 as String,houseId: null == houseId ? _self.houseId : houseId // ignore: cast_nullable_to_non_nullable
 as String,isPrimary: null == isPrimary ? _self.isPrimary : isPrimary // ignore: cast_nullable_to_non_nullable
-as bool,house: null == house ? _self.house : house // ignore: cast_nullable_to_non_nullable
-as HouseModel,
+as bool,house: freezed == house ? _self.house : house // ignore: cast_nullable_to_non_nullable
+as HouseModel?,resident: freezed == resident ? _self.resident : resident // ignore: cast_nullable_to_non_nullable
+as ResidentModel?,
   ));
 }
 
@@ -173,10 +191,25 @@ as HouseModel,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$HouseModelCopyWith<$Res> get house {
-  
-  return $HouseModelCopyWith<$Res>(_self.house, (value) {
+$HouseModelCopyWith<$Res>? get house {
+    if (_self.house == null) {
+    return null;
+  }
+
+  return $HouseModelCopyWith<$Res>(_self.house!, (value) {
     return _then(_self.copyWith(house: value));
+  });
+}/// Create a copy of ResidentHouseModel
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ResidentModelCopyWith<$Res>? get resident {
+    if (_self.resident == null) {
+    return null;
+  }
+
+  return $ResidentModelCopyWith<$Res>(_self.resident!, (value) {
+    return _then(_self.copyWith(resident: value));
   });
 }
 }

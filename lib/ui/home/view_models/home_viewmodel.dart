@@ -94,7 +94,7 @@ class HomeViewModel extends StateNotifier<HomeState> {
         if (result.value.data?.userRTs != null &&
             result.value.data!.userRTs!.isNotEmpty) {
           userRt = result.value.data!.userRTs!.firstWhere(
-            (userRt) => userRt.rtId == primaryHouse?.house.rtId,
+            (userRt) => userRt.rtId == primaryHouse?.house!.rtId,
           );
         }
         state = state.copyWith(
@@ -125,7 +125,7 @@ class HomeViewModel extends StateNotifier<HomeState> {
 
   void changeHouse(ResidentHouseModel house) {
     final userRt = state.user?.userRTs?.firstWhere(
-      (userRt) => userRt.rtId == house.house.rtId,
+      (userRt) => userRt.rtId == house.house!.rtId,
     );
     state = state.copyWith(residentHouse: house, userRtModel: userRt);
   }

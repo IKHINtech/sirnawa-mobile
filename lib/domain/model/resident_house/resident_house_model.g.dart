@@ -14,7 +14,16 @@ _ResidentHouseModel _$ResidentHouseModelFromJson(Map<String, dynamic> json) =>
       residentId: json['resident_id'] as String,
       houseId: json['house_id'] as String,
       isPrimary: json['is_primary'] as bool,
-      house: HouseModel.fromJson(json['house'] as Map<String, dynamic>),
+      house:
+          json['house'] == null
+              ? null
+              : HouseModel.fromJson(json['house'] as Map<String, dynamic>),
+      resident:
+          json['resident'] == null
+              ? null
+              : ResidentModel.fromJson(
+                json['resident'] as Map<String, dynamic>,
+              ),
     );
 
 Map<String, dynamic> _$ResidentHouseModelToJson(_ResidentHouseModel instance) =>
@@ -26,4 +35,5 @@ Map<String, dynamic> _$ResidentHouseModelToJson(_ResidentHouseModel instance) =>
       'house_id': instance.houseId,
       'is_primary': instance.isPrimary,
       'house': instance.house,
+      'resident': instance.resident,
     };

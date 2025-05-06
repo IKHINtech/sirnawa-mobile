@@ -55,7 +55,7 @@ class HouseDetailBottomSheet extends StatelessWidget {
                       isSelected ? Theme.of(context).colorScheme.primary : null,
                 ),
                 title: Text(
-                  "${house.house.block?.name ?? '-'} No. ${house.house.number}",
+                  "${house.house!.block?.name ?? '-'} No. ${house.house!.number}",
                   style: TextStyle(
                     fontWeight:
                         isSelected ? FontWeight.bold : FontWeight.normal,

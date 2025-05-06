@@ -13,6 +13,9 @@ class HouseDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final houseAsync = ref.watch(houseDetailProvider(houseId));
+    final penghuniAsync = ref.watch(
+      listPenghuniProvider(houseId),
+    ); // Tambahkan ini
     final error = ref.watch(houseErrorProvider);
     if (error != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -78,19 +81,37 @@ class HouseDetailScreen extends ConsumerWidget {
                   _buildDetailCard(
                     title: 'Penghuni',
                     children: [
-                      if (house!.residentHouses != null &&
-                          house.residentHouses!.isEmpty)
-                        const Text('Tidak ada penghuni'),
-                      ...house.residentHouses!.map(
-                        (resident) => ListTile(
-                          leading: const CircleAvatar(
-                            child: Icon(Icons.person),
-                          ),
-                          title: Text(resident.residentId),
-                          onTap: () {
-                            // Navigate to resident detail
-                          },
-                        ),
+                      penghuniAsync.when(
+                        loading:
+                            () => const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                        error: (error, stack) => Text('Error: $error'),
+                        data:
+                            (penghuniList) => Column(
+                              children: [
+                                if (penghuniList.isEmpty)
+                                  const Text('Tidak ada penghuni'),
+                                ...penghuniList.map(
+                                  (resident) => ListTile(
+                                    leading: const CircleAvatar(
+                                      child: Icon(Icons.person),
+                                    ),
+                                    title: Text(
+                                      resident.resident?.name ?? 'No name',
+                                    ),
+                                    subtitle: Text(
+                                      resident.resident!.isHeadOfFamily
+                                          ? 'Kepala Keluarga'
+                                          : 'Anggota Keluarga',
+                                    ),
+                                    onTap: () {
+                                      // Navigate to resident detail
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
                       ),
                     ],
                   ),

@@ -62,7 +62,7 @@ class _RwFormScreenState extends ConsumerState<RwFormScreen> {
                     id: widget.rw?.id, // kalau update pakai id
                     name: _nameController.text,
                     housingAreaId:
-                        homeState.residentHouse!.house.hosuingArea!.id,
+                        homeState.residentHouse!.house!.hosuingArea!.id,
                   );
 
                   if (isEdit) {

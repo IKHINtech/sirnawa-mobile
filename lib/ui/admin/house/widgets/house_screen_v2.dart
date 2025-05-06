@@ -13,14 +13,14 @@ class HouseScreenV2 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final homeState = ref.watch(homeViewModelProvider);
-    final initialBlockId = homeState.residentHouse?.house.block?.id ?? "";
+    final initialBlockId = homeState.residentHouse?.house!.block?.id ?? "";
     final blocksAsync = ref.watch(blocksProvider);
     final selectedBlockId = ref.watch(selectedBlockProvider);
     final currentBlockId =
         selectedBlockId.isNotEmpty ? selectedBlockId : initialBlockId;
     return Scaffold(
       appBar: CustomAppBar(
-        title: 'Data Rumah ${homeState.residentHouse?.house.rt?.name}',
+        title: 'Data Rumah ${homeState.residentHouse?.house!.rt?.name}',
       ),
       body: Column(
         children: [

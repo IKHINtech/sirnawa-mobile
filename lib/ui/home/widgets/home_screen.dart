@@ -440,7 +440,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              "${viewmodel.residentHouse?.house.block?.name} No. ${viewmodel.residentHouse?.house.number}",
+              "${viewmodel.residentHouse?.house!.block?.name} No. ${viewmodel.residentHouse?.house!.number}",
               style: Theme.of(context).textTheme.bodySmall!.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
@@ -462,7 +462,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ? CustomShimmer(child: CustomPlaceholder(height: 28, width: 240))
             : Text(
               state.residentHouse != null
-                  ? state.residentHouse?.house.hosuingArea?.name ?? "-"
+                  ? state.residentHouse?.house!.hosuingArea?.name ?? "-"
                   : "-",
               style: Theme.of(context).textTheme.titleLarge!.copyWith(
                 fontWeight: FontWeight.bold,
@@ -480,7 +480,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               child: Text(
                 state.residentHouse != null
-                    ? state.residentHouse?.house.rt?.name ?? "-"
+                    ? state.residentHouse?.house!.rt?.name ?? "-"
                     : "-",
                 style: Theme.of(context).textTheme.titleSmall!.copyWith(
                   fontWeight: FontWeight.bold,

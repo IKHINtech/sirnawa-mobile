@@ -160,7 +160,7 @@ class _ResidentFormScreenState extends ConsumerState<ResidentFormScreen> {
                     gender: _gender,
                     isHeadOfFamily: false,
                     role: "warga",
-                    rtId: mainState.residentHouse!.house.rtId,
+                    rtId: mainState.residentHouse!.house!.rtId,
                   );
 
                   if (isEdit) {

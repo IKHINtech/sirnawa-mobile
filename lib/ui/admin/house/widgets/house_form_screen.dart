@@ -111,7 +111,7 @@ class _HouseFormScreenState extends ConsumerState<HouseFormScreen> {
                         id: widget.house?.id,
                         number: _numberController.text,
                         status: _status,
-                        rtId: mainState.residentHouse!.house.rtId,
+                        rtId: mainState.residentHouse!.house!.rtId,
                         blockId: _blockId,
                       );
 
@@ -119,13 +119,13 @@ class _HouseFormScreenState extends ConsumerState<HouseFormScreen> {
                         final success = await viewModel.updateHouse(
                           id: house.id!,
                           resident: house,
-                          rtID: mainState.residentHouse!.house.rtId,
+                          rtID: mainState.residentHouse!.house!.rtId,
                           blockId: house.blockId,
                         );
                         if (success) {
                           ref.refresh(
                             houseListProvider(
-                              mainState.residentHouse!.house.blockId,
+                              mainState.residentHouse!.house!.blockId,
                             ),
                           );
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -150,13 +150,13 @@ class _HouseFormScreenState extends ConsumerState<HouseFormScreen> {
                       } else {
                         final success = await viewModel.createHouse(
                           resident: house,
-                          rtId: mainState.residentHouse!.house.rtId,
+                          rtId: mainState.residentHouse!.house!.rtId,
                           blockId: house.blockId,
                         );
                         if (success) {
                           ref.refresh(
                             houseListProvider(
-                              mainState.residentHouse!.house.blockId,
+                              mainState.residentHouse!.house!.blockId,
                             ),
                           );
                           ScaffoldMessenger.of(context).showSnackBar(

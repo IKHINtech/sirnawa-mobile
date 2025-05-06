@@ -25,7 +25,7 @@ class _BlockScreenState extends ConsumerState<BlockScreen> {
           .read(blockViewModelProvider.notifier)
           .fetchListBlock(
             reset: true,
-            rtId: homeState.residentHouse?.house.rt?.id ?? "",
+            rtId: homeState.residentHouse?.house!.rt?.id ?? "",
           );
     });
   }
@@ -38,7 +38,7 @@ class _BlockScreenState extends ConsumerState<BlockScreen> {
 
     return Scaffold(
       appBar: CustomAppBar(
-        title: 'Data Blok ${homeState.residentHouse?.house.rt?.name ?? ""}',
+        title: 'Data Blok ${homeState.residentHouse?.house!.rt?.name ?? ""}',
       ),
       body: _buildBody(state, viewModel, context, homeState),
       floatingActionButton: FloatingActionButton(
@@ -70,7 +70,7 @@ class _BlockScreenState extends ConsumerState<BlockScreen> {
               onPressed:
                   () => viewModel.fetchListBlock(
                     reset: true,
-                    rtId: homeState.residentHouse?.house.rt?.id ?? "",
+                    rtId: homeState.residentHouse?.house!.rt?.id ?? "",
                   ),
               child: const Text("Retry"),
             ),
@@ -83,7 +83,7 @@ class _BlockScreenState extends ConsumerState<BlockScreen> {
       onRefresh:
           () => viewModel.fetchListBlock(
             reset: true,
-            rtId: homeState.residentHouse?.house.rt?.id ?? "",
+            rtId: homeState.residentHouse?.house!.rt?.id ?? "",
           ),
       child: ListView.builder(
         padding: const EdgeInsets.all(16),
