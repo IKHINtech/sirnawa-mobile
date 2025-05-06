@@ -10,11 +10,31 @@ class HouseItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String status = "Dihuni";
+    switch (house.status) {
+      case 'aktif':
+        status = 'Dihuni';
+      case 'tidak aktif':
+        status = 'Kosong';
+      case 'kontrakan':
+        status = 'Kontrakan';
+    }
+
+    Icon icon = Icon(Icons.cottage);
+    switch (house.status) {
+      case 'aktif':
+        icon = Icon(Icons.verified_outlined, color: Colors.green);
+      case 'tidak aktif':
+        icon = Icon(Icons.cancel, color: Colors.red);
+      case 'kontrakan':
+        icon = Icon(Icons.calendar_view_month_sharp, color: Colors.orange);
+    }
     return Card(
       child: ListTile(
         leading: const CircleAvatar(child: Icon(Icons.cottage)),
-        title: Text(house.number),
-        subtitle: Text(house.status),
+        trailing: icon,
+        title: Text('${house.block?.name} No. ${house.number}'),
+        subtitle: Text(status),
         onTap: () {
           context.push("${Routes.houseDetail}/${house.id}");
           // Navigate to detail page if needed

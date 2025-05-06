@@ -28,15 +28,25 @@ class HouseDetailScreen extends ConsumerWidget {
         title: 'Detail Rumah',
         actions: [
           houseAsync.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stack) => Center(child: Text('Error: $error')),
+            loading: () => IconButton(onPressed: null, icon: Icon(Icons.edit)),
+            error: (error, stack) => SizedBox(),
             data:
-                (house) => IconButton(
-                  icon: const Icon(Icons.edit),
-                  onPressed: () => context.push(Routes.houseEdit, extra: house),
-                ),
+                (house) =>
+                    house == null
+                        ? IconButton(onPressed: null, icon: Icon(Icons.edit))
+                        : IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed:
+                              () =>
+                                  context.push(Routes.houseEdit, extra: house),
+                        ),
           ),
-          IconButton(icon: const Icon(Icons.refresh), onPressed: () {}),
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              ref.refresh(houseDetailProvider(houseId));
+            },
+          ),
         ],
       ),
       body: houseAsync.when(
@@ -55,33 +65,48 @@ class HouseDetailScreen extends ConsumerWidget {
                       _buildDetailItem('Status', house?.status ?? "-"),
                       _buildDetailItem('Blok', house?.block?.name ?? '-'),
                       _buildDetailItem('RT', house?.rt?.name ?? '-'),
+                      _buildDetailItem('RW', house?.rw?.name ?? '-'),
+                      _buildDetailItem(
+                        'Perumahan',
+                        house?.hosuingArea?.name ?? '-',
+                      ),
                     ],
                   ),
 
                   const SizedBox(height: 16),
 
-                  // _buildDetailCard(
-                  //   title: 'Penghuni',
-                  //   children: [
-                  //     if (house?.residents.isEmpty)
-                  //       const Text('Tidak ada penghuni'),
-                  //     ...house.residents.map(
-                  //       (resident) => ListTile(
-                  //         leading: const CircleAvatar(
-                  //           child: Icon(Icons.person),
-                  //         ),
-                  //         title: Text(resident.name),
-                  //         subtitle: Text(resident.role),
-                  //         onTap: () {
-                  //           // Navigate to resident detail
-                  //         },
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
+                  _buildDetailCard(
+                    title: 'Penghuni',
+                    children: [
+                      if (house!.residentHouses != null &&
+                          house.residentHouses!.isEmpty)
+                        const Text('Tidak ada penghuni'),
+                      ...house.residentHouses!.map(
+                        (resident) => ListTile(
+                          leading: const CircleAvatar(
+                            child: Icon(Icons.person),
+                          ),
+                          title: Text(resident.residentId),
+                          onTap: () {
+                            // Navigate to resident detail
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        label: Row(
+          children: [
+            Icon(Icons.add),
+            SizedBox(width: 8),
+            const Text('Tambah Penghuni'),
+          ],
+        ),
+        onPressed: () {},
       ),
     );
   }

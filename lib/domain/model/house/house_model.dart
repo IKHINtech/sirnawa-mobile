@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:sirnawa_mobile/domain/model/block/block_model.dart';
 import 'package:sirnawa_mobile/domain/model/housing_area/housing_area_model.dart';
+import 'package:sirnawa_mobile/domain/model/resident_house/resident_house_model.dart';
 import 'package:sirnawa_mobile/domain/model/rt/rt_model.dart';
 import 'package:sirnawa_mobile/domain/model/rw/rw_model.dart';
 
@@ -22,6 +23,7 @@ class HouseModel with _$HouseModel {
     RtModel? rt,
     BlockModel? block,
     @JsonKey(name: 'housing_area') HousingAreaModel? hosuingArea,
+    @JsonKey(name: 'resident_houses') List<ResidentHouseModel>? residentHouses,
   }) = _HouseModel;
 
   factory HouseModel.fromJson(Map<String, dynamic> json) =>

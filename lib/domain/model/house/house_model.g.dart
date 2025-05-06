@@ -33,6 +33,10 @@ _HouseModel _$HouseModelFromJson(Map<String, dynamic> json) => _HouseModel(
           : HousingAreaModel.fromJson(
             json['housing_area'] as Map<String, dynamic>,
           ),
+  residentHouses:
+      (json['resident_houses'] as List<dynamic>?)
+          ?.map((e) => ResidentHouseModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
 );
 
 Map<String, dynamic> _$HouseModelToJson(_HouseModel instance) =>
@@ -49,4 +53,5 @@ Map<String, dynamic> _$HouseModelToJson(_HouseModel instance) =>
       'rt': instance.rt,
       'block': instance.block,
       'housing_area': instance.hosuingArea,
+      'resident_houses': instance.residentHouses,
     };

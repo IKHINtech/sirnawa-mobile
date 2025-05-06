@@ -20,7 +20,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: GestureDetector(
         onTap: onLeadingTap ?? () => context.pop(),
         child: Container(
-          margin: EdgeInsets.only(left: 4),
+          margin: EdgeInsets.only(left: 6, bottom: 6),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.grey),
             borderRadius: BorderRadius.circular(10),
