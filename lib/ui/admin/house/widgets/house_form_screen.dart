@@ -123,7 +123,7 @@ class _HouseFormScreenState extends ConsumerState<HouseFormScreen> {
                           blockId: house.blockId,
                         );
                         if (success) {
-                          ref.refresh(
+                          final _ = ref.refresh(
                             houseListProvider(
                               mainState.residentHouse!.house!.blockId,
                             ),
@@ -154,7 +154,7 @@ class _HouseFormScreenState extends ConsumerState<HouseFormScreen> {
                           blockId: house.blockId,
                         );
                         if (success) {
-                          ref.refresh(
+                          final _ = ref.refresh(
                             houseListProvider(
                               mainState.residentHouse!.house!.blockId,
                             ),

@@ -19,6 +19,10 @@ _AnnouncementModel _$AnnouncementModelFromJson(Map<String, dynamic> json) =>
           (json['attachments'] as List<dynamic>)
               .map((e) => e as String)
               .toList(),
+      attachmentUrls:
+          (json['attachment_urls'] as List<dynamic>)
+              .map((e) => e as String)
+              .toList(),
     );
 
 Map<String, dynamic> _$AnnouncementModelToJson(_AnnouncementModel instance) =>
@@ -31,4 +35,5 @@ Map<String, dynamic> _$AnnouncementModelToJson(_AnnouncementModel instance) =>
       'content': instance.content,
       'title': instance.title,
       'attachments': instance.attachments,
+      'attachment_urls': instance.attachmentUrls,
     };

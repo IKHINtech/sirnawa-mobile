@@ -136,6 +136,18 @@ rondaGroupViewModelProvider =
     });
 
 // ========== Announcement ========== //
+// TODO:lanjut disini untuk paginasi
+final announcementListProvider = StateNotifierProvider.autoDispose.family<
+  HouseListNotifier,
+  AsyncValue<List<HouseModel>>,
+  String
+>((ref, blockId) {
+  final repository = ref.watch(houseRepositoryProvider);
+  final rtId = ref.watch(
+    homeViewModelProvider.select((s) => s.residentHouse?.house!.rt?.id ?? ""),
+  );
+  return HouseListNotifier(repository, rtId, blockId);
+});
 final Provider<AnnouncementService> announcementServiceProvider =
     Provider<AnnouncementService>((Ref<AnnouncementService> ref) {
       return AnnouncementService(ref.read<ApiClient>(apiClientProvider));
