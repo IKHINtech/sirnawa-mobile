@@ -181,20 +181,27 @@ final StateNotifierProvider<RwViewModel, RwState> rwViewModelProvider =
     });
 
 // ========== House ========== //
-final houseDetailProvider = FutureProvider.autoDispose
-    .family<HouseModel?, String>((ref, houseId) async {
-      final repository = ref.watch(houseRepositoryProvider);
+final AutoDisposeFutureProviderFamily<HouseModel?, String> houseDetailProvider =
+    FutureProvider.autoDispose.family<HouseModel?, String>((
+      Ref<Object?> ref,
+      String houseId,
+    ) async {
+      final HouseRepository repository = ref.watch<HouseRepository>(
+        houseRepositoryProvider,
+      );
       try {
-        final response = await repository.getDetailHouse(houseId);
+        final HouseModel? response = await repository.getDetailHouse(houseId);
         return response;
       } catch (e, _) {
         // Simpan error untuk ditampilkan di UI
-        ref.read(houseErrorProvider.notifier).state = e.toString();
+        ref.read<StateController<String?>>(houseErrorProvider.notifier).state =
+            e.toString();
         rethrow; // Tetap lempar error agar bisa ditangkap oleh AsyncValue
       }
     });
 
-final houseErrorProvider = StateProvider.autoDispose<String?>((ref) => null);
+final AutoDisposeStateProvider<String?> houseErrorProvider =
+    StateProvider.autoDispose<String?>((Ref ref) => null);
 
 final houseListProvider = StateNotifierProvider.autoDispose.family<
   HouseListNotifier,
