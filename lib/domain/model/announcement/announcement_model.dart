@@ -14,6 +14,7 @@ class AnnouncementModel with _$AnnouncementModel {
     required String content,
     required String title,
     required List<String> attachments,
+    @JsonKey(name: 'attachment_urls') required List<String> attachmentUrls,
   }) = _AnnouncementModel;
 
   factory AnnouncementModel.fromJson(Map<String, dynamic> json) =>
