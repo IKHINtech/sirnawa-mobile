@@ -15,6 +15,7 @@ _AnnouncementModel _$AnnouncementModelFromJson(Map<String, dynamic> json) =>
       updatedAt: DateTime.parse(json['updated_at'] as String),
       content: json['content'] as String,
       title: json['title'] as String,
+      creator: json['creator'] as String,
       attachments:
           (json['attachments'] as List<dynamic>?)
               ?.map((e) => e as String)
@@ -34,6 +35,7 @@ Map<String, dynamic> _$AnnouncementModelToJson(_AnnouncementModel instance) =>
       'updated_at': instance.updatedAt.toIso8601String(),
       'content': instance.content,
       'title': instance.title,
+      'creator': instance.creator,
       'attachments': instance.attachments,
       'attachment_urls': instance.attachmentUrls,
     };

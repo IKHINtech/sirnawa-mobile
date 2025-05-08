@@ -13,6 +13,7 @@ class AnnouncementModel with _$AnnouncementModel {
     @JsonKey(name: 'updated_at') required DateTime updatedAt,
     required String content,
     required String title,
+    required String creator,
     required List<String>? attachments,
     @JsonKey(name: 'attachment_urls') required List<String> attachmentUrls,
   }) = _AnnouncementModel;

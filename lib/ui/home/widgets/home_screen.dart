@@ -119,6 +119,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               _mainMenu(context, state),
               Container(
                 height: 20,
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.white
+                      : Theme.of(context).colorScheme.primary
                 // color: Colors.white,
               ),
               Container(
@@ -181,7 +184,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 //  color: Colors.white
               ),
               AnnouncementPreview(),
-              Container(height: 20, color: Colors.white),
+              Container(height: 20,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.white
+                    : Theme.of(context).colorScheme.primary
+
+              ),
               _fiture(context),
             ],
           ),
@@ -251,15 +259,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
       child: Column(
         children: [
-          // Center(
-          //   child: Text(
-          //     "Menu",
-          //     style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-          //       fontWeight: FontWeight.bold,
-          //       fontSize: 23,
-          //     ),
-          //   ),
-          // ),
           GridView.count(
             primary: false,
             shrinkWrap: true,
@@ -328,44 +327,48 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               child: Row(
                 children: [
                   viewmodel.isLoading
-                      ? CustomShimmer(
-                        child: CircleAvatar(child: Icon(Icons.person_2)),
-                      )
-                      : CircleAvatar(child: Icon(Icons.person_2)),
-                  SizedBox(width: 8),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      viewmodel.isLoading
-                          ? CustomShimmer(
-                            child: CustomPlaceholder(height: 18, width: 90),
-                          )
-                          : SizedBox(
-                            width: 120,
-                            child: Text(
-                              " ${viewmodel.user?.resident?.name}",
-                              style: Theme.of(context).textTheme.titleMedium!
-                                  .copyWith(fontWeight: FontWeight.bold),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                            ),
-                          ),
-                      viewmodel.isLoading
-                          ? const SizedBox(height: 6)
-                          : SizedBox(),
-                      viewmodel.isLoading
-                          ? CustomShimmer(
-                            child: CustomPlaceholder(height: 12, width: 50),
-                          )
-                          : Text(
-                            viewmodel.userRtModel?.role.toUpperCase() ?? "-",
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                    ],
+                      ? const CustomShimmer(
+                    child: CircleAvatar(child: Icon(Icons.person_2)),
+                  )
+                      : const CircleAvatar(child: Icon(Icons.person_2)),
+                  const SizedBox(width: 8),
+                  Expanded(  // Added Expanded to constrain text width
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        viewmodel.isLoading
+                            ? const CustomShimmer(
+                          child: CustomPlaceholder(height: 18, width: 90),
+                        )
+                            : Text(
+                          viewmodel.user?.resident?.name ?? "-",
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                        if (viewmodel.isLoading)
+                          const SizedBox(height: 4),
+                        viewmodel.isLoading
+                            ? const CustomShimmer(
+                          child: CustomPlaceholder(height: 12, width: 50),
+                        )
+                            : Text(
+                          viewmodel.userRtModel?.role.toUpperCase() ?? "-",
+                          style: Theme.of(context).textTheme.bodySmall,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
+
             viewmodel.isLoading
                 ? CustomShimmer(
                   child: _selectedHouse(context, viewmodel, notifier),

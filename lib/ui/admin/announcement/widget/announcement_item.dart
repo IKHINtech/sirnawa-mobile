@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:sirnawa_mobile/domain/model/announcement/announcement_model.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
@@ -15,10 +16,9 @@ class AnnouncementItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap:
-          () => Navigator.pushNamed(
-            context,
+          () =>context.push(
             Routes.announcementDetail,
-            arguments: announcement,
+            extra: announcement,
           ),
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -163,7 +163,7 @@ class AnnouncementItem extends StatelessWidget {
                       child: Chip(
                         backgroundColor: Colors.blue[50],
                         label: Text(
-                          'Posted by: ${announcement.createdBy}',
+                          'Diposting oleh: ${announcement.creator}',
                           style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(color: Colors.blue[700]),
                           overflow: TextOverflow.ellipsis,

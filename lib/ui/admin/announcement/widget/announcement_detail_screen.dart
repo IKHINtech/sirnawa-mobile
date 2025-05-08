@@ -74,12 +74,15 @@ class AnnouncementDetailScreen extends ConsumerWidget {
                   child: Icon(Icons.person, size: 16),
                 ),
                 const SizedBox(width: 8),
+                Flexible(child:
+
                 Text(
-                  'Diposting oleh: ${announcement.createdBy}',
+                  'Diposting oleh: ${announcement.creator
+                  }',
                   style: textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurface.withValues(alpha: 0.8),
                   ),
-                ),
+                ),)
               ],
             ),
             const Divider(height: 32),
