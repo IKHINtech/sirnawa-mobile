@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
 import 'package:sirnawa_mobile/data/services/api/model/house/house_request_model.dart';
 import 'package:sirnawa_mobile/domain/model/house/house_model.dart';
@@ -19,6 +21,8 @@ class _HouseFormScreenState extends ConsumerState<HouseFormScreen> {
   late TextEditingController _numberController;
   late String _status;
   late String _blockId;
+  late double _latitude;
+  late double _longitude;
 
   bool get isEdit => widget.house != null;
 
@@ -28,6 +32,8 @@ class _HouseFormScreenState extends ConsumerState<HouseFormScreen> {
     _numberController = TextEditingController(text: widget.house?.number ?? '');
     _status = widget.house?.status ?? 'aktif';
     _blockId = widget.house?.blockId ?? '';
+    _latitude = widget.house?.latitude ?? -6.4051727;
+    _longitude = widget.house?.longitude ?? 107.1311807;
   }
 
   @override
@@ -104,6 +110,47 @@ class _HouseFormScreenState extends ConsumerState<HouseFormScreen> {
                     decoration: const InputDecoration(labelText: 'Blok'),
                   ),
                   const SizedBox(height: 24),
+                  // === MAP ===
+                  SizedBox(
+                    height: 300,
+                    child: FlutterMap(
+                      options: MapOptions(
+                        initialZoom: 18,
+                        initialCenter: LatLng(_latitude, _longitude),
+                        onTap: (tapPosition, point) {
+                          setState(() {
+                            _latitude = point.latitude;
+                            _longitude = point.longitude;
+                          });
+                        },
+                      ),
+                      children: [
+                        TileLayer(
+                          urlTemplate:
+                              'https://mt0.google.com/vt/lyrs=r&hl=en&x={x}&y={y}&z={z}',
+                          subdomains: const ['a', 'b', 'c'],
+                          userAgentPackageName: 'com.example.app',
+                        ),
+                        MarkerLayer(
+                          markers: [
+                            Marker(
+                              point: LatLng(_latitude, _longitude),
+                              width: 40,
+                              height: 40,
+                              child: Icon(
+                                Icons.location_pin,
+                                color: Colors.red,
+                                size: 40,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text("Lokasi: Lat $_latitude, Lng $_longitude"),
+                  const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () async {
                       if (_formKey.currentState?.validate() != true) return;
@@ -113,6 +160,8 @@ class _HouseFormScreenState extends ConsumerState<HouseFormScreen> {
                         status: _status,
                         rtId: mainState.residentHouse!.house!.rtId,
                         blockId: _blockId,
+                        latitude: _latitude,
+                        longitude: _longitude,
                       );
 
                       if (isEdit) {

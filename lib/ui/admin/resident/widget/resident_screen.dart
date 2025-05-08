@@ -17,11 +17,6 @@ class _ResidentScreenState extends ConsumerState<ResidentScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      ref
-          .read(residentViewModelProvider.notifier)
-          .fetchListResident(reset: true);
-    });
   }
 
   @override
@@ -56,21 +51,17 @@ class _ResidentScreenState extends ConsumerState<ResidentScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text("Error: ${state.error}"),
-            ElevatedButton(
-              onPressed: () => viewModel.fetchListResident(reset: true),
-              child: const Text("Retry"),
-            ),
+            ElevatedButton(onPressed: () {}, child: const Text("Retry")),
           ],
         ),
       );
     }
 
     return RefreshIndicator(
-      onRefresh: () => viewModel.fetchListResident(reset: true),
+      onRefresh: () async {},
       child: ListView.builder(
         padding: const EdgeInsets.all(16),
-        itemCount:
-            state.hasNextPage ? state.list.length + 1 : state.list.length,
+        itemCount: 1,
         itemBuilder: (context, index) {
           if (index >= state.list.length) {
             return const Padding(

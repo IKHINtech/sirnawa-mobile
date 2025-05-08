@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$HouseModel {
 
- String get id;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt; String get number;@JsonKey(name: 'rw_id') String get rwId;@JsonKey(name: 'rt_id') String get rtId;@JsonKey(name: 'block_id') String get blockId; String get status; RwModel? get rw; RtModel? get rt; BlockModel? get block;@JsonKey(name: 'housing_area') HousingAreaModel? get hosuingArea;@JsonKey(name: 'resident_houses') List<ResidentHouseModel>? get residentHouses;
+ String get id;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt; String get number;@JsonKey(name: 'rw_id') String get rwId;@JsonKey(name: 'rt_id') String get rtId;@JsonKey(name: 'block_id') String get blockId; String get status; RwModel? get rw; double? get longitude; double? get latitude; RtModel? get rt; BlockModel? get block;@JsonKey(name: 'housing_area') HousingAreaModel? get hosuingArea;@JsonKey(name: 'resident_houses') List<ResidentHouseModel>? get residentHouses;
 /// Create a copy of HouseModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $HouseModelCopyWith<HouseModel> get copyWith => _$HouseModelCopyWithImpl<HouseMo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HouseModel&&(identical(other.id, id) || other.id == id)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.number, number) || other.number == number)&&(identical(other.rwId, rwId) || other.rwId == rwId)&&(identical(other.rtId, rtId) || other.rtId == rtId)&&(identical(other.blockId, blockId) || other.blockId == blockId)&&(identical(other.status, status) || other.status == status)&&(identical(other.rw, rw) || other.rw == rw)&&(identical(other.rt, rt) || other.rt == rt)&&(identical(other.block, block) || other.block == block)&&(identical(other.hosuingArea, hosuingArea) || other.hosuingArea == hosuingArea)&&const DeepCollectionEquality().equals(other.residentHouses, residentHouses));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HouseModel&&(identical(other.id, id) || other.id == id)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.number, number) || other.number == number)&&(identical(other.rwId, rwId) || other.rwId == rwId)&&(identical(other.rtId, rtId) || other.rtId == rtId)&&(identical(other.blockId, blockId) || other.blockId == blockId)&&(identical(other.status, status) || other.status == status)&&(identical(other.rw, rw) || other.rw == rw)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.rt, rt) || other.rt == rt)&&(identical(other.block, block) || other.block == block)&&(identical(other.hosuingArea, hosuingArea) || other.hosuingArea == hosuingArea)&&const DeepCollectionEquality().equals(other.residentHouses, residentHouses));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,createdAt,updatedAt,number,rwId,rtId,blockId,status,rw,rt,block,hosuingArea,const DeepCollectionEquality().hash(residentHouses));
+int get hashCode => Object.hash(runtimeType,id,createdAt,updatedAt,number,rwId,rtId,blockId,status,rw,longitude,latitude,rt,block,hosuingArea,const DeepCollectionEquality().hash(residentHouses));
 
 @override
 String toString() {
-  return 'HouseModel(id: $id, createdAt: $createdAt, updatedAt: $updatedAt, number: $number, rwId: $rwId, rtId: $rtId, blockId: $blockId, status: $status, rw: $rw, rt: $rt, block: $block, hosuingArea: $hosuingArea, residentHouses: $residentHouses)';
+  return 'HouseModel(id: $id, createdAt: $createdAt, updatedAt: $updatedAt, number: $number, rwId: $rwId, rtId: $rtId, blockId: $blockId, status: $status, rw: $rw, longitude: $longitude, latitude: $latitude, rt: $rt, block: $block, hosuingArea: $hosuingArea, residentHouses: $residentHouses)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $HouseModelCopyWith<$Res>  {
   factory $HouseModelCopyWith(HouseModel value, $Res Function(HouseModel) _then) = _$HouseModelCopyWithImpl;
 @useResult
 $Res call({
- String id,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt, String number,@JsonKey(name: 'rw_id') String rwId,@JsonKey(name: 'rt_id') String rtId,@JsonKey(name: 'block_id') String blockId, String status, RwModel? rw, RtModel? rt, BlockModel? block,@JsonKey(name: 'housing_area') HousingAreaModel? hosuingArea,@JsonKey(name: 'resident_houses') List<ResidentHouseModel>? residentHouses
+ String id,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt, String number,@JsonKey(name: 'rw_id') String rwId,@JsonKey(name: 'rt_id') String rtId,@JsonKey(name: 'block_id') String blockId, String status, RwModel? rw, double? longitude, double? latitude, RtModel? rt, BlockModel? block,@JsonKey(name: 'housing_area') HousingAreaModel? hosuingArea,@JsonKey(name: 'resident_houses') List<ResidentHouseModel>? residentHouses
 });
 
 
@@ -66,7 +66,7 @@ class _$HouseModelCopyWithImpl<$Res>
 
 /// Create a copy of HouseModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? createdAt = null,Object? updatedAt = null,Object? number = null,Object? rwId = null,Object? rtId = null,Object? blockId = null,Object? status = null,Object? rw = freezed,Object? rt = freezed,Object? block = freezed,Object? hosuingArea = freezed,Object? residentHouses = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? createdAt = null,Object? updatedAt = null,Object? number = null,Object? rwId = null,Object? rtId = null,Object? blockId = null,Object? status = null,Object? rw = freezed,Object? longitude = freezed,Object? latitude = freezed,Object? rt = freezed,Object? block = freezed,Object? hosuingArea = freezed,Object? residentHouses = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
@@ -77,7 +77,9 @@ as String,rtId: null == rtId ? _self.rtId : rtId // ignore: cast_nullable_to_non
 as String,blockId: null == blockId ? _self.blockId : blockId // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,rw: freezed == rw ? _self.rw : rw // ignore: cast_nullable_to_non_nullable
-as RwModel?,rt: freezed == rt ? _self.rt : rt // ignore: cast_nullable_to_non_nullable
+as RwModel?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
+as double?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
+as double?,rt: freezed == rt ? _self.rt : rt // ignore: cast_nullable_to_non_nullable
 as RtModel?,block: freezed == block ? _self.block : block // ignore: cast_nullable_to_non_nullable
 as BlockModel?,hosuingArea: freezed == hosuingArea ? _self.hosuingArea : hosuingArea // ignore: cast_nullable_to_non_nullable
 as HousingAreaModel?,residentHouses: freezed == residentHouses ? _self.residentHouses : residentHouses // ignore: cast_nullable_to_non_nullable
@@ -140,7 +142,7 @@ $HousingAreaModelCopyWith<$Res>? get hosuingArea {
 @JsonSerializable()
 
 class _HouseModel implements HouseModel {
-  const _HouseModel({required this.id, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt, required this.number, @JsonKey(name: 'rw_id') required this.rwId, @JsonKey(name: 'rt_id') required this.rtId, @JsonKey(name: 'block_id') required this.blockId, required this.status, this.rw, this.rt, this.block, @JsonKey(name: 'housing_area') this.hosuingArea, @JsonKey(name: 'resident_houses') final  List<ResidentHouseModel>? residentHouses}): _residentHouses = residentHouses;
+  const _HouseModel({required this.id, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt, required this.number, @JsonKey(name: 'rw_id') required this.rwId, @JsonKey(name: 'rt_id') required this.rtId, @JsonKey(name: 'block_id') required this.blockId, required this.status, this.rw, this.longitude, this.latitude, this.rt, this.block, @JsonKey(name: 'housing_area') this.hosuingArea, @JsonKey(name: 'resident_houses') final  List<ResidentHouseModel>? residentHouses}): _residentHouses = residentHouses;
   factory _HouseModel.fromJson(Map<String, dynamic> json) => _$HouseModelFromJson(json);
 
 @override final  String id;
@@ -152,6 +154,8 @@ class _HouseModel implements HouseModel {
 @override@JsonKey(name: 'block_id') final  String blockId;
 @override final  String status;
 @override final  RwModel? rw;
+@override final  double? longitude;
+@override final  double? latitude;
 @override final  RtModel? rt;
 @override final  BlockModel? block;
 @override@JsonKey(name: 'housing_area') final  HousingAreaModel? hosuingArea;
@@ -178,16 +182,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HouseModel&&(identical(other.id, id) || other.id == id)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.number, number) || other.number == number)&&(identical(other.rwId, rwId) || other.rwId == rwId)&&(identical(other.rtId, rtId) || other.rtId == rtId)&&(identical(other.blockId, blockId) || other.blockId == blockId)&&(identical(other.status, status) || other.status == status)&&(identical(other.rw, rw) || other.rw == rw)&&(identical(other.rt, rt) || other.rt == rt)&&(identical(other.block, block) || other.block == block)&&(identical(other.hosuingArea, hosuingArea) || other.hosuingArea == hosuingArea)&&const DeepCollectionEquality().equals(other._residentHouses, _residentHouses));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HouseModel&&(identical(other.id, id) || other.id == id)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.number, number) || other.number == number)&&(identical(other.rwId, rwId) || other.rwId == rwId)&&(identical(other.rtId, rtId) || other.rtId == rtId)&&(identical(other.blockId, blockId) || other.blockId == blockId)&&(identical(other.status, status) || other.status == status)&&(identical(other.rw, rw) || other.rw == rw)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.rt, rt) || other.rt == rt)&&(identical(other.block, block) || other.block == block)&&(identical(other.hosuingArea, hosuingArea) || other.hosuingArea == hosuingArea)&&const DeepCollectionEquality().equals(other._residentHouses, _residentHouses));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,createdAt,updatedAt,number,rwId,rtId,blockId,status,rw,rt,block,hosuingArea,const DeepCollectionEquality().hash(_residentHouses));
+int get hashCode => Object.hash(runtimeType,id,createdAt,updatedAt,number,rwId,rtId,blockId,status,rw,longitude,latitude,rt,block,hosuingArea,const DeepCollectionEquality().hash(_residentHouses));
 
 @override
 String toString() {
-  return 'HouseModel(id: $id, createdAt: $createdAt, updatedAt: $updatedAt, number: $number, rwId: $rwId, rtId: $rtId, blockId: $blockId, status: $status, rw: $rw, rt: $rt, block: $block, hosuingArea: $hosuingArea, residentHouses: $residentHouses)';
+  return 'HouseModel(id: $id, createdAt: $createdAt, updatedAt: $updatedAt, number: $number, rwId: $rwId, rtId: $rtId, blockId: $blockId, status: $status, rw: $rw, longitude: $longitude, latitude: $latitude, rt: $rt, block: $block, hosuingArea: $hosuingArea, residentHouses: $residentHouses)';
 }
 
 
@@ -198,7 +202,7 @@ abstract mixin class _$HouseModelCopyWith<$Res> implements $HouseModelCopyWith<$
   factory _$HouseModelCopyWith(_HouseModel value, $Res Function(_HouseModel) _then) = __$HouseModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt, String number,@JsonKey(name: 'rw_id') String rwId,@JsonKey(name: 'rt_id') String rtId,@JsonKey(name: 'block_id') String blockId, String status, RwModel? rw, RtModel? rt, BlockModel? block,@JsonKey(name: 'housing_area') HousingAreaModel? hosuingArea,@JsonKey(name: 'resident_houses') List<ResidentHouseModel>? residentHouses
+ String id,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt, String number,@JsonKey(name: 'rw_id') String rwId,@JsonKey(name: 'rt_id') String rtId,@JsonKey(name: 'block_id') String blockId, String status, RwModel? rw, double? longitude, double? latitude, RtModel? rt, BlockModel? block,@JsonKey(name: 'housing_area') HousingAreaModel? hosuingArea,@JsonKey(name: 'resident_houses') List<ResidentHouseModel>? residentHouses
 });
 
 
@@ -215,7 +219,7 @@ class __$HouseModelCopyWithImpl<$Res>
 
 /// Create a copy of HouseModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? createdAt = null,Object? updatedAt = null,Object? number = null,Object? rwId = null,Object? rtId = null,Object? blockId = null,Object? status = null,Object? rw = freezed,Object? rt = freezed,Object? block = freezed,Object? hosuingArea = freezed,Object? residentHouses = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? createdAt = null,Object? updatedAt = null,Object? number = null,Object? rwId = null,Object? rtId = null,Object? blockId = null,Object? status = null,Object? rw = freezed,Object? longitude = freezed,Object? latitude = freezed,Object? rt = freezed,Object? block = freezed,Object? hosuingArea = freezed,Object? residentHouses = freezed,}) {
   return _then(_HouseModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
@@ -226,7 +230,9 @@ as String,rtId: null == rtId ? _self.rtId : rtId // ignore: cast_nullable_to_non
 as String,blockId: null == blockId ? _self.blockId : blockId // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,rw: freezed == rw ? _self.rw : rw // ignore: cast_nullable_to_non_nullable
-as RwModel?,rt: freezed == rt ? _self.rt : rt // ignore: cast_nullable_to_non_nullable
+as RwModel?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
+as double?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
+as double?,rt: freezed == rt ? _self.rt : rt // ignore: cast_nullable_to_non_nullable
 as RtModel?,block: freezed == block ? _self.block : block // ignore: cast_nullable_to_non_nullable
 as BlockModel?,hosuingArea: freezed == hosuingArea ? _self.hosuingArea : hosuingArea // ignore: cast_nullable_to_non_nullable
 as HousingAreaModel?,residentHouses: freezed == residentHouses ? _self._residentHouses : residentHouses // ignore: cast_nullable_to_non_nullable

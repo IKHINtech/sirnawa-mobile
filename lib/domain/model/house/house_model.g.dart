@@ -19,6 +19,8 @@ _HouseModel _$HouseModelFromJson(Map<String, dynamic> json) => _HouseModel(
       json['rw'] == null
           ? null
           : RwModel.fromJson(json['rw'] as Map<String, dynamic>),
+  longitude: (json['longitude'] as num?)?.toDouble(),
+  latitude: (json['latitude'] as num?)?.toDouble(),
   rt:
       json['rt'] == null
           ? null
@@ -50,6 +52,8 @@ Map<String, dynamic> _$HouseModelToJson(_HouseModel instance) =>
       'block_id': instance.blockId,
       'status': instance.status,
       'rw': instance.rw,
+      'longitude': instance.longitude,
+      'latitude': instance.latitude,
       'rt': instance.rt,
       'block': instance.block,
       'housing_area': instance.hosuingArea,

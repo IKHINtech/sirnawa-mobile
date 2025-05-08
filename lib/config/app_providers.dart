@@ -37,6 +37,7 @@ import 'package:sirnawa_mobile/data/services/share_preference_service.dart';
 import 'package:sirnawa_mobile/domain/model/announcement/announcement_model.dart';
 import 'package:sirnawa_mobile/domain/model/block/block_model.dart';
 import 'package:sirnawa_mobile/domain/model/house/house_model.dart';
+import 'package:sirnawa_mobile/domain/model/resident/resident_model.dart';
 import 'package:sirnawa_mobile/domain/model/resident_house/resident_house_model.dart';
 import 'package:sirnawa_mobile/ui/admin/announcement/announcement_viewmodel/announcement_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/block/block_view_model/block_viewmodel.dart';
@@ -248,6 +249,36 @@ final StateNotifierProvider<HouseViewModel, HouseState> houseViewModelProvider =
       );
     });
 // ===== RESIDENT ========= //
+final residentSearchProvider = StateProvider<String?>((ref) => null);
+final FutureProvider<List<ResidentModel>> residentOptionsProvider =
+    FutureProvider<List<ResidentModel>>((Ref ref) async {
+      final searchTerm = ref.watch(residentSearchProvider);
+      final String rtid =
+          ref
+              .watch<HomeState>(homeViewModelProvider)
+              .residentHouse
+              ?.house!
+              .rt
+              ?.id ??
+          "";
+      await ref
+          .read<ResidentViewModel>(residentViewModelProvider.notifier)
+          .fetchListResident(rtId: rtid, search: searchTerm);
+      return ref.read<ResidentState>(residentViewModelProvider).list;
+    });
+
+final residentListProvider = StateNotifierProvider.autoDispose.family<
+  ResidentListNotifier,
+  AsyncValue<List<ResidentModel>>,
+  String
+>((ref, rtId) {
+  final repository = ref.watch(residentRepositoryProvider);
+  final rtId = ref.watch(
+    homeViewModelProvider.select((s) => s.residentHouse?.house!.rt?.id ?? ""),
+  );
+  return ResidentListNotifier(repository, rtId);
+});
+
 final Provider<ResidentService> residentServiceProvider =
     Provider<ResidentService>((Ref<ResidentService> ref) {
       return ResidentService(ref.read<ApiClient>(apiClientProvider));

@@ -9,13 +9,11 @@ class ResidentState {
   final bool isLoading;
   final String? error;
   final List<ResidentModel> list;
-  final bool hasNextPage;
 
   const ResidentState({
     required this.isLoading,
     required this.error,
     required this.list,
-    required this.hasNextPage,
   });
 
   ResidentState copyWith({
@@ -28,62 +26,33 @@ class ResidentState {
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
       list: list ?? this.list,
-      hasNextPage: hasNextPage ?? this.hasNextPage,
     );
   }
 }
 
 class ResidentViewModel extends StateNotifier<ResidentState> {
   final ResidentRepository _repository;
-  int _currentPage = 1;
-  final int _limit = 10;
-  int _totalPages = 1;
 
   ResidentViewModel({required ResidentRepository repository})
     : _repository = repository,
-      super(
-        const ResidentState(
-          isLoading: false,
-          error: null,
-          list: [],
-          hasNextPage: true,
-        ),
-      );
+      super(const ResidentState(isLoading: false, error: null, list: []));
 
-  Future<void> fetchListResident({bool reset = false}) async {
+  Future<void> fetchListResident({required String rtId, String? search}) async {
     try {
-      state =
-          reset
-              ? const ResidentState(
-                isLoading: true,
-                error: null,
-                list: [],
-                hasNextPage: true,
-              )
-              : state.copyWith(isLoading: true);
-
-      if (reset) {
-        _currentPage = 1;
-        _totalPages = 1;
-      }
+      state.copyWith(isLoading: true);
 
       final result = await _repository.getResidents({
-        "page": _currentPage,
-        "page_size": _limit,
+        "paginated": false,
+        "rt_id": rtId,
+        "search": search,
       });
 
       switch (result) {
         case Ok<ApiResponse<List<ResidentModel>>>():
-          _currentPage++;
-          _totalPages = result.value.meta?.totalPages ?? 1;
           state = ResidentState(
             isLoading: false,
             error: null,
-            list:
-                reset
-                    ? result.value.data ?? []
-                    : [...state.list, ...?result.value.data],
-            hasNextPage: _currentPage < _totalPages,
+            list: result.value.data ?? [],
           );
           break;
         case Error<ApiResponse<List<ResidentModel>>>():
@@ -98,11 +67,6 @@ class ResidentViewModel extends StateNotifier<ResidentState> {
     }
   }
 
-  Future<void> loadMore() async {
-    if (!(_currentPage < _totalPages) || state.isLoading) return;
-    await fetchListResident();
-  }
-
   Future<bool> createResident(ResidentRequestModel resident) async {
     state = state.copyWith(isLoading: true);
     try {
@@ -110,7 +74,6 @@ class ResidentViewModel extends StateNotifier<ResidentState> {
       switch (result) {
         case Ok():
           // Opsional: setelah create, refresh list
-          await fetchListResident(reset: true);
           return true;
         case Error():
           state = state.copyWith(
@@ -131,7 +94,6 @@ class ResidentViewModel extends StateNotifier<ResidentState> {
       final result = await _repository.updateResident(id, resident);
       switch (result) {
         case Ok():
-          await fetchListResident(reset: true);
           return true;
         case Error():
           state = state.copyWith(
@@ -152,7 +114,6 @@ class ResidentViewModel extends StateNotifier<ResidentState> {
       final result = await _repository.deleteResident(id);
       switch (result) {
         case Ok():
-          await fetchListResident(reset: true);
           break;
         case Error():
           state = state.copyWith(
@@ -164,5 +125,93 @@ class ResidentViewModel extends StateNotifier<ResidentState> {
     } catch (e) {
       state = state.copyWith(isLoading: false, error: "Exception: $e");
     }
+  }
+}
+
+class ResidentListNotifier
+    extends StateNotifier<AsyncValue<List<ResidentModel>>> {
+  final ResidentRepository repository;
+  final String rtId;
+
+  int page = 1;
+  bool hasMore = true;
+  bool isLoading = false;
+
+  ResidentListNotifier(this.repository, this.rtId)
+    : super(const AsyncValue.loading()) {
+    loadInitialData();
+  }
+
+  Future<void> loadInitialData() async {
+    state = const AsyncValue.loading();
+    try {
+      final houses = await repository.getResidents({
+        "page": 1,
+        "page_size": 10,
+        "rt_id": rtId,
+      });
+
+      switch (houses) {
+        case Ok<ApiResponse<List<ResidentModel>>>():
+          if (houses.value.data == null) {
+            state = AsyncValue.data([]);
+            return;
+          }
+          hasMore = houses.value.data?.length == 10;
+          state = AsyncValue.data(houses.value.data!);
+          break;
+        case Error<ApiResponse<List<ResidentModel>>>():
+          state = AsyncValue.error(houses.error.toString(), StackTrace.empty);
+          return;
+      }
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
+  Future<void> loadMore() async {
+    if (!hasMore || isLoading) return;
+
+    isLoading = true;
+    try {
+      final newResidents = await repository.getResidents({
+        "page": page + 1,
+        "page_size": 10,
+        "rt_id": rtId,
+      });
+      switch (newResidents) {
+        case Ok<ApiResponse<List<ResidentModel>>>():
+          if (newResidents.value.data == null) {
+            hasMore = false;
+            state = state.whenData((houses) => [...houses]);
+            return;
+          }
+          hasMore = newResidents.value.meta!.totalPages > page;
+          if (hasMore) {
+            page++;
+          }
+
+          state = state.whenData(
+            (houses) => [...houses, ...newResidents.value.data!],
+          );
+          break;
+        case Error<ApiResponse<List<ResidentModel>>>():
+          state = AsyncValue.error(
+            newResidents.error.toString(),
+            StackTrace.empty,
+          );
+          return;
+      }
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  Future<void> refresh() async {
+    page = 1;
+    hasMore = true;
+    await loadInitialData();
   }
 }

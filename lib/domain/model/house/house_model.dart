@@ -20,6 +20,8 @@ class HouseModel with _$HouseModel {
     @JsonKey(name: 'block_id') required String blockId,
     required String status,
     RwModel? rw,
+    double? longitude,
+    double? latitude,
     RtModel? rt,
     BlockModel? block,
     @JsonKey(name: 'housing_area') HousingAreaModel? hosuingArea,

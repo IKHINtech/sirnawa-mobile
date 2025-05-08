@@ -11,6 +11,8 @@ class HouseRequestModel with _$HouseRequestModel {
     @JsonKey(name: 'status') required String status,
     @JsonKey(name: 'rt_id') required String rtId,
     @JsonKey(name: 'block_id') required String blockId,
+    double? longitude,
+    double? latitude,
   }) = _HouseRequestModel;
 
   factory HouseRequestModel.fromJson(Map<String, dynamic> json) =>
