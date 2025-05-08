@@ -9,7 +9,7 @@ part of 'ronda_group_request_model.dart';
 _RondaGroupRequestModel _$RondaGroupRequestModelFromJson(
   Map<String, dynamic> json,
 ) => _RondaGroupRequestModel(
-  id: json['id'] as String,
+  id: json['id'] as String?,
   rtId: json['rt_id'] as String,
   name: json['name'] as String,
 );

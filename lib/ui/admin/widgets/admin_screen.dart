@@ -91,7 +91,7 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
                 ),
                 _itemAdmin(
                   onClick: () {
-                    context.push(Routes.adminResident);
+                    context.push(Routes.adminRondaGroup);
                   },
                   icon: Icons.groups_2_outlined,
                   title: "Group Ronda",

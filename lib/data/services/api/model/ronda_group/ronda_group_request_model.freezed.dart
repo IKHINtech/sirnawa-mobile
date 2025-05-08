@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RondaGroupRequestModel {
 
- String get id;@JsonKey(name: 'rt_id') String get rtId; String get name;
+ String? get id;@JsonKey(name: 'rt_id') String get rtId; String get name;
 /// Create a copy of RondaGroupRequestModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $RondaGroupRequestModelCopyWith<$Res>  {
   factory $RondaGroupRequestModelCopyWith(RondaGroupRequestModel value, $Res Function(RondaGroupRequestModel) _then) = _$RondaGroupRequestModelCopyWithImpl;
 @useResult
 $Res call({
- String id,@JsonKey(name: 'rt_id') String rtId, String name
+ String? id,@JsonKey(name: 'rt_id') String rtId, String name
 });
 
 
@@ -66,10 +66,10 @@ class _$RondaGroupRequestModelCopyWithImpl<$Res>
 
 /// Create a copy of RondaGroupRequestModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? rtId = null,Object? name = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? rtId = null,Object? name = null,}) {
   return _then(_self.copyWith(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,rtId: null == rtId ? _self.rtId : rtId // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,rtId: null == rtId ? _self.rtId : rtId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -82,10 +82,10 @@ as String,
 @JsonSerializable()
 
 class _RondaGroupRequestModel implements RondaGroupRequestModel {
-  const _RondaGroupRequestModel({required this.id, @JsonKey(name: 'rt_id') required this.rtId, required this.name});
+  const _RondaGroupRequestModel({this.id, @JsonKey(name: 'rt_id') required this.rtId, required this.name});
   factory _RondaGroupRequestModel.fromJson(Map<String, dynamic> json) => _$RondaGroupRequestModelFromJson(json);
 
-@override final  String id;
+@override final  String? id;
 @override@JsonKey(name: 'rt_id') final  String rtId;
 @override final  String name;
 
@@ -122,7 +122,7 @@ abstract mixin class _$RondaGroupRequestModelCopyWith<$Res> implements $RondaGro
   factory _$RondaGroupRequestModelCopyWith(_RondaGroupRequestModel value, $Res Function(_RondaGroupRequestModel) _then) = __$RondaGroupRequestModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id,@JsonKey(name: 'rt_id') String rtId, String name
+ String? id,@JsonKey(name: 'rt_id') String rtId, String name
 });
 
 
@@ -139,10 +139,10 @@ class __$RondaGroupRequestModelCopyWithImpl<$Res>
 
 /// Create a copy of RondaGroupRequestModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? rtId = null,Object? name = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? rtId = null,Object? name = null,}) {
   return _then(_RondaGroupRequestModel(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,rtId: null == rtId ? _self.rtId : rtId // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,rtId: null == rtId ? _self.rtId : rtId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,
   ));
