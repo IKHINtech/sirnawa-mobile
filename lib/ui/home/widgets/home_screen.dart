@@ -8,6 +8,7 @@ import 'package:sirnawa_mobile/ui/core/ui/custom_elevated_button.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_shimmer.dart';
 import 'package:sirnawa_mobile/ui/core/ui/placeholder.dart';
 import 'package:sirnawa_mobile/ui/home/view_models/home_viewmodel.dart';
+import 'package:sirnawa_mobile/ui/home/widgets/announcement_preview.dart';
 import 'package:sirnawa_mobile/ui/home/widgets/house_list.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -179,50 +180,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                 //  color: Colors.white
               ),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                  color: Theme.of(context).colorScheme.surface,
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Pengumuman",
-                          style: Theme.of(
-                            context,
-                          ).textTheme.headlineSmall!.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                        ),
-                        Icon(
-                          LucideIcons.bell,
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    Card.outlined(
-                      child: ListTile(
-                        title: Text("Kerja Bakti Rutin"),
-                        subtitle: Text("lorem ipsum"),
-                        trailing: Icon(Icons.info, color: Colors.blue),
-                      ),
-                    ),
-                    CustomElevatedButton(
-                      title: "Lihat Pengumuman Lain",
-                      onPressed: () {
-                        context.push(Routes.announcecment);
-                      },
-                    ),
-                  ],
-                ),
-              ),
-
+              AnnouncementPreview(),
               Container(height: 20, color: Colors.white),
               _fiture(context),
             ],

@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sirnawa_mobile/config/auth_providers.dart';
+import 'package:sirnawa_mobile/domain/model/announcement/announcement_model.dart';
 import 'package:sirnawa_mobile/domain/model/block/block_model.dart';
 import 'package:sirnawa_mobile/domain/model/house/house_model.dart';
 import 'package:sirnawa_mobile/domain/model/resident/resident_model.dart';
 import 'package:sirnawa_mobile/domain/model/rw/rw_model.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
+import 'package:sirnawa_mobile/ui/admin/announcement/widget/announcement_detail_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/announcement/widget/announcement_form_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/announcement/widget/announcement_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/block/widget/block_form_screen.dart';
@@ -98,12 +100,19 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       //  ===== ANNOUNCEMENT =====
       GoRoute(
-        path: Routes.announcecment,
+        path: Routes.announcement,
         builder: (context, state) => const AnnouncementScreen(),
       ),
       GoRoute(
-        path: Routes.announcecmentCreate,
+        path: Routes.announcementCreate,
         builder: (context, state) => const AnnouncementFormScreen(),
+      ),
+      GoRoute(
+        path: Routes.announcementDetail,
+        builder: (context, state) {
+          final announcement = state.extra as AnnouncementModel;
+          return AnnouncementDetailScreen(announcement: announcement);
+        },
       ),
       //  ===== RT =====
       GoRoute(

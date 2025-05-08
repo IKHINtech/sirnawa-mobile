@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sirnawa_mobile/domain/model/announcement/announcement_model.dart';
+import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/core/ui/shimmer_box.dart';
 
 class AnnouncementItem extends StatelessWidget {
@@ -12,166 +13,180 @@ class AnnouncementItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    Icons.announcement,
-                    color: Theme.of(context).primaryColor,
-                    size: 24,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    announcement.title,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[800],
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.grey[50],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                announcement.content,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey[700],
-                  height: 1.5,
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            // Attachments Section
-            if (announcement.attachmentUrls.isNotEmpty)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return GestureDetector(
+      onTap:
+          () => Navigator.pushNamed(
+            context,
+            Routes.announcementDetail,
+            arguments: announcement,
+          ),
+      child: Card(
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        elevation: 3,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
                 children: [
-                  Text(
-                    'ATTACHMENTS',
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: Colors.grey[500],
-                      letterSpacing: 1,
-                      fontWeight: FontWeight.bold,
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Theme.of(
+                        context,
+                      ).primaryColor.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      Icons.announcement,
+                      color: Theme.of(context).primaryColor,
+                      size: 24,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children:
-                          announcement.attachmentUrls.map((url) {
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 8),
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => FullScreenImage(url: url),
-                                    ),
-                                  );
-                                },
-                                child: Hero(
-                                  tag: url,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: CachedNetworkImage(
-                                      imageUrl: url,
-                                      width: 120,
-                                      height: 120,
-                                      fit: BoxFit.cover,
-                                      placeholder:
-                                          (context, url) => Container(
-                                            width: 120,
-                                            height: 120,
-                                            color: Colors.grey[200],
-                                            child: const Center(
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 2,
-                                              ),
-                                            ),
-                                          ),
-                                      errorWidget:
-                                          (context, url, error) => Container(
-                                            width: 120,
-                                            height: 120,
-                                            color: Colors.grey[200],
-                                            child: const Icon(
-                                              Icons.broken_image,
-                                              size: 40,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }).toList(),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      announcement.title,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[800],
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
               ),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.grey[50],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  announcement.content,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.grey[700],
+                    height: 1.5,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
 
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  child: Tooltip(
-                    message: announcement.createdBy,
-                    child: Chip(
-                      backgroundColor: Colors.blue[50],
-                      label: Text(
-                        'Posted by: ${announcement.createdBy}',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.blue[700],
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
+              // Attachments Section
+              if (announcement.attachmentUrls.isNotEmpty)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'ATTACHMENTS',
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: Colors.grey[500],
+                        letterSpacing: 1,
+                        fontWeight: FontWeight.bold,
                       ),
-                      avatar: const CircleAvatar(
-                        radius: 12,
-                        child: Icon(Icons.person, size: 14),
+                    ),
+                    const SizedBox(height: 8),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children:
+                            announcement.attachmentUrls.map((url) {
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 8),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (_) => FullScreenImage(
+                                              imageUrl: url,
+                                              heroTag: url,
+                                            ),
+                                      ),
+                                    );
+                                  },
+                                  child: Hero(
+                                    tag: url,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: CachedNetworkImage(
+                                        imageUrl: url,
+                                        width: 120,
+                                        height: 120,
+                                        fit: BoxFit.cover,
+                                        placeholder:
+                                            (context, url) => Container(
+                                              width: 120,
+                                              height: 120,
+                                              color: Colors.grey[200],
+                                              child: const Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                      strokeWidth: 2,
+                                                    ),
+                                              ),
+                                            ),
+                                        errorWidget:
+                                            (context, url, error) => Container(
+                                              width: 120,
+                                              height: 120,
+                                              color: Colors.grey[200],
+                                              child: const Icon(
+                                                Icons.broken_image,
+                                                size: 40,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                      ),
+                    ),
+                  ],
+                ),
+
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Tooltip(
+                      message: announcement.createdBy,
+                      child: Chip(
+                        backgroundColor: Colors.blue[50],
+                        label: Text(
+                          'Posted by: ${announcement.createdBy}',
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: Colors.blue[700]),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                        avatar: const CircleAvatar(
+                          radius: 12,
+                          child: Icon(Icons.person, size: 14),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(width: 8),
-                Text(
-                  _formatDate(announcement.createdAt),
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
-                ),
-              ],
-            ),
-          ],
+                  SizedBox(width: 8),
+                  Text(
+                    _formatDate(announcement.createdAt),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -197,9 +212,14 @@ class AnnouncementItem extends StatelessWidget {
 
 // FullScreenImage widget for viewing attachments
 class FullScreenImage extends StatelessWidget {
-  final String url;
+  final String imageUrl;
+  final String heroTag;
 
-  const FullScreenImage({Key? key, required this.url}) : super(key: key);
+  const FullScreenImage({
+    super.key,
+    required this.imageUrl,
+    required this.heroTag,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -215,8 +235,13 @@ class FullScreenImage extends StatelessWidget {
       ),
       body: Center(
         child: Hero(
-          tag: url,
-          child: CachedNetworkImage(imageUrl: url, fit: BoxFit.contain),
+          tag: heroTag,
+          child: InteractiveViewer(
+            panEnabled: true,
+            minScale: 0.5,
+            maxScale: 3.0,
+            child: CachedNetworkImage(imageUrl: imageUrl, fit: BoxFit.contain),
+          ),
         ),
       ),
     );

@@ -62,7 +62,7 @@ class _AnnouncementScreenState extends ConsumerState<AnnouncementScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.push(Routes.announcecmentCreate);
+          context.push(Routes.announcementCreate);
         },
         child: const Icon(Icons.add),
       ),
