@@ -8,6 +8,7 @@ import 'package:sirnawa_mobile/data/services/api/model/resident_house_request/re
 import 'package:sirnawa_mobile/domain/model/house/house_model.dart';
 import 'package:sirnawa_mobile/domain/model/resident_house/resident_house_model.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
+import 'package:sirnawa_mobile/ui/admin/house/widgets/fullscreen_maps.dart';
 import 'package:sirnawa_mobile/ui/admin/resident_house/resident_house_viewmodel/resident_house_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';
 
@@ -319,37 +320,65 @@ class HouseDetailScreen extends ConsumerWidget {
                         const SizedBox(height: 8),
                         SizedBox(
                           height: 250,
-                          child: FlutterMap(
-                            options: MapOptions(
-                              initialCenter: LatLng(
-                                house.latitude!,
-                                house.longitude!,
-                              ),
-                              initialZoom: 16,
-                            ),
+                          child: Stack(
                             children: [
-                              TileLayer(
-                                urlTemplate:
-                                    'https://mt0.google.com/vt/lyrs=r&hl=en&x={x}&y={y}&z={z}',
-                                subdomains: const ['a', 'b', 'c'],
-                                userAgentPackageName: 'com.example.app',
-                              ),
-                              MarkerLayer(
-                                markers: [
-                                  Marker(
-                                    point: LatLng(
-                                      house.latitude!,
-                                      house.longitude!,
-                                    ),
-                                    width: 40,
-                                    height: 40,
-                                    child: Icon(
-                                      Icons.location_pin,
-                                      color: Colors.red,
-                                      size: 40,
-                                    ),
+                              FlutterMap(
+                                options: MapOptions(
+                                  initialCenter: LatLng(
+                                    house.latitude!,
+                                    house.longitude!,
+                                  ),
+                                  initialZoom: 16,
+                                ),
+                                children: [
+                                  TileLayer(
+                                    urlTemplate:
+                                        'https://mt0.google.com/vt/lyrs=r&hl=en&x={x}&y={y}&z={z}',
+                                    subdomains: const ['a', 'b', 'c'],
+                                    userAgentPackageName: 'com.example.app',
+                                  ),
+                                  MarkerLayer(
+                                    markers: [
+                                      Marker(
+                                        point: LatLng(
+                                          house.latitude!,
+                                          house.longitude!,
+                                        ),
+                                        width: 40,
+                                        height: 40,
+                                        child: Icon(
+                                          Icons.location_pin,
+                                          color: Colors.red,
+                                          size: 40,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
+                              ),
+                              Positioned(
+                                top: 8,
+                                right: 8,
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.fullscreen,
+                                    color: Theme.of(context).colorScheme.error,
+                                  ),
+                                  onPressed:
+                                      () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) => FullScreenMap(
+                                                location: LatLng(
+                                                  house.latitude!,
+                                                  house.longitude!,
+                                                ),
+                                                title: 'Lokasi Rumah',
+                                              ),
+                                        ),
+                                      ),
+                                ),
                               ),
                             ],
                           ),

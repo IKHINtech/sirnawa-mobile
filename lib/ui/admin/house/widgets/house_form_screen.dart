@@ -42,6 +42,25 @@ class _HouseFormScreenState extends ConsumerState<HouseFormScreen> {
     super.dispose();
   }
 
+  void _openFullscreenMap() async {
+    final result = await Navigator.push<LatLng>(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => FullScreenMapPicker(
+              initialLocation: LatLng(_latitude, _longitude),
+            ),
+      ),
+    );
+
+    if (result != null) {
+      setState(() {
+        _latitude = result.latitude;
+        _longitude = result.longitude;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final viewModel = ref.read(houseViewModelProvider.notifier);
@@ -113,43 +132,68 @@ class _HouseFormScreenState extends ConsumerState<HouseFormScreen> {
                   // === MAP ===
                   SizedBox(
                     height: 300,
-                    child: FlutterMap(
-                      options: MapOptions(
-                        initialZoom: 18,
-                        initialCenter: LatLng(_latitude, _longitude),
-                        onTap: (tapPosition, point) {
-                          setState(() {
-                            _latitude = point.latitude;
-                            _longitude = point.longitude;
-                          });
-                        },
-                      ),
+                    child: Stack(
                       children: [
-                        TileLayer(
-                          urlTemplate:
-                              'https://mt0.google.com/vt/lyrs=r&hl=en&x={x}&y={y}&z={z}',
-                          subdomains: const ['a', 'b', 'c'],
-                          userAgentPackageName: 'com.example.app',
-                        ),
-                        MarkerLayer(
-                          markers: [
-                            Marker(
-                              point: LatLng(_latitude, _longitude),
-                              width: 40,
-                              height: 40,
-                              child: Icon(
-                                Icons.location_pin,
-                                color: Colors.red,
-                                size: 40,
-                              ),
+                        FlutterMap(
+                          options: MapOptions(
+                            initialZoom: 18,
+                            initialCenter: LatLng(_latitude, _longitude),
+                            onTap: (tapPosition, point) {
+                              setState(() {
+                                _latitude = point.latitude;
+                                _longitude = point.longitude;
+                              });
+                            },
+                          ),
+                          children: [
+                            TileLayer(
+                              urlTemplate:
+                                  'https://mt0.google.com/vt/lyrs=r&hl=en&x={x}&y={y}&z={z}',
+                              subdomains: const ['a', 'b', 'c'],
+                              userAgentPackageName: 'com.example.app',
+                            ),
+                            MarkerLayer(
+                              markers: [
+                                Marker(
+                                  point: LatLng(_latitude, _longitude),
+                                  width: 40,
+                                  height: 40,
+                                  child: Icon(
+                                    Icons.location_pin,
+                                    color: Colors.red,
+                                    size: 40,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
+                        ),
+
+                        Positioned(
+                          bottom: 16,
+                          right: 16,
+                          child: FloatingActionButton(
+                            mini: true,
+                            onPressed: _openFullscreenMap,
+                            child: Icon(Icons.fullscreen),
+                          ),
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text("Lokasi: Lat $_latitude, Lng $_longitude"),
+                  Row(
+                    children: [
+                      Expanded(child: Text("Latitude: $_latitude")),
+                      const SizedBox(width: 16),
+                      Expanded(child: Text("Longitude: $_longitude")),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  OutlinedButton(
+                    onPressed: _openFullscreenMap,
+                    child: const Text('Buka Peta Fullscreen'),
+                  ),
                   const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () async {
@@ -249,6 +293,78 @@ class _HouseFormScreenState extends ConsumerState<HouseFormScreen> {
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+class FullScreenMapPicker extends StatefulWidget {
+  final LatLng initialLocation;
+
+  const FullScreenMapPicker({super.key, required this.initialLocation});
+
+  @override
+  State<FullScreenMapPicker> createState() => _FullScreenMapPickerState();
+}
+
+class _FullScreenMapPickerState extends State<FullScreenMapPicker> {
+  late LatLng _selectedLocation;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedLocation = widget.initialLocation;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: CustomAppBar(
+        title: 'Pilih Lokasi Rumah',
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.check),
+            onPressed: () => Navigator.pop(context, _selectedLocation),
+          ),
+        ],
+      ),
+      body: FlutterMap(
+        options: MapOptions(
+          initialCenter: _selectedLocation,
+          initialZoom: 18,
+          onTap: (tapPosition, point) {
+            setState(() {
+              _selectedLocation = point;
+            });
+          },
+        ),
+        children: [
+          TileLayer(
+            urlTemplate:
+                'https://mt0.google.com/vt/lyrs=r&hl=en&x={x}&y={y}&z={z}',
+            subdomains: const ['a', 'b', 'c'],
+          ),
+          MarkerLayer(
+            markers: [
+              Marker(
+                point: _selectedLocation,
+                width: 60,
+                height: 60,
+                child: const Icon(
+                  Icons.location_pin,
+                  color: Colors.red,
+                  size: 60,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.my_location),
+        onPressed: () {
+          // Optionally add current location functionality here
+        },
       ),
     );
   }
