@@ -7,32 +7,32 @@ import 'package:sirnawa_mobile/utils/result.dart';
 
 class ResidentHouseState {
   final bool isLoading;
+  final bool? isSuccess;
   final String? error;
   final List<ResidentHouseModel> list;
   final List<ResidentHouseModel> listPenghuni;
-  final bool hasNextPage;
 
   const ResidentHouseState({
     required this.isLoading,
+    this.isSuccess,
     required this.error,
     required this.list,
     required this.listPenghuni,
-    required this.hasNextPage,
   });
 
   ResidentHouseState copyWith({
     bool? isLoading,
+    bool? isSuccess,
     String? error,
     List<ResidentHouseModel>? list,
     List<ResidentHouseModel>? listPenghuni,
-    bool? hasNextPage,
   }) {
     return ResidentHouseState(
+      isSuccess: isLoading ?? this.isSuccess,
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
       list: list ?? this.list,
       listPenghuni: listPenghuni ?? this.listPenghuni,
-      hasNextPage: hasNextPage ?? this.hasNextPage,
     );
   }
 }
@@ -46,9 +46,9 @@ class ResidentHouseViewModel extends StateNotifier<ResidentHouseState> {
         const ResidentHouseState(
           isLoading: false,
           error: null,
+          isSuccess: null,
           listPenghuni: [],
           list: [],
-          hasNextPage: true,
         ),
       );
 
@@ -65,7 +65,6 @@ class ResidentHouseViewModel extends StateNotifier<ResidentHouseState> {
             error: null,
             listPenghuni: result.value.data ?? [],
             list: state.list,
-            hasNextPage: state.hasNextPage,
           );
           break;
         case Error<ApiResponse<List<ResidentHouseModel>>>():
@@ -80,6 +79,14 @@ class ResidentHouseViewModel extends StateNotifier<ResidentHouseState> {
     }
   }
 
+  void resetError() {
+    state = state.copyWith(error: null);
+  }
+
+  void resetSuccess() {
+    state = state.copyWith(isSuccess: null);
+  }
+
   Future<bool> createResidentHouse({
     required ResidentHouseRequestModel resident,
     required String rtId,
@@ -89,10 +96,12 @@ class ResidentHouseViewModel extends StateNotifier<ResidentHouseState> {
       final result = await _repository.createResidentHouse(resident);
       switch (result) {
         case Ok():
+          state = state.copyWith(isLoading: false, isSuccess: true);
           return true;
         case Error():
           state = state.copyWith(
             isLoading: false,
+            isSuccess: false,
             error: result.error.toString(),
           );
           return false;
@@ -109,36 +118,49 @@ class ResidentHouseViewModel extends StateNotifier<ResidentHouseState> {
       final result = await _repository.changeToPrimary(id);
       switch (result) {
         case Ok():
+          state = state.copyWith(isLoading: false, isSuccess: true);
           return true;
         case Error():
           state = state.copyWith(
             isLoading: false,
+            isSuccess: false,
             error: result.error.toString(),
           );
           return false;
       }
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: "Exception: $e");
+      state = state.copyWith(
+        isLoading: false,
+        isSuccess: null,
+        error: "Exception: $e",
+      );
       return false;
     }
   }
 
-  Future<void> deleteResidentHouse(String id, {required String rtId}) async {
-    state = state.copyWith(isLoading: true);
+  Future<bool> deleteResidentHouse(String id) async {
+    state = state.copyWith(isLoading: true, isSuccess: false);
     try {
       final result = await _repository.delete(id);
       switch (result) {
         case Ok():
-          break;
+          state = state.copyWith(isLoading: false, isSuccess: true);
+          return true;
         case Error():
           state = state.copyWith(
             isLoading: false,
+            isSuccess: false,
             error: result.error.toString(),
           );
-          break;
+          return false;
       }
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: "Exception: $e");
+      state = state.copyWith(
+        isLoading: false,
+        isSuccess: null,
+        error: "Exception: $e",
+      );
+      return false;
     }
   }
 }

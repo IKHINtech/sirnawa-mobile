@@ -9,17 +9,12 @@ import 'package:sirnawa_mobile/ui/core/ui/shimmer_box.dart';
 class AnnouncementItem extends StatelessWidget {
   final AnnouncementModel announcement;
 
-  const AnnouncementItem({Key? key, required this.announcement})
-    : super(key: key);
+  const AnnouncementItem({super.key, required this.announcement});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap:
-          () =>context.push(
-            Routes.announcementDetail,
-            extra: announcement,
-          ),
+      onTap: () => context.push(Routes.announcementDetail, extra: announcement),
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         elevation: 3,
@@ -229,7 +224,7 @@ class FullScreenImage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
       ),

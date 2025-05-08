@@ -4,7 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
+import 'package:sirnawa_mobile/data/services/api/model/resident_house_request/resident_house_request_model.dart';
+import 'package:sirnawa_mobile/domain/model/house/house_model.dart';
+import 'package:sirnawa_mobile/domain/model/resident_house/resident_house_model.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
+import 'package:sirnawa_mobile/ui/admin/resident_house/resident_house_viewmodel/resident_house_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';
 
 class HouseDetailScreen extends ConsumerWidget {
@@ -98,9 +102,15 @@ class HouseDetailScreen extends ConsumerWidget {
                               title: Text(resident.name),
                               subtitle: Text(resident.nik),
                               onTap: () {
-                                Navigator.pop(context);
                                 // Add logic to associate resident with house
-                                _addResidentToHouse(context, ref, resident.id);
+                                _addResidentToHouse(
+                                  context,
+                                  ref,
+                                  resident.id,
+                                  ref
+                                      .watch(houseDetailProvider(houseId))
+                                      .value!,
+                                );
                               },
                             );
                           },
@@ -121,26 +131,39 @@ class HouseDetailScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     String residentId,
-  ) {
-    // TODO: lanjut disini
-    // Implement your logic to add resident to the house
-    // Example:
-    // ref.read(houseDetailProvider(houseId).notifier).addResident(residentId);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Penghuni berhasil ditambahkan'),
-        duration: Duration(seconds: 2),
-      ),
+    HouseModel house,
+  ) async {
+    final viewModel = ref.watch<ResidentHouseViewModel>(
+      residentHouseViewModelProvider.notifier,
     );
+    try {
+      await viewModel.createResidentHouse(
+        rtId: house.rtId,
+        resident: ResidentHouseRequestModel(
+          residentId: residentId,
+          houseId: houseId,
+          isPrimary: false,
+        ),
+      );
+      ref.invalidate(listPenghuniProvider(houseId));
+      Navigator.pop(context);
+    } catch (e) {
+      ref.invalidate(listPenghuniProvider(houseId));
+      Navigator.pop(context);
+    }
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final houseAsync = ref.watch(houseDetailProvider(houseId));
+    final residentHouseViewModel = ref.watch(
+      residentHouseViewModelProvider.notifier,
+    );
     final penghuniAsync = ref.watch(
       listPenghuniProvider(houseId),
     ); // Tambahkan ini
+
+    // error fetch rumah
     final error = ref.watch(houseErrorProvider);
     if (error != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -151,6 +174,99 @@ class HouseDetailScreen extends ConsumerWidget {
         ref.read(houseErrorProvider.notifier).state = null;
       });
     }
+
+    // error memambahkan penghuni
+    final errorPenguhuni =
+        ref.watch<ResidentHouseState>(residentHouseViewModelProvider).error;
+    if (errorPenguhuni != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Theme.of(context).colorScheme.error,
+            content: Text(errorPenguhuni),
+            duration: const Duration(seconds: 4),
+          ),
+        );
+        // Clear error setelah ditampilkan
+        residentHouseViewModel.resetError();
+        ref.invalidate(residentHouseViewModelProvider);
+      });
+    }
+
+    // Status Aksi
+    // final success = ref.watch(residentHouseViewModelProvider).isSuccess;
+    // if (success != null) {
+    //   WidgetsBinding.instance.addPostFrameCallback((_) {
+    //     if (success) {
+    //       ScaffoldMessenger.of(context).showSnackBar(
+    //         const SnackBar(
+    //           behavior: SnackBarBehavior.floating,
+    //           content: Text('Berhasil'),
+    //           duration: Duration(seconds: 2),
+    //         ),
+    //       );
+    //     } else {
+    //       ScaffoldMessenger.of(context).showSnackBar(
+    //         SnackBar(
+    //           behavior: SnackBarBehavior.floating,
+    //           backgroundColor: Theme.of(context).colorScheme.error,
+    //           content: Text('Gagal'),
+    //           duration: Duration(seconds: 2),
+    //         ),
+    //       );
+    //     }
+    //     residentHouseViewModel.resetSuccess();
+    //     ref.invalidate(residentHouseViewModelProvider);
+    //     ref.invalidate(listPenghuniProvider(houseId));
+    //   });
+    // }
+
+    Future<void> showDeleteConfirmationDialog({
+      required BuildContext context,
+      required WidgetRef ref,
+      required ResidentHouseModel resident,
+      required String houseId,
+    }) async {
+      final residentHouseViewModel = ref.read(
+        residentHouseViewModelProvider.notifier,
+      );
+
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Hapus Penghuni'),
+            content: Text(
+              'Apakah Anda yakin ingin menghapus ${resident.resident?.name ?? 'penghuni ini'}?',
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Batal'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              TextButton(
+                child: const Text('Hapus', style: TextStyle(color: Colors.red)),
+                onPressed: () async {
+                  try {
+                    await residentHouseViewModel.deleteResidentHouse(
+                      resident.id,
+                    );
+                    ref.invalidate(listPenghuniProvider(houseId));
+                    Navigator.of(context).pop(); // Close dialog
+                  } catch (e) {
+                    debugPrint(e.toString());
+                    Navigator.of(context).pop(); // Close dialog
+                  }
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Detail Rumah',
@@ -241,6 +357,8 @@ class HouseDetailScreen extends ConsumerWidget {
                       ],
                     ),
                   _buildDetailCard(
+                    isPenghuni: false,
+                    ref: ref,
                     title: 'Informasi Rumah',
                     children: [
                       _buildDetailItem('Nomor Rumah', house?.number ?? '-'),
@@ -254,10 +372,10 @@ class HouseDetailScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 16),
-
                   _buildDetailCard(
+                    isPenghuni: true,
+                    ref: ref,
                     title: 'Penghuni',
                     children: [
                       penghuniAsync.when(
@@ -287,6 +405,19 @@ class HouseDetailScreen extends ConsumerWidget {
                                     onTap: () {
                                       // Navigate to resident detail
                                     },
+                                    trailing: IconButton(
+                                      onPressed:
+                                          () => showDeleteConfirmationDialog(
+                                            context: context,
+                                            ref: ref,
+                                            resident: resident,
+                                            houseId: houseId,
+                                          ),
+                                      icon: Icon(
+                                        Icons.cancel,
+                                        color: Colors.red,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -294,6 +425,7 @@ class HouseDetailScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
+                  SizedBox(height: 100),
                 ],
               ),
             ),
@@ -315,7 +447,9 @@ class HouseDetailScreen extends ConsumerWidget {
 
   Widget _buildDetailCard({
     required String title,
+    required bool isPenghuni,
     required List<Widget> children,
+    required WidgetRef ref,
   }) {
     return Card(
       child: Padding(
@@ -323,9 +457,25 @@ class HouseDetailScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                if (isPenghuni)
+                  IconButton(
+                    icon: const Icon(Icons.refresh),
+                    onPressed: () {
+                      final _ = ref.refresh(listPenghuniProvider(houseId));
+                    },
+                  ),
+              ],
             ),
             const Divider(),
             ...children,
