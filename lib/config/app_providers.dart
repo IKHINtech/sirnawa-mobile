@@ -147,6 +147,13 @@ final announcementPaginationProvider = StateNotifierProvider.autoDispose<
   final rtId = ref.watch(
     homeViewModelProvider.select((s) => s.residentHouse?.house!.rt?.id ?? ""),
   );
+
+  if (rtId.isEmpty) {
+    return AnnouncementListNotifier(repository, "")
+      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      ..state = const AsyncValue.data([]);
+  }
+
   return AnnouncementListNotifier(repository, rtId);
 });
 

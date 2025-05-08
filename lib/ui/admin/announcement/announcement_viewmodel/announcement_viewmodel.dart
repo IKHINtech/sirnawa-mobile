@@ -116,22 +116,23 @@ class AnnouncementViewModel extends StateNotifier<AnnouncementState> {
     }
   }
 
-  Future<void> deleteAnnouncement(String id) async {
+  Future<bool> deleteAnnouncement(String id) async {
     state = state.copyWith(isLoading: true);
     try {
       final result = await _repository.delete(id);
       switch (result) {
         case Ok():
-          break;
+          return true;
         case Error():
           state = state.copyWith(
             isLoading: false,
             error: result.error.toString(),
           );
-          break;
+          return false;
       }
     } catch (e) {
       state = state.copyWith(isLoading: false, error: "Exception: $e");
+      return false;
     }
   }
 }

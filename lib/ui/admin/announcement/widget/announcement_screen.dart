@@ -41,9 +41,9 @@ class _AnnouncementScreenState extends ConsumerState<AnnouncementScreen> {
   @override
   Widget build(BuildContext context) {
     final announcementState = ref.watch(announcementPaginationProvider);
-
+    final homeState = ref.watch(homeViewModelProvider);
     return Scaffold(
-      appBar: CustomAppBar(title: 'Announcements'),
+      appBar: CustomAppBar(title: 'Pengumuman'),
       body: announcementState.when(
         loading: () => _buildShimmerList(),
         error: (err, stack) => Center(child: Text('Error: $err')),
@@ -55,17 +55,36 @@ class _AnnouncementScreenState extends ConsumerState<AnnouncementScreen> {
                 itemCount: announcements.length,
                 itemBuilder: (context, index) {
                   final announcement = announcements[index];
-                  return AnnouncementItem(announcement: announcement);
+                  return AnnouncementItem(
+                    announcement: announcement,
+                    onDelete: () async {
+                      final success = await ref
+                          .read(announcementViewModelProvider.notifier)
+                          .deleteAnnouncement(announcement.id);
+
+                      if (success && context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Pengumuman berhasil dihapus'),
+                          ),
+                        );
+                        ref.invalidate(announcementPaginationProvider);
+                      }
+                    },
+                  );
                 },
               ),
             ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.push(Routes.announcementCreate);
-        },
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton:
+          homeState.userRtModel!.role != 'warga'
+              ? FloatingActionButton(
+                onPressed: () {
+                  context.push(Routes.announcementCreate);
+                },
+                child: const Icon(Icons.add),
+              )
+              : null,
     );
   }
 }

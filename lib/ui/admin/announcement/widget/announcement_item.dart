@@ -1,18 +1,32 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' as intl;
+import 'package:sirnawa_mobile/config/app_providers.dart';
 import 'package:sirnawa_mobile/domain/model/announcement/announcement_model.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/core/ui/shimmer_box.dart';
+import 'package:sirnawa_mobile/ui/home/view_models/home_viewmodel.dart';
 
-class AnnouncementItem extends StatelessWidget {
+class AnnouncementItem extends ConsumerWidget {
   final AnnouncementModel announcement;
-
-  const AnnouncementItem({super.key, required this.announcement});
+  final VoidCallback? onDelete;
+  const AnnouncementItem({
+    super.key,
+    required this.announcement,
+    this.onDelete,
+  });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
+    final currentUserId =
+        ref.read<HomeState>(homeViewModelProvider).user?.id ?? '';
+    final isAdmin =
+        ref.read<HomeState>(homeViewModelProvider).userRtModel?.role != 'admin';
+
+    final isCreator = announcement.createdBy == currentUserId;
+    final canDelete = isAdmin || isCreator;
     return GestureDetector(
       onTap: () => context.push(Routes.announcementDetail, extra: announcement),
       child: Card(
@@ -52,22 +66,16 @@ class AnnouncementItem extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
+                  if (canDelete && onDelete != null)
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red[400]),
+                        onPressed: () => _showDeleteConfirmation(context),
+                      ),
+                    ),
                 ],
-              ),
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  announcement.content,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey[700],
-                    height: 1.5,
-                  ),
-                ),
               ),
               const SizedBox(height: 12),
 
@@ -77,7 +85,7 @@ class AnnouncementItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'ATTACHMENTS',
+                      'GAMBAR :',
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
                         color: Colors.grey[500],
                         letterSpacing: 1,
@@ -147,6 +155,54 @@ class AnnouncementItem extends StatelessWidget {
                     ),
                   ],
                 ),
+              const SizedBox(height: 12),
+              // Content with limited lines
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.grey[50],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      announcement.content,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.grey[700],
+                        height: 1.5,
+                      ),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (_needsReadMore(announcement.content, context))
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          onPressed:
+                              () => context.push(
+                                Routes.announcementDetail,
+                                extra: announcement,
+                              ),
+                          child: Text(
+                            'Read More',
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodySmall?.copyWith(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
 
               const SizedBox(height: 12),
               Row(
@@ -187,12 +243,51 @@ class AnnouncementItem extends StatelessWidget {
     );
   }
 
+  Future<void> _showDeleteConfirmation(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Hapus Pengumuman'),
+            content: const Text(
+              'Apakah Anda yakin ingin menghapus pengumuman ini?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Batal'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Hapus', style: TextStyle(color: Colors.red)),
+              ),
+            ],
+          ),
+    );
+
+    if (confirmed == true && onDelete != null) {
+      onDelete!(); // Call the delete callback
+    }
+  }
+
+  bool _needsReadMore(String text, BuildContext context) {
+    final textPainter = TextPainter(
+      text: TextSpan(text: text, style: Theme.of(context).textTheme.bodyMedium),
+      maxLines: 3,
+      textDirection: TextDirection.ltr as TextDirection?,
+    )..layout(
+      maxWidth: MediaQuery.of(context).size.width - 56,
+    ); // Subtract padding
+
+    return textPainter.didExceedMaxLines;
+  }
+
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date);
 
     if (difference.inDays > 7) {
-      return DateFormat('MMM d, y').format(date);
+      return intl.DateFormat('MMM d, y').format(date);
     } else if (difference.inDays > 0) {
       return '${difference.inDays} days ago';
     } else if (difference.inHours > 0) {

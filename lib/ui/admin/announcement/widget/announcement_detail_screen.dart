@@ -74,28 +74,20 @@ class AnnouncementDetailScreen extends ConsumerWidget {
                   child: Icon(Icons.person, size: 16),
                 ),
                 const SizedBox(width: 8),
-                Flexible(child:
-
-                Text(
-                  'Diposting oleh: ${announcement.creator
-                  }',
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurface.withValues(alpha: 0.8),
+                Flexible(
+                  child: Text(
+                    'Diposting oleh: ${announcement.creator}',
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurface.withValues(alpha: 0.8),
+                    ),
                   ),
-                ),)
+                ),
               ],
             ),
             const Divider(height: 32),
-            // Content
-            Text(
-              announcement.content,
-              style: textTheme.bodyLarge?.copyWith(height: 1.6),
-            ),
-            const SizedBox(height: 24),
-            // Attachments if any
             if (announcement.attachmentUrls.isNotEmpty) ...[
               Text(
-                'Lampiran',
+                'Gambar :',
                 style: textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -140,6 +132,14 @@ class AnnouncementDetailScreen extends ConsumerWidget {
                 },
               ),
             ],
+            // Content
+            Text(
+              announcement.content,
+              style: textTheme.bodyLarge?.copyWith(height: 1.6),
+            ),
+            const SizedBox(height: 24),
+
+            // Attachments if any
           ],
         ),
       ),
