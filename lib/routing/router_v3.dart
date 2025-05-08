@@ -10,6 +10,8 @@ import 'package:sirnawa_mobile/domain/model/house/house_model.dart';
 import 'package:sirnawa_mobile/domain/model/resident/resident_model.dart';
 import 'package:sirnawa_mobile/domain/model/rw/rw_model.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
+import 'package:sirnawa_mobile/ui/admin/announcement/widget/announcement_form_screen.dart';
+import 'package:sirnawa_mobile/ui/admin/announcement/widget/announcement_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/block/widget/block_form_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/block/widget/block_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/house/widgets/house_detail_screen.dart';
@@ -93,6 +95,15 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.admin,
         builder: (context, state) => const AdminScreen(),
+      ),
+      //  ===== ANNOUNCEMENT =====
+      GoRoute(
+        path: Routes.announcecment,
+        builder: (context, state) => const AnnouncementScreen(),
+      ),
+      GoRoute(
+        path: Routes.announcecmentCreate,
+        builder: (context, state) => const AnnouncementFormScreen(),
       ),
       //  ===== RT =====
       GoRoute(

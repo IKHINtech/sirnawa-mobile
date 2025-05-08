@@ -30,6 +30,8 @@ abstract final class Routes {
   static const adminResidentCreate = '/admin/resident/create';
   static const adminResidentEdit = '/admin/resident/edit';
   static const search = '/$searchRelative';
+  static const announcecment = '/announcement';
+  static const announcecmentCreate = '/announcement/create';
   static const searchRelative = 'search';
   static const results = '/$resultsRelative';
   static const resultsRelative = 'results';

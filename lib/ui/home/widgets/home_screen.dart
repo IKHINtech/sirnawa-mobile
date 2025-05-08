@@ -215,7 +215,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                     CustomElevatedButton(
                       title: "Lihat Pengumuman Lain",
-                      onPressed: () {},
+                      onPressed: () {
+                        context.push(Routes.announcecment);
+                      },
                     ),
                   ],
                 ),

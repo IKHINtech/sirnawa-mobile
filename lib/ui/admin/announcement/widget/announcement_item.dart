@@ -1,0 +1,294 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:sirnawa_mobile/domain/model/announcement/announcement_model.dart';
+import 'package:sirnawa_mobile/ui/core/ui/shimmer_box.dart';
+
+class AnnouncementItem extends StatelessWidget {
+  final AnnouncementModel announcement;
+
+  const AnnouncementItem({Key? key, required this.announcement})
+    : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    Icons.announcement,
+                    color: Theme.of(context).primaryColor,
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    announcement.title,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[800],
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey[50],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                announcement.content,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.grey[700],
+                  height: 1.5,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            // Attachments Section
+            if (announcement.attachmentUrls.isNotEmpty)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'ATTACHMENTS',
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: Colors.grey[500],
+                      letterSpacing: 1,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children:
+                          announcement.attachmentUrls.map((url) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => FullScreenImage(url: url),
+                                    ),
+                                  );
+                                },
+                                child: Hero(
+                                  tag: url,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: CachedNetworkImage(
+                                      imageUrl: url,
+                                      width: 120,
+                                      height: 120,
+                                      fit: BoxFit.cover,
+                                      placeholder:
+                                          (context, url) => Container(
+                                            width: 120,
+                                            height: 120,
+                                            color: Colors.grey[200],
+                                            child: const Center(
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                              ),
+                                            ),
+                                          ),
+                                      errorWidget:
+                                          (context, url, error) => Container(
+                                            width: 120,
+                                            height: 120,
+                                            color: Colors.grey[200],
+                                            child: const Icon(
+                                              Icons.broken_image,
+                                              size: 40,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Tooltip(
+                    message: announcement.createdBy,
+                    child: Chip(
+                      backgroundColor: Colors.blue[50],
+                      label: Text(
+                        'Posted by: ${announcement.createdBy}',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.blue[700],
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                      avatar: const CircleAvatar(
+                        radius: 12,
+                        child: Icon(Icons.person, size: 14),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 8),
+                Text(
+                  _formatDate(announcement.createdAt),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _formatDate(DateTime date) {
+    final now = DateTime.now();
+    final difference = now.difference(date);
+
+    if (difference.inDays > 7) {
+      return DateFormat('MMM d, y').format(date);
+    } else if (difference.inDays > 0) {
+      return '${difference.inDays} days ago';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours} hours ago';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes} minutes ago';
+    } else {
+      return 'Just now';
+    }
+  }
+}
+
+// FullScreenImage widget for viewing attachments
+class FullScreenImage extends StatelessWidget {
+  final String url;
+
+  const FullScreenImage({Key? key, required this.url}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: Center(
+        child: Hero(
+          tag: url,
+          child: CachedNetworkImage(imageUrl: url, fit: BoxFit.contain),
+        ),
+      ),
+    );
+  }
+}
+
+class AnnouncementItemShimmer extends StatelessWidget {
+  const AnnouncementItemShimmer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                ShimmerBox.circular(
+                  width: 40,
+                  height: 40,
+                  shape: BoxShape.circle,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ShimmerBox(
+                        width: double.infinity,
+                        height: 16,
+                        borderRadius: 4,
+                      ),
+                      const SizedBox(height: 6),
+                      ShimmerBox(width: 200, height: 14, borderRadius: 4),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            ShimmerBox(width: double.infinity, height: 60, borderRadius: 8),
+            const SizedBox(height: 16),
+            ShimmerBox(width: 100, height: 20, borderRadius: 4),
+            const SizedBox(height: 8),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: List.generate(
+                  3,
+                  (index) => Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: ShimmerBox(width: 120, height: 120, borderRadius: 8),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ShimmerBox(width: 120, height: 32, borderRadius: 16),
+                ShimmerBox(width: 80, height: 14, borderRadius: 4),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

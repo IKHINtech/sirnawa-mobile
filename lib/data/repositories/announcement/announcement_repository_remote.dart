@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:sirnawa_mobile/data/repositories/announcement/announcement_repository.dart';
 import 'package:sirnawa_mobile/data/services/api/announcement_services.dart';
 import 'package:sirnawa_mobile/data/services/api/model/announcement/announcement_request_model.dart';
@@ -26,9 +28,13 @@ class AnnouncementRepositoryRemote implements AnnouncementRepository {
   @override
   Future<Result<void>> createAnnouncement(
     AnnouncementRequestModel announcement,
+    List<File> attachments,
   ) async {
     try {
-      return await _announcementService.createAnnouncement(announcement);
+      return await _announcementService.createAnnouncement(
+        announcement,
+        attachments,
+      );
     } on Exception catch (e) {
       return Result.error(e);
     }

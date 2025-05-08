@@ -34,6 +34,7 @@ import 'package:sirnawa_mobile/data/services/api/rt_services.dart';
 import 'package:sirnawa_mobile/data/services/api/rw_services.dart';
 import 'package:sirnawa_mobile/data/services/api/user_services.dart';
 import 'package:sirnawa_mobile/data/services/share_preference_service.dart';
+import 'package:sirnawa_mobile/domain/model/announcement/announcement_model.dart';
 import 'package:sirnawa_mobile/domain/model/block/block_model.dart';
 import 'package:sirnawa_mobile/domain/model/house/house_model.dart';
 import 'package:sirnawa_mobile/domain/model/resident_house/resident_house_model.dart';
@@ -136,18 +137,18 @@ rondaGroupViewModelProvider =
     });
 
 // ========== Announcement ========== //
-// TODO:lanjut disini untuk paginasi
-final announcementListProvider = StateNotifierProvider.autoDispose.family<
-  HouseListNotifier,
-  AsyncValue<List<HouseModel>>,
-  String
->((ref, blockId) {
-  final repository = ref.watch(houseRepositoryProvider);
+
+final announcementPaginationProvider = StateNotifierProvider.autoDispose<
+  AnnouncementListNotifier,
+  AsyncValue<List<AnnouncementModel>>
+>((ref) {
+  final repository = ref.watch(announcementRepositoryProvider);
   final rtId = ref.watch(
     homeViewModelProvider.select((s) => s.residentHouse?.house!.rt?.id ?? ""),
   );
-  return HouseListNotifier(repository, rtId, blockId);
+  return AnnouncementListNotifier(repository, rtId);
 });
+
 final Provider<AnnouncementService> announcementServiceProvider =
     Provider<AnnouncementService>((Ref<AnnouncementService> ref) {
       return AnnouncementService(ref.read<ApiClient>(apiClientProvider));

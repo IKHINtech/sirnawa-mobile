@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AnnouncementModel {
 
- String get id;@JsonKey(name: 'rt_id') String get rtId;@JsonKey(name: 'created_by') String get createdBy;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt; String get content; String get title; List<String> get attachments;@JsonKey(name: 'attachment_urls') List<String> get attachmentUrls;
+ String get id;@JsonKey(name: 'rt_id') String get rtId;@JsonKey(name: 'created_by') String get createdBy;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt; String get content; String get title; List<String>? get attachments;@JsonKey(name: 'attachment_urls') List<String> get attachmentUrls;
 /// Create a copy of AnnouncementModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $AnnouncementModelCopyWith<$Res>  {
   factory $AnnouncementModelCopyWith(AnnouncementModel value, $Res Function(AnnouncementModel) _then) = _$AnnouncementModelCopyWithImpl;
 @useResult
 $Res call({
- String id,@JsonKey(name: 'rt_id') String rtId,@JsonKey(name: 'created_by') String createdBy,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt, String content, String title, List<String> attachments,@JsonKey(name: 'attachment_urls') List<String> attachmentUrls
+ String id,@JsonKey(name: 'rt_id') String rtId,@JsonKey(name: 'created_by') String createdBy,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt, String content, String title, List<String>? attachments,@JsonKey(name: 'attachment_urls') List<String> attachmentUrls
 });
 
 
@@ -66,7 +66,7 @@ class _$AnnouncementModelCopyWithImpl<$Res>
 
 /// Create a copy of AnnouncementModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? rtId = null,Object? createdBy = null,Object? createdAt = null,Object? updatedAt = null,Object? content = null,Object? title = null,Object? attachments = null,Object? attachmentUrls = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? rtId = null,Object? createdBy = null,Object? createdAt = null,Object? updatedAt = null,Object? content = null,Object? title = null,Object? attachments = freezed,Object? attachmentUrls = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,rtId: null == rtId ? _self.rtId : rtId // ignore: cast_nullable_to_non_nullable
@@ -75,8 +75,8 @@ as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: 
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
-as String,attachments: null == attachments ? _self.attachments : attachments // ignore: cast_nullable_to_non_nullable
-as List<String>,attachmentUrls: null == attachmentUrls ? _self.attachmentUrls : attachmentUrls // ignore: cast_nullable_to_non_nullable
+as String,attachments: freezed == attachments ? _self.attachments : attachments // ignore: cast_nullable_to_non_nullable
+as List<String>?,attachmentUrls: null == attachmentUrls ? _self.attachmentUrls : attachmentUrls // ignore: cast_nullable_to_non_nullable
 as List<String>,
   ));
 }
@@ -88,7 +88,7 @@ as List<String>,
 @JsonSerializable()
 
 class _AnnouncementModel implements AnnouncementModel {
-  const _AnnouncementModel({required this.id, @JsonKey(name: 'rt_id') required this.rtId, @JsonKey(name: 'created_by') required this.createdBy, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt, required this.content, required this.title, required final  List<String> attachments, @JsonKey(name: 'attachment_urls') required final  List<String> attachmentUrls}): _attachments = attachments,_attachmentUrls = attachmentUrls;
+  const _AnnouncementModel({required this.id, @JsonKey(name: 'rt_id') required this.rtId, @JsonKey(name: 'created_by') required this.createdBy, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt, required this.content, required this.title, required final  List<String>? attachments, @JsonKey(name: 'attachment_urls') required final  List<String> attachmentUrls}): _attachments = attachments,_attachmentUrls = attachmentUrls;
   factory _AnnouncementModel.fromJson(Map<String, dynamic> json) => _$AnnouncementModelFromJson(json);
 
 @override final  String id;
@@ -98,11 +98,13 @@ class _AnnouncementModel implements AnnouncementModel {
 @override@JsonKey(name: 'updated_at') final  DateTime updatedAt;
 @override final  String content;
 @override final  String title;
- final  List<String> _attachments;
-@override List<String> get attachments {
+ final  List<String>? _attachments;
+@override List<String>? get attachments {
+  final value = _attachments;
+  if (value == null) return null;
   if (_attachments is EqualUnmodifiableListView) return _attachments;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_attachments);
+  return EqualUnmodifiableListView(value);
 }
 
  final  List<String> _attachmentUrls;
@@ -146,7 +148,7 @@ abstract mixin class _$AnnouncementModelCopyWith<$Res> implements $AnnouncementM
   factory _$AnnouncementModelCopyWith(_AnnouncementModel value, $Res Function(_AnnouncementModel) _then) = __$AnnouncementModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id,@JsonKey(name: 'rt_id') String rtId,@JsonKey(name: 'created_by') String createdBy,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt, String content, String title, List<String> attachments,@JsonKey(name: 'attachment_urls') List<String> attachmentUrls
+ String id,@JsonKey(name: 'rt_id') String rtId,@JsonKey(name: 'created_by') String createdBy,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt, String content, String title, List<String>? attachments,@JsonKey(name: 'attachment_urls') List<String> attachmentUrls
 });
 
 
@@ -163,7 +165,7 @@ class __$AnnouncementModelCopyWithImpl<$Res>
 
 /// Create a copy of AnnouncementModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? rtId = null,Object? createdBy = null,Object? createdAt = null,Object? updatedAt = null,Object? content = null,Object? title = null,Object? attachments = null,Object? attachmentUrls = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? rtId = null,Object? createdBy = null,Object? createdAt = null,Object? updatedAt = null,Object? content = null,Object? title = null,Object? attachments = freezed,Object? attachmentUrls = null,}) {
   return _then(_AnnouncementModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,rtId: null == rtId ? _self.rtId : rtId // ignore: cast_nullable_to_non_nullable
@@ -172,8 +174,8 @@ as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: 
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
-as String,attachments: null == attachments ? _self._attachments : attachments // ignore: cast_nullable_to_non_nullable
-as List<String>,attachmentUrls: null == attachmentUrls ? _self._attachmentUrls : attachmentUrls // ignore: cast_nullable_to_non_nullable
+as String,attachments: freezed == attachments ? _self._attachments : attachments // ignore: cast_nullable_to_non_nullable
+as List<String>?,attachmentUrls: null == attachmentUrls ? _self._attachmentUrls : attachmentUrls // ignore: cast_nullable_to_non_nullable
 as List<String>,
   ));
 }

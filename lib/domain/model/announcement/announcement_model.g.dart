@@ -16,8 +16,8 @@ _AnnouncementModel _$AnnouncementModelFromJson(Map<String, dynamic> json) =>
       content: json['content'] as String,
       title: json['title'] as String,
       attachments:
-          (json['attachments'] as List<dynamic>)
-              .map((e) => e as String)
+          (json['attachments'] as List<dynamic>?)
+              ?.map((e) => e as String)
               .toList(),
       attachmentUrls:
           (json['attachment_urls'] as List<dynamic>)

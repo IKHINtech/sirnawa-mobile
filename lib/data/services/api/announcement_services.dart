@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:sirnawa_mobile/data/services/api/api_client.dart';
 import 'package:sirnawa_mobile/data/services/api/model/announcement/announcement_request_model.dart';
@@ -41,14 +43,31 @@ class AnnouncementService {
     }
   }
 
-  // ✅ POST /announcement
   Future<Result<ApiResponse<AnnouncementModel>>> createAnnouncement(
     AnnouncementRequestModel announcement,
+    List<File> attachments,
   ) async {
     try {
-      final Response<dynamic> response = await apiClient.post(
+      // Konversi ke FormData
+      final formData = FormData.fromMap({
+        'rt_id': announcement.rtId,
+        'title': announcement.title,
+        'content': announcement.content,
+        "created_by": announcement.createdBy,
+        if (attachments.isNotEmpty)
+          'attachments': [
+            for (final file in attachments)
+              await MultipartFile.fromFile(
+                file.path,
+                filename: file.path.split('/').last,
+              ),
+          ],
+      });
+
+      final response = await apiClient.post(
         '/announcement',
-        data: announcement.toJson(),
+        data: formData,
+        options: Options(contentType: 'multipart/form-data'),
       );
 
       final ApiResponse<AnnouncementModel> data =
