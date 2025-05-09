@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
-import 'package:sirnawa_mobile/data/services/api/model/ronda_group/ronda_group_request_model.dart';
+import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';
 
 class GroupRondaScreen extends ConsumerStatefulWidget {
@@ -12,46 +13,17 @@ class GroupRondaScreen extends ConsumerStatefulWidget {
 }
 
 class _GroupRondaScreenState extends ConsumerState<GroupRondaScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-
-  bool _isSubmitting = false;
-
-  Future<void> _submit({required RondaGroupRequestModel payload}) async {
-    if (!_formKey.currentState!.validate()) return;
-
-    setState(() => _isSubmitting = true);
-
-    final repository = ref.read(rondaGroupRepositoryProvider);
-
-    try {
-      final newGroup = await repository.createRondaGroup(payload);
-
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Grup ronda berhasil dibuat')),
-        );
-        _nameController.clear();
-        ref
-            .read(rondaGroupViewModelProvider.notifier)
-            .fetchListRondaGroup(); // refresh
-      }
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Gagal membuat grup: $e')));
-      }
-    } finally {
-      if (mounted) setState(() => _isSubmitting = false);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final rondaGroupPaginationState = ref.watch(rondaGroupPaginationProvider);
     return Scaffold(
       appBar: CustomAppBar(title: 'Kelola Grup Ronda'),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.push(Routes.adminRondaGroupCreate);
+        },
+        child: const Icon(Icons.add),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -93,9 +65,7 @@ class _GroupRondaScreenState extends ConsumerState<GroupRondaScreen> {
                           if (index < rondaGroups.length) {
                             final rondaGroup = rondaGroups[index];
                             return Card(
-                              child: ListTile(
-                                title: Text(rondaGroup.name),
-                              ),
+                              child: ListTile(title: Text(rondaGroup.name)),
                             );
                           } else {
                             final notifier = ref.read(
@@ -134,48 +104,3 @@ class _GroupRondaScreenState extends ConsumerState<GroupRondaScreen> {
     );
   }
 }
-
-
-
-
-            // Form(
-            //   key: _formKey,
-            //   child: Row(
-            //     children: [
-            //       Expanded(
-            //         child: TextFormField(
-            //           controller: _nameController,
-            //           decoration: const InputDecoration(
-            //             labelText: 'Nama Grup Ronda',
-            //           ),
-            //           validator: (value) {
-            //             if (value == null || value.isEmpty) {
-            //               return 'Nama grup tidak boleh kosong';
-            //             }
-            //             return null;
-            //           },
-            //         ),
-            //       ),
-            //       const SizedBox(width: 12),
-            //       ElevatedButton(
-            //         onPressed:
-            //             _isSubmitting
-            //                 ? null
-            //                 : () {
-            //                   final payload = RondaGroupRequestModel(
-            //                     rtId:
-            //                         homeState.residentHouse?.house?.rt?.id ??
-            //                         "",
-            //                     name: _nameController.text.trim(),
-            //                   );
-
-            //                   _submit(payload: payload);
-            //                 },
-            //         child:
-            //             _isSubmitting
-            //                 ? const CircularProgressIndicator()
-            //                 : const Text("Tambah"),
-            //       ),
-            //     ],
-            //   ),
-            // ),

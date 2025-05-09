@@ -36,11 +36,72 @@ class _BlockFormScreenState extends ConsumerState<BlockFormScreen> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Future<void> _submit() async {
     final viewModel = ref.read(blockViewModelProvider.notifier);
     final homeState = ref.watch(homeViewModelProvider);
+    if (_formKey.currentState?.validate() != true) return;
 
+    final resident = BlockRequestModel(
+      id: widget.block?.id, // kalau update pakai id
+      name: _nameController.text,
+      rtId: homeState.residentHouse!.house!.rtId,
+    );
+
+    if (isEdit) {
+      final success = await viewModel.updateBlock(
+        id: resident.id!,
+        resident: resident,
+        rtId: homeState.residentHouse!.house!.rtId,
+      );
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Berhasil memperbarui Block'),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        // Optionally: navigate back atau reset form
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Gagal memperbarui Block'),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } else {
+      final success = await viewModel.createBlock(
+        resident: resident,
+        rtId: homeState.residentHouse!.house!.rtId,
+      );
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Berhasil menambahkan Block'),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Gagal menambahkan Block'),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    }
+
+    if (mounted) {
+      Navigator.pop(context); // kembali ke list
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: isEdit ? 'Edit Block' : 'Tambah Block'),
       body: Padding(
@@ -57,67 +118,7 @@ class _BlockFormScreenState extends ConsumerState<BlockFormScreen> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () async {
-                  if (_formKey.currentState?.validate() != true) return;
-
-                  final resident = BlockRequestModel(
-                    id: widget.block?.id, // kalau update pakai id
-                    name: _nameController.text,
-                    rtId: homeState.residentHouse!.house!.rtId,
-                  );
-
-                  if (isEdit) {
-                    final success = await viewModel.updateBlock(
-                      id: resident.id!,
-                      resident: resident,
-                      rtId: homeState.residentHouse!.house!.rtId,
-                    );
-                    if (success) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Berhasil memperbarui Block'),
-                          backgroundColor: Colors.green,
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      );
-                      // Optionally: navigate back atau reset form
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Gagal memperbarui Block'),
-                          backgroundColor: Colors.red,
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      );
-                    }
-                  } else {
-                    final success = await viewModel.createBlock(
-                      resident: resident,
-                      rtId: homeState.residentHouse!.house!.rtId,
-                    );
-                    if (success) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Berhasil menambahkan Block'),
-                          backgroundColor: Colors.green,
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Gagal menambahkan Block'),
-                          backgroundColor: Colors.red,
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      );
-                    }
-                  }
-
-                  if (mounted) {
-                    Navigator.pop(context); // kembali ke list
-                  }
-                },
+                onPressed: _submit,
                 child: Text(isEdit ? 'Simpan Perubahan' : 'Tambah Blok'),
               ),
             ],
