@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:sirnawa_mobile/domain/model/announcement/announcement_model.dart';
 import 'package:sirnawa_mobile/ui/admin/announcement/widget/announcement_item.dart';
+import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';
 
 class AnnouncementDetailScreen extends ConsumerWidget {
   final AnnouncementModel announcement;
@@ -18,8 +19,8 @@ class AnnouncementDetailScreen extends ConsumerWidget {
     final textTheme = theme.textTheme;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Detail Pengumuman'),
+      appBar: CustomAppBar(
+        title: 'Detail Pengumuman',
         actions: [
           IconButton(
             icon: const Icon(Icons.share),

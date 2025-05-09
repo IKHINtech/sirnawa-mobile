@@ -67,13 +67,9 @@ class AnnouncementItem extends ConsumerWidget {
                     ),
                   ),
                   if (canDelete && onDelete != null)
-                    Positioned(
-                      top: 0,
-                      right: 0,
-                      child: IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red[400]),
-                        onPressed: () => _showDeleteConfirmation(context),
-                      ),
+                    IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red[400]),
+                      onPressed: () => _showDeleteConfirmation(context),
                     ),
                 ],
               ),
