@@ -169,3 +169,92 @@ class RondaGroupViewModel extends StateNotifier<RondaGroupState> {
     }
   }
 }
+
+
+
+class RondaGroupListNotifier extends StateNotifier<AsyncValue<List<RondaGroupModel>>> {
+  final RondaGroupRepository repository;
+  final String rtId;
+
+  int page = 1;
+  bool hasMore = true;
+  bool isLoading = false;
+
+  RondaGroupListNotifier(this.repository, this.rtId, )
+    : super(const AsyncValue.loading()) {
+    loadInitialData();
+  }
+
+  Future<void> loadInitialData() async {
+    state = const AsyncValue.loading();
+    try {
+      final houses = await repository.getListRondaGroup({
+        "page": 1,
+        "page_size": 10,
+        "rt_id": rtId,
+      });
+
+      switch (houses) {
+        case Ok<ApiResponse<List<RondaGroupModel>>>():
+          if (houses.value.data == null) {
+            state = AsyncValue.data([]);
+            return;
+          }
+          hasMore = houses.value.data?.length == 10;
+          state = AsyncValue.data(houses.value.data!);
+          break;
+        case Error<ApiResponse<List<RondaGroupModel>>>():
+          state = AsyncValue.error(houses.error.toString(), StackTrace.empty);
+          return;
+      }
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
+  Future<void> loadMore() async {
+    if (!hasMore || isLoading) return;
+
+    isLoading = true;
+    try {
+      final newRondaGroups = await repository.getListRondaGroup({
+        "page": page + 1,
+        "page_size": 10,
+        "rt_id": rtId,
+      });
+      switch (newRondaGroups) {
+        case Ok<ApiResponse<List<RondaGroupModel>>>():
+          if (newRondaGroups.value.data == null) {
+            hasMore = false;
+            state = state.whenData((houses) => [...houses]);
+            return;
+          }
+          hasMore = newRondaGroups.value.meta!.totalPages > page;
+          if (hasMore) {
+            page++;
+          }
+
+          state = state.whenData(
+            (houses) => [...houses, ...newRondaGroups.value.data!],
+          );
+          break;
+        case Error<ApiResponse<List<RondaGroupModel>>>():
+          state = AsyncValue.error(
+            newRondaGroups.error.toString(),
+            StackTrace.empty,
+          );
+          return;
+      }
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  Future<void> refresh() async {
+    page = 1;
+    hasMore = true;
+    await loadInitialData();
+  }
+}

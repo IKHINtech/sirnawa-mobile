@@ -39,6 +39,7 @@ import 'package:sirnawa_mobile/domain/model/block/block_model.dart';
 import 'package:sirnawa_mobile/domain/model/house/house_model.dart';
 import 'package:sirnawa_mobile/domain/model/resident/resident_model.dart';
 import 'package:sirnawa_mobile/domain/model/resident_house/resident_house_model.dart';
+import 'package:sirnawa_mobile/domain/model/ronda_group/ronda_group_model.dart';
 import 'package:sirnawa_mobile/ui/admin/announcement/announcement_viewmodel/announcement_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/block/block_view_model/block_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/house/house_viewmodel/house_viewmodel.dart';
@@ -113,6 +114,24 @@ final StateNotifierProvider<RtViewModel, RtState> rtViewModelProvider =
     });
 
 // ========== Ronda Group ========== //
+
+final rondaGroupPaginationProvider = StateNotifierProvider.autoDispose<
+  RondaGroupListNotifier,
+  AsyncValue<List<RondaGroupModel>>
+>((ref) {
+  final repository = ref.watch(rondaGroupRepositoryProvider);
+  final rtId = ref.watch(
+    homeViewModelProvider.select((s) => s.userRtModel?.rtId ?? ""),
+  );
+
+  if (rtId.isEmpty) {
+    return RondaGroupListNotifier(repository, "")
+      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      ..state = const AsyncValue.data([]);
+  }
+
+  return RondaGroupListNotifier(repository, rtId);
+});
 final Provider<RondaGroupService> rondaGroupServiceProvider =
     Provider<RondaGroupService>((Ref<RondaGroupService> ref) {
       return RondaGroupService(ref.read<ApiClient>(apiClientProvider));
