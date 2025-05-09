@@ -154,26 +154,29 @@ class AnnouncementListNotifier
   Future<void> loadInitialData() async {
     state = const AsyncValue.loading();
     try {
-      final houses = await repository.getListAnnouncement({
+      final announcement = await repository.getListAnnouncement({
         "page": 1,
         "page_size": 10,
         "rt_id": rtId,
       });
 
-      switch (houses) {
+      if(!mounted)return;
+
+      switch (announcement) {
         case Ok<ApiResponse<List<AnnouncementModel>>>():
-          if (houses.value.data == null) {
+          if (announcement.value.data == null) {
             state = AsyncValue.data([]);
             return;
           }
-          hasMore = houses.value.data?.length == 10;
-          state = AsyncValue.data(houses.value.data!);
+          hasMore = announcement.value.data?.length == 10;
+          state = AsyncValue.data(announcement.value.data!);
           break;
         case Error<ApiResponse<List<AnnouncementModel>>>():
-          state = AsyncValue.error(houses.error.toString(), StackTrace.empty);
+          state = AsyncValue.error(announcement.error.toString(), StackTrace.empty);
           return;
       }
     } catch (e, st) {
+      if(!mounted)return;
       state = AsyncValue.error(e, st);
     }
   }
