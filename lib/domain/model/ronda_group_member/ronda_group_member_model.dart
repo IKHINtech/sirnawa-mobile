@@ -13,7 +13,7 @@ class RondaGroupMemberModel with _$RondaGroupMemberModel {
     @JsonKey(name: 'updated_at') required DateTime updatedAt,
     @JsonKey(name: 'house_id') required String houseId,
     @JsonKey(name: 'resident_id') required String residentId,
-    @JsonKey(name: 'ronda_group_id') required String rondaGroupId,
+    @JsonKey(name: 'group_id') required String rondaGroupId,
     @JsonKey(name: 'house') HouseModel? house,
     @JsonKey(name: 'resident') ResidentModel? resident,
   }) = _RondaGroupMemberModel;

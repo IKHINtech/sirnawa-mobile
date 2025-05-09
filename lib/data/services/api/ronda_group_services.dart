@@ -41,6 +41,28 @@ class RondaGroupService {
     }
   }
 
+  Future<Result<ApiResponse<RondaGroupModel>>> getDetailRondaGroup({
+    required String id,
+  }) async {
+    try {
+      final Response<dynamic> response = await apiClient.get(
+        '/ronda-group/$id',
+      );
+
+      final ApiResponse<RondaGroupModel> data =
+          ApiResponse<RondaGroupModel>.fromJson(
+            response.data,
+            (json) => RondaGroupModel.fromJson(json as Map<String, dynamic>),
+          );
+
+      return Result<ApiResponse<RondaGroupModel>>.ok(data);
+    } catch (e) {
+      return Result<ApiResponse<RondaGroupModel>>.error(
+        Exception(parseDioError(e)),
+      );
+    }
+  }
+
   // ✅ POST /ronda-group
   Future<Result<ApiResponse<RondaGroupModel>>> createRondaGroup(
     RondaGroupRequestModel rondaGroup,

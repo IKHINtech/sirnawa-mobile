@@ -14,7 +14,7 @@ _RondaGroupMemberModel _$RondaGroupMemberModelFromJson(
   updatedAt: DateTime.parse(json['updated_at'] as String),
   houseId: json['house_id'] as String,
   residentId: json['resident_id'] as String,
-  rondaGroupId: json['ronda_group_id'] as String,
+  rondaGroupId: json['group_id'] as String,
   house:
       json['house'] == null
           ? null
@@ -33,7 +33,7 @@ Map<String, dynamic> _$RondaGroupMemberModelToJson(
   'updated_at': instance.updatedAt.toIso8601String(),
   'house_id': instance.houseId,
   'resident_id': instance.residentId,
-  'ronda_group_id': instance.rondaGroupId,
+  'group_id': instance.rondaGroupId,
   'house': instance.house,
   'resident': instance.resident,
 };

@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RondaGroupMemberModel {
 
- String get id;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt;@JsonKey(name: 'house_id') String get houseId;@JsonKey(name: 'resident_id') String get residentId;@JsonKey(name: 'ronda_group_id') String get rondaGroupId;@JsonKey(name: 'house') HouseModel? get house;@JsonKey(name: 'resident') ResidentModel? get resident;
+ String get id;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt;@JsonKey(name: 'house_id') String get houseId;@JsonKey(name: 'resident_id') String get residentId;@JsonKey(name: 'group_id') String get rondaGroupId;@JsonKey(name: 'house') HouseModel? get house;@JsonKey(name: 'resident') ResidentModel? get resident;
 /// Create a copy of RondaGroupMemberModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $RondaGroupMemberModelCopyWith<$Res>  {
   factory $RondaGroupMemberModelCopyWith(RondaGroupMemberModel value, $Res Function(RondaGroupMemberModel) _then) = _$RondaGroupMemberModelCopyWithImpl;
 @useResult
 $Res call({
- String id,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt,@JsonKey(name: 'house_id') String houseId,@JsonKey(name: 'resident_id') String residentId,@JsonKey(name: 'ronda_group_id') String rondaGroupId,@JsonKey(name: 'house') HouseModel? house,@JsonKey(name: 'resident') ResidentModel? resident
+ String id,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt,@JsonKey(name: 'house_id') String houseId,@JsonKey(name: 'resident_id') String residentId,@JsonKey(name: 'group_id') String rondaGroupId,@JsonKey(name: 'house') HouseModel? house,@JsonKey(name: 'resident') ResidentModel? resident
 });
 
 
@@ -111,7 +111,7 @@ $ResidentModelCopyWith<$Res>? get resident {
 @JsonSerializable()
 
 class _RondaGroupMemberModel implements RondaGroupMemberModel {
-  const _RondaGroupMemberModel({required this.id, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt, @JsonKey(name: 'house_id') required this.houseId, @JsonKey(name: 'resident_id') required this.residentId, @JsonKey(name: 'ronda_group_id') required this.rondaGroupId, @JsonKey(name: 'house') this.house, @JsonKey(name: 'resident') this.resident});
+  const _RondaGroupMemberModel({required this.id, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt, @JsonKey(name: 'house_id') required this.houseId, @JsonKey(name: 'resident_id') required this.residentId, @JsonKey(name: 'group_id') required this.rondaGroupId, @JsonKey(name: 'house') this.house, @JsonKey(name: 'resident') this.resident});
   factory _RondaGroupMemberModel.fromJson(Map<String, dynamic> json) => _$RondaGroupMemberModelFromJson(json);
 
 @override final  String id;
@@ -119,7 +119,7 @@ class _RondaGroupMemberModel implements RondaGroupMemberModel {
 @override@JsonKey(name: 'updated_at') final  DateTime updatedAt;
 @override@JsonKey(name: 'house_id') final  String houseId;
 @override@JsonKey(name: 'resident_id') final  String residentId;
-@override@JsonKey(name: 'ronda_group_id') final  String rondaGroupId;
+@override@JsonKey(name: 'group_id') final  String rondaGroupId;
 @override@JsonKey(name: 'house') final  HouseModel? house;
 @override@JsonKey(name: 'resident') final  ResidentModel? resident;
 
@@ -156,7 +156,7 @@ abstract mixin class _$RondaGroupMemberModelCopyWith<$Res> implements $RondaGrou
   factory _$RondaGroupMemberModelCopyWith(_RondaGroupMemberModel value, $Res Function(_RondaGroupMemberModel) _then) = __$RondaGroupMemberModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt,@JsonKey(name: 'house_id') String houseId,@JsonKey(name: 'resident_id') String residentId,@JsonKey(name: 'ronda_group_id') String rondaGroupId,@JsonKey(name: 'house') HouseModel? house,@JsonKey(name: 'resident') ResidentModel? resident
+ String id,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime updatedAt,@JsonKey(name: 'house_id') String houseId,@JsonKey(name: 'resident_id') String residentId,@JsonKey(name: 'group_id') String rondaGroupId,@JsonKey(name: 'house') HouseModel? house,@JsonKey(name: 'resident') ResidentModel? resident
 });
 
 

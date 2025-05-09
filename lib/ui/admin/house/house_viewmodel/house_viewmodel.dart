@@ -33,9 +33,11 @@ class HouseState {
 class HouseViewModel extends StateNotifier<HouseState> {
   final HouseRepository _repository;
 
-  HouseViewModel({required HouseRepository repository})
+  HouseViewModel({required HouseRepository repository, required String rtID})
     : _repository = repository,
-      super(const HouseState(isLoading: false, error: null, list: []));
+      super(const HouseState(isLoading: false, error: null, list: [])) {
+    getHouseListHouse(rtId: rtID);
+  }
 
   Future<bool> createHouse({
     required String rtId,
@@ -115,10 +117,13 @@ class HouseViewModel extends StateNotifier<HouseState> {
     }
   }
 
-  Future<void> getHouseListHouse() async {
+  Future<void> getHouseListHouse({required String rtId}) async {
     state = state.copyWith(isLoading: true);
     try {
-      final result = await _repository.getListHouse({"paginated": false});
+      final result = await _repository.getListHouse({
+        "paginated": false,
+        'rt_id': rtId,
+      });
       switch (result) {
         case Ok():
           state = state.copyWith(list: result.value.data ?? []);

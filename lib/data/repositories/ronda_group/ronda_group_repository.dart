@@ -13,4 +13,5 @@ abstract class RondaGroupRepository {
     RondaGroupRequestModel rondaGroup,
   );
   Future<Result<void>> delete(String id);
+  Future<RondaGroupModel?> getDetailRondaGroup(String id);
 }

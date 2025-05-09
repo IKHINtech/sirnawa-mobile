@@ -23,6 +23,7 @@ import 'package:sirnawa_mobile/ui/admin/house/widgets/house_screen_v2.dart';
 import 'package:sirnawa_mobile/ui/admin/resident/widget/resident_form_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/resident/widget/resident_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/ronda_group/widgets/ronda_form_screen.dart';
+import 'package:sirnawa_mobile/ui/admin/ronda_group/widgets/ronda_group_detail_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/ronda_group/widgets/ronda_group_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/rt/widget/rt_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/rw/widget/rw_form_screen.dart';
@@ -105,6 +106,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.adminRondaGroup,
         builder: (context, state) => const GroupRondaScreen(),
+      ),
+      GoRoute(
+        path: "${Routes.adminRondaGroup}/:id",
+        builder: (context, state) {
+          return RondaGroupDetailScreen(
+            rondaGroupId: state.pathParameters['id']!,
+          );
+        },
       ),
       GoRoute(
         path: Routes.adminRondaGroupUpdate,

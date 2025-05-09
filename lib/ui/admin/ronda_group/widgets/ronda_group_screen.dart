@@ -66,6 +66,11 @@ class _GroupRondaScreenState extends ConsumerState<GroupRondaScreen> {
                             final rondaGroup = rondaGroups[index];
                             return Card(
                               child: ListTile(
+                                onTap: () {
+                                  context.push(
+                                    "${Routes.adminRondaGroup}/${rondaGroup.id}",
+                                  );
+                                },
                                 title: Text(rondaGroup.name),
                                 leading: Icon(Icons.security),
                               ),

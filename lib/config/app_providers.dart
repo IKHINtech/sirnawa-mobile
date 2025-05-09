@@ -15,6 +15,8 @@ import 'package:sirnawa_mobile/data/repositories/resident_house/resident_house_r
 import 'package:sirnawa_mobile/data/repositories/resident_house/resident_house_repository_remote.dart';
 import 'package:sirnawa_mobile/data/repositories/ronda_group/ronda_group_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/ronda_group/ronda_group_repository_remote.dart';
+import 'package:sirnawa_mobile/data/repositories/ronda_group_member/ronda_group_member_repository.dart';
+import 'package:sirnawa_mobile/data/repositories/ronda_group_member/ronda_group_member_repository_remote.dart';
 import 'package:sirnawa_mobile/data/repositories/rt/rt_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/rt/rt_repository_remote.dart';
 import 'package:sirnawa_mobile/data/repositories/rw/rw_repository.dart';
@@ -29,6 +31,7 @@ import 'package:sirnawa_mobile/data/services/api/house_services.dart';
 import 'package:sirnawa_mobile/data/services/api/housing_area_services.dart';
 import 'package:sirnawa_mobile/data/services/api/resident_house_services.dart';
 import 'package:sirnawa_mobile/data/services/api/resident_services.dart';
+import 'package:sirnawa_mobile/data/services/api/ronda_group_member_service.dart';
 import 'package:sirnawa_mobile/data/services/api/ronda_group_services.dart';
 import 'package:sirnawa_mobile/data/services/api/rt_services.dart';
 import 'package:sirnawa_mobile/data/services/api/rw_services.dart';
@@ -112,8 +115,46 @@ final StateNotifierProvider<RtViewModel, RtState> rtViewModelProvider =
         repository: ref.read<RtRepository>(rtRepositoryProvider),
       );
     });
+// ========== Ronda Group Member ========== //
+
+final Provider<RondaGroupMemberService> rondaGroupMemberServiceProvider =
+    Provider<RondaGroupMemberService>((Ref<RondaGroupMemberService> ref) {
+      return RondaGroupMemberService(ref.read<ApiClient>(apiClientProvider));
+    });
+
+final Provider<RondaGroupMemberRepository> rondaGroupMemberRepositoryProvider =
+    Provider<RondaGroupMemberRepository>((Ref<RondaGroupMemberRepository> ref) {
+      return RondaGroupMemberRepositoryRemote(
+        rondaGroupMemberService: ref.read<RondaGroupMemberService>(
+          rondaGroupMemberServiceProvider,
+        ),
+      );
+    });
 
 // ========== Ronda Group ========== //
+
+final AutoDisposeFutureProviderFamily<RondaGroupModel?, String>
+rondaGroupDetailProvider = FutureProvider.autoDispose
+    .family<RondaGroupModel?, String>((Ref<Object?> ref, String groupID) async {
+      final RondaGroupRepository repository = ref.watch<RondaGroupRepository>(
+        rondaGroupRepositoryProvider,
+      );
+      try {
+        final RondaGroupModel? response = await repository.getDetailRondaGroup(
+          groupID,
+        );
+        return response;
+      } catch (e, _) {
+        // Simpan error untuk ditampilkan di UI
+        ref
+            .read<StateController<String?>>(rondaGroupErrorProvider.notifier)
+            .state = e.toString();
+        rethrow; // Tetap lempar error agar bisa ditangkap oleh AsyncValue
+      }
+    });
+
+final AutoDisposeStateProvider<String?> rondaGroupErrorProvider =
+    StateProvider.autoDispose<String?>((Ref ref) => null);
 
 final rondaGroupPaginationProvider = StateNotifierProvider.autoDispose<
   RondaGroupListNotifier,
@@ -270,8 +311,12 @@ final Provider<HouseRepository> houseRepositoryProvider =
 
 final StateNotifierProvider<HouseViewModel, HouseState> houseViewModelProvider =
     StateNotifierProvider<HouseViewModel, HouseState>((ref) {
+      final rtId = ref.watch(
+        homeViewModelProvider.select((s) => s.userRtModel?.rtId ?? ""),
+      );
       return HouseViewModel(
         repository: ref.read<HouseRepository>(houseRepositoryProvider),
+        rtID: rtId,
       );
     });
 // ===== RESIDENT ========= //
