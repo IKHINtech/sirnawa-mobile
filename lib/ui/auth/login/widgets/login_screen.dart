@@ -46,7 +46,55 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
     });
     final state = ref.watch(loginViewModelProvider);
+    final loginStatus = state.loginStatus;
     final viewModel = ref.read(loginViewModelProvider.notifier);
+    String? getTitle() {
+      return loginStatus.when(
+        data: (_) => "Login",
+        error: (_, __) => "Login",
+        loading: () => null,
+      );
+    }
+
+    VoidCallback? getOnPressed() {
+      return loginStatus.when(
+        data:
+            (_) => () {
+              if (_formKey.currentState!.validate()) {
+                try {
+                  _formKey.currentState!.save();
+                  viewModel.login(
+                    emailController.text,
+                    passwordController.text,
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Oops: ${e.toString()}'),
+                      backgroundColor: Colors.red,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+              }
+            },
+        error: (_, __) => () {},
+        loading: () => () {},
+      );
+    }
+
+    Widget? getChild() {
+      return loginStatus.when(
+        data: (_) => null,
+        error: (_, __) => null,
+        loading:
+            () => const SizedBox(
+              height: 20,
+              width: 20,
+              child: CircularProgressIndicator(),
+            ),
+      );
+    }
 
     return Scaffold(
       body: Container(
@@ -109,45 +157,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     const SizedBox(height: 30),
                     CustomElevatedButton(
-                      title: state.loginStatus.when(
-                        data: (_) => "Login",
-                        error: (_, __) => "Login",
-                        loading: () => null,
-                      ),
-                      onPressed: state.loginStatus.when(
-                        data:
-                            (_) => () {
-                              if (_formKey.currentState!.validate()) {
-                                try {
-                                  _formKey.currentState!.save();
-                                  viewModel.login(
-                                    emailController.text,
-                                    passwordController.text,
-                                  );
-                                } catch (e) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text('Opps: ${e.toString()}'),
-                                      backgroundColor: Colors.red,
-                                      behavior: SnackBarBehavior.floating,
-                                    ),
-                                  );
-                                }
-                              }
-                            },
-                        error: (_, __) => () {},
-                        loading: () => () {},
-                      ),
-                      child: state.loginStatus.when(
-                        data: (_) => null,
-                        error: (_, __) => null,
-                        loading:
-                            () => const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(),
-                            ),
-                      ),
+                      title: getTitle(),
+                      onPressed: getOnPressed,
+                      child: getChild(),
                     ),
                     const SizedBox(height: 20),
                     _buildSignUpText(),

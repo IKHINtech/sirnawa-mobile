@@ -13,6 +13,13 @@ _RondaGroupModel _$RondaGroupModelFromJson(Map<String, dynamic> json) =>
       updatedAt: DateTime.parse(json['updated_at'] as String),
       rtId: json['rt_id'] as String,
       name: json['name'] as String,
+      rondaGroupMembers:
+          (json['members'] as List<dynamic>?)
+              ?.map(
+                (e) =>
+                    RondaGroupMemberModel.fromJson(e as Map<String, dynamic>),
+              )
+              .toList(),
     );
 
 Map<String, dynamic> _$RondaGroupModelToJson(_RondaGroupModel instance) =>
@@ -22,4 +29,5 @@ Map<String, dynamic> _$RondaGroupModelToJson(_RondaGroupModel instance) =>
       'updated_at': instance.updatedAt.toIso8601String(),
       'rt_id': instance.rtId,
       'name': instance.name,
+      'members': instance.rondaGroupMembers,
     };

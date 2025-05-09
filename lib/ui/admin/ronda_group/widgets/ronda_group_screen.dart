@@ -65,7 +65,10 @@ class _GroupRondaScreenState extends ConsumerState<GroupRondaScreen> {
                           if (index < rondaGroups.length) {
                             final rondaGroup = rondaGroups[index];
                             return Card(
-                              child: ListTile(title: Text(rondaGroup.name)),
+                              child: ListTile(
+                                title: Text(rondaGroup.name),
+                                leading: Icon(Icons.security),
+                              ),
                             );
                           } else {
                             final notifier = ref.read(
