@@ -16,39 +16,60 @@ class RondaGroupDetailScreen extends ConsumerWidget {
     required WidgetRef ref,
     required RondaGroupMemberModel member,
   }) async {
-    //TODO: ubah jadi view model sehingga bisa show loading
-    final repo = ref.read(rondaGroupMemberRepositoryProvider);
-
     return showDialog<void>(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Hapus Anggota'),
-          content: Text(
-            'Apakah Anda yakin ingin menghapus ${member.resident?.name ?? 'anggota ini'}?',
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Batal'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: const Text('Hapus', style: TextStyle(color: Colors.red)),
-              onPressed: () async {
-                try {
-                  //TODO: ubah jadi view model sehingga bisa show loading
+        return Consumer(
+          builder: (context, ref, _) {
+            final provider = ref.watch(
+              rondaGroupMemberViewModelProvider.notifier,
+            );
+            final state = ref.watch(rondaGroupMemberViewModelProvider);
+            return AlertDialog(
+              title: const Text('Hapus Anggota'),
+              content: Text(
+                'Apakah Anda yakin ingin menghapus ${member.resident?.name ?? 'anggota ini'}?',
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Batal'),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                TextButton(
+                  onPressed:
+                      state.isLoading
+                          ? null
+                          : () async {
+                            try {
+                              await provider.deleteRondaGroupMember(member.id);
+                              ref.invalidate(
+                                rondaGroupDetailProvider(rondaGroupId),
+                              );
+                              Navigator.of(context).pop(); // Close dialog
+                            } catch (e) {
+                              debugPrint(e.toString());
+                              Navigator.of(context).pop(); // Close dialog
+                            }
+                          },
 
-                  await repo.delete(member.id);
-                  ref.invalidate(rondaGroupDetailProvider(rondaGroupId));
-                  Navigator.of(context).pop(); // Close dialog
-                } catch (e) {
-                  debugPrint(e.toString());
-                  Navigator.of(context).pop(); // Close dialog
-                }
-              },
-            ),
-          ],
+                  child:
+                      state.isLoading
+                          ? SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: const CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          )
+                          : const Text(
+                            'Hapus',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                ),
+              ],
+            );
+          },
         );
       },
     );

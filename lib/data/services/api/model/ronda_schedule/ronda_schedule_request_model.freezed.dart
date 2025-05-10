@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RondaScheduleRequestModel {
 
- String? get id;@JsonKey(name: 'date') DateTime get date;@JsonKey(name: 'rt_id') String get rtId;@JsonKey(name: 'group_id') String get groupId;
+ String? get id;@JsonKey(name: 'date') String get date;@JsonKey(name: 'rt_id') String get rtId;@JsonKey(name: 'group_id') String get groupId;
 /// Create a copy of RondaScheduleRequestModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $RondaScheduleRequestModelCopyWith<$Res>  {
   factory $RondaScheduleRequestModelCopyWith(RondaScheduleRequestModel value, $Res Function(RondaScheduleRequestModel) _then) = _$RondaScheduleRequestModelCopyWithImpl;
 @useResult
 $Res call({
- String? id,@JsonKey(name: 'date') DateTime date,@JsonKey(name: 'rt_id') String rtId,@JsonKey(name: 'group_id') String groupId
+ String? id,@JsonKey(name: 'date') String date,@JsonKey(name: 'rt_id') String rtId,@JsonKey(name: 'group_id') String groupId
 });
 
 
@@ -70,7 +70,7 @@ class _$RondaScheduleRequestModelCopyWithImpl<$Res>
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
-as DateTime,rtId: null == rtId ? _self.rtId : rtId // ignore: cast_nullable_to_non_nullable
+as String,rtId: null == rtId ? _self.rtId : rtId // ignore: cast_nullable_to_non_nullable
 as String,groupId: null == groupId ? _self.groupId : groupId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -87,7 +87,7 @@ class _RondaScheduleRequestModel implements RondaScheduleRequestModel {
   factory _RondaScheduleRequestModel.fromJson(Map<String, dynamic> json) => _$RondaScheduleRequestModelFromJson(json);
 
 @override final  String? id;
-@override@JsonKey(name: 'date') final  DateTime date;
+@override@JsonKey(name: 'date') final  String date;
 @override@JsonKey(name: 'rt_id') final  String rtId;
 @override@JsonKey(name: 'group_id') final  String groupId;
 
@@ -124,7 +124,7 @@ abstract mixin class _$RondaScheduleRequestModelCopyWith<$Res> implements $Ronda
   factory _$RondaScheduleRequestModelCopyWith(_RondaScheduleRequestModel value, $Res Function(_RondaScheduleRequestModel) _then) = __$RondaScheduleRequestModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? id,@JsonKey(name: 'date') DateTime date,@JsonKey(name: 'rt_id') String rtId,@JsonKey(name: 'group_id') String groupId
+ String? id,@JsonKey(name: 'date') String date,@JsonKey(name: 'rt_id') String rtId,@JsonKey(name: 'group_id') String groupId
 });
 
 
@@ -145,7 +145,7 @@ class __$RondaScheduleRequestModelCopyWithImpl<$Res>
   return _then(_RondaScheduleRequestModel(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
-as DateTime,rtId: null == rtId ? _self.rtId : rtId // ignore: cast_nullable_to_non_nullable
+as String,rtId: null == rtId ? _self.rtId : rtId // ignore: cast_nullable_to_non_nullable
 as String,groupId: null == groupId ? _self.groupId : groupId // ignore: cast_nullable_to_non_nullable
 as String,
   ));

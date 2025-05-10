@@ -19,15 +19,7 @@ class RondaScheduleScreen extends ConsumerWidget {
     ref.read(rondaGroupViewModelProvider.notifier);
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Jadwal Ronda',
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () => _showAddScheduleDialog(context, ref, rtId),
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(title: 'Jadwal Ronda'),
       body: RefreshIndicator(
         onRefresh: () async {
           ref.invalidate(rondaSchedulePaginationProvider);
@@ -37,6 +29,11 @@ class RondaScheduleScreen extends ConsumerWidget {
           error: (error, _) => Center(child: Text('Error: $error')),
           data: (schedules) => _buildScheduleList(schedules, ref),
         ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _showAddScheduleDialog(context, ref, rtId),
+        label: Text("Tambah Jadwal"),
+        icon: Icon(Icons.add),
       ),
     );
   }
@@ -70,7 +67,10 @@ class RondaScheduleScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                DateFormat('EEEE, d MMMM y', 'id_ID').format(schedule.date),
+                DateFormat(
+                  'EEEE, d MMMM y',
+                  'id_ID',
+                ).format(schedule.date.toLocal()),
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 8),
@@ -220,8 +220,12 @@ class RondaScheduleScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder:
-          (context) => StatefulBuilder(
-            builder: (context, setState) {
+          (context) => Consumer(
+            builder: (context, ref, _) {
+              final state = ref.watch(rondaScheduleViewModelProvider);
+              final provider = ref.watch(
+                rondaScheduleViewModelProvider.notifier,
+              );
               return AlertDialog(
                 title: const Text('Tambah Jadwal Ronda'),
                 content: SingleChildScrollView(
@@ -238,6 +242,7 @@ class RondaScheduleScreen extends ConsumerWidget {
                         onTap: () async {
                           final selectedDate = await showDatePicker(
                             context: context,
+                            locale: const Locale('id', 'ID'),
                             initialDate: DateTime.now(),
                             firstDate: DateTime.now(),
                             lastDate: DateTime.now().add(
@@ -270,13 +275,11 @@ class RondaScheduleScreen extends ConsumerWidget {
                                 );
                               }).toList(),
                           onChanged: (value) {
-                            setState(() {
-                              selectedGroupId = value;
-                              final selectedGroup = groupState.list.firstWhere(
-                                (g) => g.id == value,
-                              );
-                              groupController.text = selectedGroup.name;
-                            });
+                            selectedGroupId = value;
+                            final selectedGroup = groupState.list.firstWhere(
+                              (g) => g.id == value,
+                            );
+                            groupController.text = selectedGroup.name;
                           },
                         ),
                     ],
@@ -288,41 +291,54 @@ class RondaScheduleScreen extends ConsumerWidget {
                     child: const Text('Batal'),
                   ),
                   TextButton(
-                    onPressed: () {
-                      if (dateController.text.isEmpty ||
-                          selectedGroupId == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Harap isi semua field'),
-                          ),
-                        );
-                        return;
-                      }
-                      //TODO: lanjut disini
-                      final request = RondaScheduleRequestModel(
-                        date: DateFormat(
-                          'yyyy-MM-dd',
-                        ).parse(dateController.text),
-                        rtId: rtId,
-                        groupId: selectedGroupId!,
-                      );
-
-                      ref
-                          .read(rondaScheduleViewModelProvider.notifier)
-                          .createRondaSchedule(request)
-                          .then((_) {
-                            Navigator.pop(context);
-                            ref.invalidate(rondaSchedulePaginationProvider);
-                          })
-                          .catchError((error) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Gagal menambah jadwal: $error'),
-                              ),
-                            );
-                          });
-                    },
-                    child: const Text('Simpan'),
+                    onPressed:
+                        state.isLoading
+                            ? null
+                            : () {
+                              if (dateController.text.isEmpty ||
+                                  selectedGroupId == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Harap isi semua field'),
+                                  ),
+                                );
+                                return;
+                              }
+                              final request = RondaScheduleRequestModel(
+                                date:
+                                    DateFormat('yyyy-MM-dd')
+                                        .parse(dateController.text)
+                                        .toUtc()
+                                        .toIso8601String(),
+                                rtId: rtId,
+                                groupId: selectedGroupId!,
+                              );
+                              provider
+                                  .createRondaSchedule(request)
+                                  .then((_) {
+                                    Navigator.pop(context);
+                                    ref.invalidate(
+                                      rondaSchedulePaginationProvider,
+                                    );
+                                  })
+                                  .catchError((error) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Gagal menambah jadwal: $error',
+                                        ),
+                                      ),
+                                    );
+                                  });
+                            },
+                    child:
+                        state.isLoading
+                            ? SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                            : const Text('Simpan'),
                   ),
                 ],
               );

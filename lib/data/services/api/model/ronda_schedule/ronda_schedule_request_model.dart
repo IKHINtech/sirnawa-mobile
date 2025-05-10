@@ -1,4 +1,3 @@
-
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'ronda_schedule_request_model.freezed.dart';
@@ -8,7 +7,7 @@ part 'ronda_schedule_request_model.g.dart';
 class RondaScheduleRequestModel with _$RondaScheduleRequestModel {
   const factory RondaScheduleRequestModel({
     String? id,
-    @JsonKey(name: 'date') required DateTime date,
+    @JsonKey(name: 'date') required String date,
     @JsonKey(name: 'rt_id') required String rtId,
     @JsonKey(name: 'group_id') required String groupId,
   }) = _RondaScheduleRequestModel;

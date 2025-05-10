@@ -54,6 +54,7 @@ import 'package:sirnawa_mobile/ui/admin/housing_area/housing_area_viewmodel/hous
 import 'package:sirnawa_mobile/ui/admin/resident/resident_view_model/resident_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/resident_house/resident_house_viewmodel/resident_house_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/ronda_group/ronda_group_viewmodel/ronda_group_viewmodel.dart';
+import 'package:sirnawa_mobile/ui/admin/ronda_group_member/view_models/ronda_group_member_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/ronda_schedule/ronda_schedule_viewmodel/ronda_schedule_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/rt/rt_viewmodel/rt_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/rw/rw_viewmodel/rw_viewmodel.dart';
@@ -135,6 +136,22 @@ final Provider<RondaGroupMemberRepository> rondaGroupMemberRepositoryProvider =
         ),
       );
     });
+
+final StateNotifierProvider<RondaGroupMemberViewModel, RondaGroupMemberState>
+rondaGroupMemberViewModelProvider = StateNotifierProvider<
+  RondaGroupMemberViewModel,
+  RondaGroupMemberState
+>((ref) {
+  final rtId = ref.watch(
+    homeViewModelProvider.select((s) => s.residentHouse?.house!.rt?.id ?? ""),
+  );
+  return RondaGroupMemberViewModel(
+    repository: ref.read<RondaGroupMemberRepository>(
+      rondaGroupMemberRepositoryProvider,
+    ),
+    gropuID: rtId,
+  );
+});
 
 // ========== Ronda Schedule ========== //
 final AutoDisposeFutureProviderFamily<RondaScheduleModel?, String>

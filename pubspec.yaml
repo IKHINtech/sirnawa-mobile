@@ -7,19 +7,22 @@ version: 1.0.0+1
 environment:
   sdk: ^3.7.2
 
+flutter_localization:
+  sdk: flutter
+
 dependencies:
   cookie_jar: null
   cupertino_icons: ^1.0.8
   dio: null
   dio_cookie_manager: null
+  flutter_localization:
   flutter:
     sdk: flutter
-  flutter_dotenv: null
   flutter_riverpod: null
   freezed_annotation: null
   go_router: null
   google_fonts: null
-  intl: ^0.20.2
+  intl: ^0.19.0
   share_plus: ^11.0.0
   json_annotation: ^4.9.0
   logging: null

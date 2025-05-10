@@ -8,6 +8,8 @@ import 'package:sirnawa_mobile/ui/core/themes/theme.dart';
 import 'package:sirnawa_mobile/ui/core/ui/scroll_behaviour.dart';
 import 'package:sirnawa_mobile/utils/util.dart';
 import 'package:intl/date_symbol_data_local.dart';
+// ignore: depend_on_referenced_packages
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,6 +42,9 @@ class MyApp extends ConsumerWidget {
     );
     MaterialTheme theme = MaterialTheme(textTheme);
     return MaterialApp.router(
+      locale: const Locale('id', 'ID'),
+      supportedLocales: const [Locale('id', 'ID')],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       debugShowCheckedModeBanner: false,
       title: 'Sirnajaya Kartika Warga',
       scrollBehavior: AppCustomScrollBehavior(),
