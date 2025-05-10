@@ -25,6 +25,7 @@ import 'package:sirnawa_mobile/ui/admin/resident/widget/resident_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/ronda_group/widgets/ronda_form_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/ronda_group/widgets/ronda_group_detail_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/ronda_group/widgets/ronda_group_screen.dart';
+import 'package:sirnawa_mobile/ui/admin/ronda_schedule/widgets/ronda_schedule_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/rt/widget/rt_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/rw/widget/rw_form_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/rw/widget/rw_screen.dart';
@@ -101,6 +102,31 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.admin,
         builder: (context, state) => const AdminScreen(),
+      ),
+
+      // ===== RONDA SCHEDULE =====
+      GoRoute(
+        path: Routes.adminRondaSchedule,
+        builder: (context, state) => const RondaScheduleScreen(),
+      ),
+      GoRoute(
+        path: Routes.adminRondaGroupCreate,
+        builder: (context, state) => const RondaFormScreen(),
+      ),
+      GoRoute(
+        path: "${Routes.adminRondaSchedule}/:id",
+        builder: (context, state) {
+          return RondaGroupDetailScreen(
+            rondaGroupId: state.pathParameters['id']!,
+          );
+        },
+      ),
+      GoRoute(
+        path: Routes.adminRondaGroupUpdate,
+        builder: (context, state) {
+          final rondaGroup = state.extra as RondaGroupModel;
+          return RondaFormScreen(rondaGroup: rondaGroup);
+        },
       ),
       // ===== RONDA GROUP =====
       GoRoute(

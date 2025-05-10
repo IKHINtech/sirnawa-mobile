@@ -17,6 +17,8 @@ import 'package:sirnawa_mobile/data/repositories/ronda_group/ronda_group_reposit
 import 'package:sirnawa_mobile/data/repositories/ronda_group/ronda_group_repository_remote.dart';
 import 'package:sirnawa_mobile/data/repositories/ronda_group_member/ronda_group_member_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/ronda_group_member/ronda_group_member_repository_remote.dart';
+import 'package:sirnawa_mobile/data/repositories/ronda_schedule/ronda_schedule_repository.dart';
+import 'package:sirnawa_mobile/data/repositories/ronda_schedule/ronda_schedule_repository_remote.dart';
 import 'package:sirnawa_mobile/data/repositories/rt/rt_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/rt/rt_repository_remote.dart';
 import 'package:sirnawa_mobile/data/repositories/rw/rw_repository.dart';
@@ -33,6 +35,7 @@ import 'package:sirnawa_mobile/data/services/api/resident_house_services.dart';
 import 'package:sirnawa_mobile/data/services/api/resident_services.dart';
 import 'package:sirnawa_mobile/data/services/api/ronda_group_member_service.dart';
 import 'package:sirnawa_mobile/data/services/api/ronda_group_services.dart';
+import 'package:sirnawa_mobile/data/services/api/ronda_schedule_services.dart';
 import 'package:sirnawa_mobile/data/services/api/rt_services.dart';
 import 'package:sirnawa_mobile/data/services/api/rw_services.dart';
 import 'package:sirnawa_mobile/data/services/api/user_services.dart';
@@ -43,6 +46,7 @@ import 'package:sirnawa_mobile/domain/model/house/house_model.dart';
 import 'package:sirnawa_mobile/domain/model/resident/resident_model.dart';
 import 'package:sirnawa_mobile/domain/model/resident_house/resident_house_model.dart';
 import 'package:sirnawa_mobile/domain/model/ronda_group/ronda_group_model.dart';
+import 'package:sirnawa_mobile/domain/model/ronda_schedule/ronda_schedule_model.dart';
 import 'package:sirnawa_mobile/ui/admin/announcement/announcement_viewmodel/announcement_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/block/block_view_model/block_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/house/house_viewmodel/house_viewmodel.dart';
@@ -50,6 +54,7 @@ import 'package:sirnawa_mobile/ui/admin/housing_area/housing_area_viewmodel/hous
 import 'package:sirnawa_mobile/ui/admin/resident/resident_view_model/resident_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/resident_house/resident_house_viewmodel/resident_house_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/ronda_group/ronda_group_viewmodel/ronda_group_viewmodel.dart';
+import 'package:sirnawa_mobile/ui/admin/ronda_schedule/ronda_schedule_viewmodel/ronda_schedule_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/rt/rt_viewmodel/rt_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/admin/rw/rw_viewmodel/rw_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/auth/login/view_models/login_viewmodel.dart';
@@ -130,6 +135,76 @@ final Provider<RondaGroupMemberRepository> rondaGroupMemberRepositoryProvider =
         ),
       );
     });
+
+
+// ========== Ronda Schedule ========== //
+final AutoDisposeFutureProviderFamily<RondaScheduleModel?, String>
+rondaScheduleDetailProvider = FutureProvider.autoDispose
+    .family<RondaScheduleModel?, String>((Ref<Object?> ref, String groupID) async {
+      final RondaScheduleRepository repository = ref.watch<RondaScheduleRepository>(
+        rondaScheduleRepositoryProvider,
+      );
+      try {
+        final RondaScheduleModel? response = await repository.getDetailRondaSchedule(
+          groupID,
+        );
+        return response;
+      } catch (e, _) {
+        // Simpan error untuk ditampilkan di UI
+        ref
+            .read<StateController<String?>>(rondaScheduleErrorProvider.notifier)
+            .state = e.toString();
+        rethrow; // Tetap lempar error agar bisa ditangkap oleh AsyncValue
+      }
+    });
+
+final AutoDisposeStateProvider<String?> rondaScheduleErrorProvider =
+    StateProvider.autoDispose<String?>((Ref ref) => null);
+
+final rondaSchedulePaginationProvider = StateNotifierProvider.autoDispose<
+  RondaScheduleListNotifier,
+  AsyncValue<List<RondaScheduleModel>>
+>((ref) {
+  final repository = ref.watch(rondaScheduleRepositoryProvider);
+  final rtId = ref.watch(
+    homeViewModelProvider.select((s) => s.userRtModel?.rtId ?? ""),
+  );
+
+  if (rtId.isEmpty) {
+    return RondaScheduleListNotifier(repository, "")
+      // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      ..state = const AsyncValue.data([]);
+  }
+
+  return RondaScheduleListNotifier(repository, rtId);
+});
+final Provider<RondaScheduleService> rondaScheduleServiceProvider =
+    Provider<RondaScheduleService>((Ref<RondaScheduleService> ref) {
+      return RondaScheduleService(ref.read<ApiClient>(apiClientProvider));
+    });
+
+final Provider<RondaScheduleRepository> rondaScheduleRepositoryProvider =
+    Provider<RondaScheduleRepository>((Ref<RondaScheduleRepository> ref) {
+      return RondaScheduleRepositoryRemote(
+        rondaScheduleService: ref.read<RondaScheduleService>(
+          rondaScheduleServiceProvider,
+        ),
+      );
+    });
+
+final StateNotifierProvider<RondaScheduleViewModel, RondaScheduleState>
+rondaScheduleViewModelProvider = StateNotifierProvider<
+  RondaScheduleViewModel,
+  RondaScheduleState
+>((ref) {
+  final rtId = ref.watch(
+    homeViewModelProvider.select((s) => s.residentHouse?.house!.rt?.id ?? ""),
+  );
+  return RondaScheduleViewModel(
+    repository: ref.read<RondaScheduleRepository>(rondaScheduleRepositoryProvider),
+    rtId: rtId,
+  );
+});
 
 // ========== Ronda Group ========== //
 

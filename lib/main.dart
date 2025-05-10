@@ -8,6 +8,8 @@ import 'package:sirnawa_mobile/routing/router_v3.dart';
 import 'package:sirnawa_mobile/ui/core/themes/theme.dart';
 import 'package:sirnawa_mobile/ui/core/ui/scroll_behaviour.dart';
 import 'package:sirnawa_mobile/utils/util.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +18,7 @@ void main() async {
   } catch (e) {
     Logger("Starting application error");
   }
+   await initializeDateFormatting('id_ID');
   Logger("Starting application");
   Logger.root.level = Level.ALL;
   runApp(

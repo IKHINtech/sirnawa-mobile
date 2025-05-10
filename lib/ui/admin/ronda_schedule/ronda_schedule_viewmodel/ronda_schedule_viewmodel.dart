@@ -1,27 +1,27 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sirnawa_mobile/data/repositories/ronda_group/ronda_group_repository.dart';
+import 'package:sirnawa_mobile/data/repositories/ronda_schedule/ronda_schedule_repository.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
-import 'package:sirnawa_mobile/data/services/api/model/ronda_group/ronda_group_request_model.dart';
-import 'package:sirnawa_mobile/domain/model/ronda_group/ronda_group_model.dart';
+import 'package:sirnawa_mobile/data/services/api/model/ronda_schedule/ronda_schedule_request_model.dart';
+import 'package:sirnawa_mobile/domain/model/ronda_schedule/ronda_schedule_model.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
 
-class RondaGroupState {
+class RondaScheduleState {
   final bool isLoading;
   final String? error;
-  final List<RondaGroupModel> list;
+  final List<RondaScheduleModel> list;
 
-  const RondaGroupState({
+  const RondaScheduleState({
     required this.isLoading,
     required this.error,
     required this.list,
   });
 
-  RondaGroupState copyWith({
+  RondaScheduleState copyWith({
     bool? isLoading,
     String? error,
-    List<RondaGroupModel>? list,
+    List<RondaScheduleModel>? list,
   }) {
-    return RondaGroupState(
+    return RondaScheduleState(
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
       list: list ?? this.list,
@@ -29,73 +29,57 @@ class RondaGroupState {
   }
 }
 
-class RondaGroupViewModel extends StateNotifier<RondaGroupState> {
-  final RondaGroupRepository _repository;
+class RondaScheduleViewModel extends StateNotifier<RondaScheduleState> {
+  final RondaScheduleRepository _repository;
   final String _rtId;
-  RondaGroupViewModel({
-    required RondaGroupRepository repository,
+  RondaScheduleViewModel({
+    required RondaScheduleRepository repository,
     required String rtId,
   }) : _repository = repository,
        _rtId = rtId,
-       super(const RondaGroupState(isLoading: false, error: null, list: [])) {
-    fetchListGroupOptions(rtId);
+       super(
+         const RondaScheduleState(isLoading: false, error: null, list: []),
+       ) {
+    fetchListScheduleOptions(rtId);
   }
 
-  Future<void> fetchListGroupOptions(String rtId) async {
+  Future<void> fetchListScheduleOptions(String rtId) async {
     try {
       state = state.copyWith(isLoading: true);
 
-      final result = await _repository.getListRondaGroup({"paginated": false});
+      final result = await _repository.getListRondaSchedule({
+        "paginated": false,
+      });
 
       switch (result) {
-        case Ok<ApiResponse<List<RondaGroupModel>>>():
-          state = state.copyWith(
+        case Ok<ApiResponse<List<RondaScheduleModel>>>():
+          state = RondaScheduleState(
+            isLoading: false,
             error: null,
             list: result.value.data ?? [],
           );
-        case Error<ApiResponse<List<RondaGroupModel>>>():
-          state = state.copyWith(
-            error: result.error.toString(),
-          );
-      }
-    } catch (e) {
-      state = state.copyWith(isLoading: false, error: "Exception: $e");
-    }finally{
-      state = state.copyWith(isLoading: false, );
-    }
-  }
-
-  Future<bool> createRondaGroup(RondaGroupRequestModel rondaGroup) async {
-    state = state.copyWith(isLoading: true);
-    try {
-      final result = await _repository.createRondaGroup(rondaGroup);
-      switch (result) {
-        case Ok():
-          await fetchListGroupOptions(_rtId);
-          return true;
-        case Error():
+          break;
+        case Error<ApiResponse<List<RondaScheduleModel>>>():
           state = state.copyWith(
             isLoading: false,
             error: result.error.toString(),
           );
-          return false;
+          break;
       }
     } catch (e) {
       state = state.copyWith(isLoading: false, error: "Exception: $e");
-      return false;
     }
   }
 
-  Future<bool> updateRondaGroup(
-    String id,
-    RondaGroupRequestModel rondaGroup,
+  Future<bool> createRondaSchedule(
+    RondaScheduleRequestModel rondaSchedule,
   ) async {
     state = state.copyWith(isLoading: true);
     try {
-      final result = await _repository.updateRondaGroup(id, rondaGroup);
+      final result = await _repository.createRondaSchedule(rondaSchedule);
       switch (result) {
         case Ok():
-          await fetchListGroupOptions(_rtId);
+          await fetchListScheduleOptions(_rtId);
           return true;
         case Error():
           state = state.copyWith(
@@ -110,13 +94,37 @@ class RondaGroupViewModel extends StateNotifier<RondaGroupState> {
     }
   }
 
-  Future<void> deleteRondaGroup(String id) async {
+  Future<bool> updateRondaSchedule(
+    String id,
+    RondaScheduleRequestModel rondaSchedule,
+  ) async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final result = await _repository.updateRondaSchedule(id, rondaSchedule);
+      switch (result) {
+        case Ok():
+          await fetchListScheduleOptions(_rtId);
+          return true;
+        case Error():
+          state = state.copyWith(
+            isLoading: false,
+            error: result.error.toString(),
+          );
+          return false;
+      }
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: "Exception: $e");
+      return false;
+    }
+  }
+
+  Future<void> deleteRondaSchedule(String id) async {
     state = state.copyWith(isLoading: true);
     try {
       final result = await _repository.delete(id);
       switch (result) {
         case Ok():
-          await fetchListGroupOptions(_rtId);
+          await fetchListScheduleOptions(_rtId);
           break;
         case Error():
           state = state.copyWith(
@@ -131,16 +139,16 @@ class RondaGroupViewModel extends StateNotifier<RondaGroupState> {
   }
 }
 
-class RondaGroupListNotifier
-    extends StateNotifier<AsyncValue<List<RondaGroupModel>>> {
-  final RondaGroupRepository repository;
+class RondaScheduleListNotifier
+    extends StateNotifier<AsyncValue<List<RondaScheduleModel>>> {
+  final RondaScheduleRepository repository;
   final String rtId;
 
   int page = 1;
   bool hasMore = true;
   bool isLoading = false;
 
-  RondaGroupListNotifier(this.repository, this.rtId)
+  RondaScheduleListNotifier(this.repository, this.rtId)
     : super(const AsyncValue.loading()) {
     loadInitialData();
   }
@@ -148,14 +156,14 @@ class RondaGroupListNotifier
   Future<void> loadInitialData() async {
     state = const AsyncValue.loading();
     try {
-      final houses = await repository.getListRondaGroup({
+      final houses = await repository.getListRondaSchedule({
         "page": 1,
         "page_size": 10,
         "rt_id": rtId,
       });
 
       switch (houses) {
-        case Ok<ApiResponse<List<RondaGroupModel>>>():
+        case Ok<ApiResponse<List<RondaScheduleModel>>>():
           if (houses.value.data == null) {
             state = AsyncValue.data([]);
             return;
@@ -163,7 +171,7 @@ class RondaGroupListNotifier
           hasMore = houses.value.data?.length == 10;
           state = AsyncValue.data(houses.value.data!);
           break;
-        case Error<ApiResponse<List<RondaGroupModel>>>():
+        case Error<ApiResponse<List<RondaScheduleModel>>>():
           state = AsyncValue.error(houses.error.toString(), StackTrace.empty);
           return;
       }
@@ -177,30 +185,30 @@ class RondaGroupListNotifier
 
     isLoading = true;
     try {
-      final newRondaGroups = await repository.getListRondaGroup({
+      final newRondaSchedules = await repository.getListRondaSchedule({
         "page": page + 1,
         "page_size": 10,
         "rt_id": rtId,
       });
-      switch (newRondaGroups) {
-        case Ok<ApiResponse<List<RondaGroupModel>>>():
-          if (newRondaGroups.value.data == null) {
+      switch (newRondaSchedules) {
+        case Ok<ApiResponse<List<RondaScheduleModel>>>():
+          if (newRondaSchedules.value.data == null) {
             hasMore = false;
             state = state.whenData((houses) => [...houses]);
             return;
           }
-          hasMore = newRondaGroups.value.meta!.totalPages > page;
+          hasMore = newRondaSchedules.value.meta!.totalPages > page;
           if (hasMore) {
             page++;
           }
 
           state = state.whenData(
-            (houses) => [...houses, ...newRondaGroups.value.data!],
+            (houses) => [...houses, ...newRondaSchedules.value.data!],
           );
           break;
-        case Error<ApiResponse<List<RondaGroupModel>>>():
+        case Error<ApiResponse<List<RondaScheduleModel>>>():
           state = AsyncValue.error(
-            newRondaGroups.error.toString(),
+            newRondaSchedules.error.toString(),
             StackTrace.empty,
           );
           return;

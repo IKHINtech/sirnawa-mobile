@@ -84,7 +84,7 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
                 ),
                 _itemAdmin(
                   onClick: () {
-                    context.push(Routes.adminResident);
+                    context.push(Routes.adminRondaSchedule);
                   },
                   icon: Icons.calendar_month,
                   title: "Jadwal Ronda",

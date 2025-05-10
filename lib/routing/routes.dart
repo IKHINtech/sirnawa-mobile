@@ -15,6 +15,9 @@ abstract final class Routes {
   static const adminRondaGroup = '/admin/ronda-group';
   static const adminRondaGroupCreate = '/admin/ronda-group/create';
   static const adminRondaGroupUpdate = '/admin/ronda-group/update';
+  static const adminRondaSchedule = '/admin/schedule';
+  static const adminRondaScheduleCreate = '/admin/schedule/create';
+  static const adminRondaScheduleUpdate = '/admin/schedule/update';
   static const adminHosuingArea = '/admin/housing-area';
   static const adminHosuingAreaCreate = '/admin/housing-area/create';
   static const adminHosuingAreaUpdate = '/admin/housing-area/update';
