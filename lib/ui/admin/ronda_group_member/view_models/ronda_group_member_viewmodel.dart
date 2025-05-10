@@ -31,12 +31,12 @@ class RondaGroupMemberState {
 
 class RondaGroupMemberViewModel extends StateNotifier<RondaGroupMemberState> {
   final RondaGroupMemberRepository _repository;
-  final String _groupID;
+  // final String _groupID;
   RondaGroupMemberViewModel({
     required RondaGroupMemberRepository repository,
     required String gropuID,
   }) : _repository = repository,
-       _groupID = gropuID,
+       //  _groupID = gropuID,
        super(
          const RondaGroupMemberState(isLoading: false, error: null, list: []),
        );
