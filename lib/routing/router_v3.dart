@@ -108,6 +108,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const GroupRondaScreen(),
       ),
       GoRoute(
+        path: Routes.adminRondaGroupCreate,
+        builder: (context, state) => const RondaFormScreen(),
+      ),
+      GoRoute(
         path: "${Routes.adminRondaGroup}/:id",
         builder: (context, state) {
           return RondaGroupDetailScreen(
@@ -121,10 +125,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           final rondaGroup = state.extra as RondaGroupModel;
           return RondaFormScreen(rondaGroup: rondaGroup);
         },
-      ),
-      GoRoute(
-        path: Routes.adminRondaGroupCreate,
-        builder: (context, state) => const RondaFormScreen(),
       ),
       //  ===== ANNOUNCEMENT =====
       GoRoute(

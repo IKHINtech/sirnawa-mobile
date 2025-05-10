@@ -5,6 +5,7 @@ import 'package:sirnawa_mobile/data/services/api/model/ronda_group_member/ronda_
 import 'package:sirnawa_mobile/domain/model/house/house_model.dart';
 import 'package:sirnawa_mobile/domain/model/resident/resident_model.dart';
 import 'package:sirnawa_mobile/domain/model/ronda_group/ronda_group_model.dart';
+import 'package:sirnawa_mobile/utils/result.dart';
 
 class AddMemberDialog extends ConsumerStatefulWidget {
   final String rondaGroupId;
@@ -20,6 +21,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
   String? _selectedResidentId;
   HouseModel? _selectedHouse;
   ResidentModel? _selectedResident;
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
           children: [
             Stepper(
               currentStep: _currentStep,
-              onStepContinue: () => _onStepContinue(rondaGroup),
+              onStepContinue: _isLoading ? null : () => _onStepContinue(rondaGroup),
               onStepCancel: _onStepCancel,
               onStepTapped: (step) => setState(() => _currentStep = step),
               steps: [
@@ -165,6 +167,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
         ],
         const SizedBox(height: 16),
         const Text('Are you sure you want to add this member?'),
+        if(_isLoading) const Center(child: LinearProgressIndicator()),
       ],
     );
   }
@@ -209,12 +212,33 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
 
       // Assuming you have a repository provider for ronda groups
       final repository = ref.read(rondaGroupMemberRepositoryProvider);
-      await repository.createRondaGroupMember(request);
+      setState(() {
+        _isLoading = true;
+      });
+     final res =  await repository.createRondaGroupMember(request);
+setState(() {
+  _isLoading = false;
+});
+     String message = '';
+     bool err = false;
+
+     switch(res) {
+       case Ok():
+         message = 'Member added successfully';
+         break;
+       case Error():
+         message = res.error.toString();
+         err = true;
+         break;
+     }
 
       if (mounted) {
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Member added successfully')),
+           SnackBar(
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: err ? Colors.red : Colors.green,
+            content: Text(message)),
         );
         ref.invalidate(rondaGroupDetailProvider(rondaGroup.id)); // Refresh data
       }

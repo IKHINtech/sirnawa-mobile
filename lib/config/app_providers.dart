@@ -188,14 +188,18 @@ final Provider<RondaGroupRepository> rondaGroupRepositoryProvider =
     });
 
 final StateNotifierProvider<RondaGroupViewModel, RondaGroupState>
-rondaGroupViewModelProvider =
-    StateNotifierProvider<RondaGroupViewModel, RondaGroupState>((ref) {
-      return RondaGroupViewModel(
-        repository: ref.read<RondaGroupRepository>(
-          rondaGroupRepositoryProvider,
-        ),
-      );
-    });
+rondaGroupViewModelProvider = StateNotifierProvider<
+  RondaGroupViewModel,
+  RondaGroupState
+>((ref) {
+  final rtId = ref.watch(
+    homeViewModelProvider.select((s) => s.residentHouse?.house!.rt?.id ?? ""),
+  );
+  return RondaGroupViewModel(
+    repository: ref.read<RondaGroupRepository>(rondaGroupRepositoryProvider),
+    rtId: rtId,
+  );
+});
 
 // ========== Announcement ========== //
 

@@ -34,9 +34,10 @@ class RondaGroupDetailScreen extends ConsumerWidget {
               ),
             ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
+        label: const Text('Tambah Anggota'),
         onPressed: () => _showAddMemberDialog(context, ref, rondaGroupId),
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.add),
       ),
     );
   }
@@ -63,16 +64,16 @@ class RondaGroupDetailScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Group Information',
+              'Informasi Group',
               style: Theme.of(
                 context,
               ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
             _buildInfoRow('Nama Group', rondaGroup.name),
-            _buildInfoRow('Created', _formatDate(rondaGroup.createdAt)),
-            _buildInfoRow('Last Updated', _formatDate(rondaGroup.updatedAt)),
-            _buildInfoRow('RT ID', rondaGroup.rtId),
+            _buildInfoRow('RT', rondaGroup.rt?.name ?? ""),
+            _buildInfoRow('Dibuat', _formatDate(rondaGroup.createdAt)),
+            _buildInfoRow('Terakhir diubah', _formatDate(rondaGroup.updatedAt)),
           ],
         ),
       ),
@@ -85,6 +86,23 @@ class RondaGroupDetailScreen extends ConsumerWidget {
   ) {
     final members = rondaGroup.rondaGroupMembers ?? [];
 
+    if (members.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.group_off, size: 60, color: Colors.grey),
+            Text(
+              'Belum ada anggota di grup ini',
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -92,14 +110,15 @@ class RondaGroupDetailScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Members (${members.length})',
+              'Anggota (${members.length})',
               style: Theme.of(
                 context,
               ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
+            Divider(),
             if (members.isEmpty)
-              const Text('No members in this group yet.')
+              const Text('Belum ada anggota di grup ini')
             else
               ListView.separated(
                 physics: const NeverScrollableScrollPhysics(),
@@ -130,15 +149,11 @@ class RondaGroupDetailScreen extends ConsumerWidget {
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (member.house != null) Text('House: ${member.house!.number}'),
+          if (member.house != null) Text('Nomor Rumah: ${member.house!.number}'),
           if (member.resident != null)
             Text('Phone: ${member.resident!.phoneNumber}'),
         ],
       ),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () {
-        // Navigate to member detail if needed
-      },
     );
   }
 

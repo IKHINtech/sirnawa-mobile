@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:sirnawa_mobile/domain/model/ronda_group_member/ronda_group_member_model.dart';
+import 'package:sirnawa_mobile/domain/model/rt/rt_model.dart';
 
 part 'ronda_group_model.freezed.dart';
 part 'ronda_group_model.g.dart';
@@ -13,6 +14,8 @@ class RondaGroupModel with _$RondaGroupModel {
     @JsonKey(name: 'rt_id') required String rtId,
     required String name,
     @JsonKey(name: 'members') List<RondaGroupMemberModel>? rondaGroupMembers,
+    RtModel? rt,
+    @JsonKey(name: "total_member") int? totalMembers
   }) = _RondaGroupModel;
 
   factory RondaGroupModel.fromJson(Map<String, dynamic> json) =>

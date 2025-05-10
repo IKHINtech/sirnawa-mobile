@@ -18,11 +18,12 @@ class _GroupRondaScreenState extends ConsumerState<GroupRondaScreen> {
     final rondaGroupPaginationState = ref.watch(rondaGroupPaginationProvider);
     return Scaffold(
       appBar: CustomAppBar(title: 'Kelola Grup Ronda'),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
+        label: const Text('Tambah Grup Ronda'),
         onPressed: () {
           context.push(Routes.adminRondaGroupCreate);
         },
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.add),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -60,7 +61,8 @@ class _GroupRondaScreenState extends ConsumerState<GroupRondaScreen> {
                         ),
                       );
                     } else {
-                      return ListView.builder(
+                      return ListView.separated(
+                        separatorBuilder: (context, index) => const SizedBox(height: 6,),
                         itemBuilder: (context, index) {
                           if (index < rondaGroups.length) {
                             final rondaGroup = rondaGroups[index];
@@ -71,8 +73,14 @@ class _GroupRondaScreenState extends ConsumerState<GroupRondaScreen> {
                                     "${Routes.adminRondaGroup}/${rondaGroup.id}",
                                   );
                                 },
-                                title: Text(rondaGroup.name),
+                                title: Text(
+                                  "${rondaGroup.name} (${rondaGroup.rt?.name ?? ""})",
+                                ),
+                                subtitle: Text(
+                                  "Total Anggota: ${rondaGroup.totalMembers ?? 0}",
+                                ),
                                 leading: Icon(Icons.security),
+                                trailing: const Icon(Icons.chevron_right),
                               ),
                             );
                           } else {

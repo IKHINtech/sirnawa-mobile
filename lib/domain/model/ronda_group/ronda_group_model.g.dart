@@ -20,6 +20,11 @@ _RondaGroupModel _$RondaGroupModelFromJson(Map<String, dynamic> json) =>
                     RondaGroupMemberModel.fromJson(e as Map<String, dynamic>),
               )
               .toList(),
+      rt:
+          json['rt'] == null
+              ? null
+              : RtModel.fromJson(json['rt'] as Map<String, dynamic>),
+      totalMembers: (json['total_member'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$RondaGroupModelToJson(_RondaGroupModel instance) =>
@@ -30,4 +35,6 @@ Map<String, dynamic> _$RondaGroupModelToJson(_RondaGroupModel instance) =>
       'rt_id': instance.rtId,
       'name': instance.name,
       'members': instance.rondaGroupMembers,
+      'rt': instance.rt,
+      'total_member': instance.totalMembers,
     };
