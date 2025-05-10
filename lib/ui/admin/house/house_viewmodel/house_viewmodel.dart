@@ -233,3 +233,39 @@ class HouseListNotifier extends StateNotifier<AsyncValue<List<HouseModel>>> {
     await loadInitialData();
   }
 }
+
+class HouseListNotInGroupNotifier
+    extends StateNotifier<AsyncValue<List<HouseModel>>> {
+  final HouseRepository repository;
+  final String rtId;
+  HouseListNotInGroupNotifier(this.repository, this.rtId)
+    : super(const AsyncValue.loading()) {
+    loadInitialData();
+  }
+
+  Future<void> loadInitialData() async {
+    state = const AsyncValue.loading();
+    try {
+      final houses = await repository.getListHouse({
+        "paginated": false,
+        "rt_id": rtId,
+        "not_in_group_roda": "true",
+      });
+
+      switch (houses) {
+        case Ok<ApiResponse<List<HouseModel>>>():
+          if (houses.value.data == null) {
+            state = AsyncValue.data([]);
+            return;
+          }
+          state = AsyncValue.data(houses.value.data!);
+          break;
+        case Error<ApiResponse<List<HouseModel>>>():
+          state = AsyncValue.error(houses.error.toString(), StackTrace.empty);
+          return;
+      }
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+}

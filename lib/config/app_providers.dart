@@ -136,18 +136,18 @@ final Provider<RondaGroupMemberRepository> rondaGroupMemberRepositoryProvider =
       );
     });
 
-
 // ========== Ronda Schedule ========== //
 final AutoDisposeFutureProviderFamily<RondaScheduleModel?, String>
 rondaScheduleDetailProvider = FutureProvider.autoDispose
-    .family<RondaScheduleModel?, String>((Ref<Object?> ref, String groupID) async {
-      final RondaScheduleRepository repository = ref.watch<RondaScheduleRepository>(
-        rondaScheduleRepositoryProvider,
-      );
+    .family<RondaScheduleModel?, String>((
+      Ref<Object?> ref,
+      String groupID,
+    ) async {
+      final RondaScheduleRepository repository = ref
+          .watch<RondaScheduleRepository>(rondaScheduleRepositoryProvider);
       try {
-        final RondaScheduleModel? response = await repository.getDetailRondaSchedule(
-          groupID,
-        );
+        final RondaScheduleModel? response = await repository
+            .getDetailRondaSchedule(groupID);
         return response;
       } catch (e, _) {
         // Simpan error untuk ditampilkan di UI
@@ -193,18 +193,20 @@ final Provider<RondaScheduleRepository> rondaScheduleRepositoryProvider =
     });
 
 final StateNotifierProvider<RondaScheduleViewModel, RondaScheduleState>
-rondaScheduleViewModelProvider = StateNotifierProvider<
-  RondaScheduleViewModel,
-  RondaScheduleState
->((ref) {
-  final rtId = ref.watch(
-    homeViewModelProvider.select((s) => s.residentHouse?.house!.rt?.id ?? ""),
-  );
-  return RondaScheduleViewModel(
-    repository: ref.read<RondaScheduleRepository>(rondaScheduleRepositoryProvider),
-    rtId: rtId,
-  );
-});
+rondaScheduleViewModelProvider =
+    StateNotifierProvider<RondaScheduleViewModel, RondaScheduleState>((ref) {
+      final rtId = ref.watch(
+        homeViewModelProvider.select(
+          (s) => s.residentHouse?.house!.rt?.id ?? "",
+        ),
+      );
+      return RondaScheduleViewModel(
+        repository: ref.read<RondaScheduleRepository>(
+          rondaScheduleRepositoryProvider,
+        ),
+        rtId: rtId,
+      );
+    });
 
 // ========== Ronda Group ========== //
 
@@ -398,6 +400,15 @@ final StateNotifierProvider<HouseViewModel, HouseState> houseViewModelProvider =
         rtID: rtId,
       );
     });
+
+final houseNotInGroupNotifier = StateNotifierProvider.autoDispose((ref) {
+  final repository = ref.watch(houseRepositoryProvider);
+  final rtId = ref.watch(
+    homeViewModelProvider.select((s) => s.residentHouse?.house!.rt?.id ?? ""),
+  );
+  return HouseListNotInGroupNotifier(repository, rtId);
+});
+
 // ===== RESIDENT ========= //
 final residentSearchProvider = StateProvider<String?>((ref) => null);
 final FutureProvider<List<ResidentModel>> residentOptionsProvider =
@@ -494,6 +505,7 @@ final listResidentHouseProvider = StateNotifierProvider.autoDispose.family<
   );
   return HouseListNotifier(repository, rtId, blockId);
 });
+
 // ========== BLOCK ========== //
 final Provider<BlockService> blockServiceProvider = Provider<BlockService>((
   Ref<BlockService> ref,

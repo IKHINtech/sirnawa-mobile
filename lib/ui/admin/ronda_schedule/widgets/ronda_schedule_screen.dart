@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
 import 'package:sirnawa_mobile/data/services/api/model/ronda_schedule/ronda_schedule_request_model.dart';
-import 'package:sirnawa_mobile/domain/model/ronda_group/ronda_group_model.dart';
 import 'package:sirnawa_mobile/domain/model/ronda_schedule/ronda_schedule_model.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';
 
@@ -17,8 +16,7 @@ class RondaScheduleScreen extends ConsumerWidget {
       homeViewModelProvider.select((s) => s.userRtModel?.rtId ?? ""),
     );
 
-      ref
-          .read(rondaGroupViewModelProvider.notifier);
+    ref.read(rondaGroupViewModelProvider.notifier);
 
     return Scaffold(
       appBar: CustomAppBar(
@@ -300,7 +298,7 @@ class RondaScheduleScreen extends ConsumerWidget {
                         );
                         return;
                       }
-//TODO: lanjut disini
+                      //TODO: lanjut disini
                       final request = RondaScheduleRequestModel(
                         date: DateFormat(
                           'yyyy-MM-dd',

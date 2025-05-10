@@ -27,10 +27,8 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
   Widget build(BuildContext context) {
     final rondaGroup =
         ref.read(rondaGroupDetailProvider(widget.rondaGroupId)).value;
-    final houseList = ref.watch(houseViewModelProvider.select((s) => s.list));
-    final isLoading = ref.watch(
-      houseViewModelProvider.select((s) => s.isLoading),
-    );
+
+    final houseAsync = ref.watch(houseNotInGroupNotifier);
 
     final penghuniAsync = ref.watch(
       listPenghuniProvider(_selectedHouseId ?? ""),
@@ -45,40 +43,42 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
           children: [
             Stepper(
               currentStep: _currentStep,
-              onStepContinue: _isLoading ? null : () => _onStepContinue(rondaGroup),
+              onStepContinue:
+                  _isLoading ? null : () => _onStepContinue(rondaGroup),
               onStepCancel: _onStepCancel,
               onStepTapped: (step) => setState(() => _currentStep = step),
               steps: [
                 Step(
                   title: const Text('Select House'),
-                  content:
-                      isLoading
-                          ? const Center(child: CircularProgressIndicator())
-                          : DropdownButtonFormField<String>(
-                            decoration: const InputDecoration(
-                              labelText: 'House',
-                            ),
-                            items:
-                                houseList.map((house) {
-                                  return DropdownMenuItem(
-                                    value: house.id,
-                                    child: Text(
-                                      '${house.block?.name} No. ${house.number}',
-                                    ),
-                                  );
-                                }).toList(),
-                            onChanged: (value) async {
-                              setState(() {
-                                _selectedHouseId = value;
-                                _selectedHouse = houseList.firstWhere(
-                                  (house) => house.id == value,
+                  content: houseAsync.when(
+                    data:
+                        (houseList) => DropdownButtonFormField<String>(
+                          decoration: const InputDecoration(labelText: 'House'),
+                          items:
+                              houseList.map((house) {
+                                return DropdownMenuItem(
+                                  value: house.id,
+                                  child: Text(
+                                    '${house.block?.name} No. ${house.number}',
+                                  ),
                                 );
-                              });
-                              if (value != null) {
-                                ref.invalidate(listPenghuniProvider(value));
-                              }
-                            },
-                          ),
+                              }).toList(),
+                          onChanged: (value) async {
+                            setState(() {
+                              _selectedHouseId = value;
+                              _selectedHouse = houseList.firstWhere(
+                                (house) => house.id == value,
+                              );
+                            });
+                            if (value != null) {
+                              ref.invalidate(listPenghuniProvider(value));
+                            }
+                          },
+                        ),
+                    error:
+                        (err, stack) => Text(err.toString() + stack.toString()),
+                    loading: () => CircularProgressIndicator(),
+                  ),
 
                   isActive: _currentStep >= 0,
                   state:
@@ -167,7 +167,7 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
         ],
         const SizedBox(height: 16),
         const Text('Are you sure you want to add this member?'),
-        if(_isLoading) const Center(child: LinearProgressIndicator()),
+        if (_isLoading) const Center(child: LinearProgressIndicator()),
       ],
     );
   }
@@ -215,30 +215,31 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
       setState(() {
         _isLoading = true;
       });
-     final res =  await repository.createRondaGroupMember(request);
-setState(() {
-  _isLoading = false;
-});
-     String message = '';
-     bool err = false;
+      final res = await repository.createRondaGroupMember(request);
+      setState(() {
+        _isLoading = false;
+      });
+      String message = '';
+      bool err = false;
 
-     switch(res) {
-       case Ok():
-         message = 'Member added successfully';
-         break;
-       case Error():
-         message = res.error.toString();
-         err = true;
-         break;
-     }
+      switch (res) {
+        case Ok():
+          message = 'Member added successfully';
+          break;
+        case Error():
+          message = res.error.toString();
+          err = true;
+          break;
+      }
 
       if (mounted) {
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
-           SnackBar(
+          SnackBar(
             behavior: SnackBarBehavior.floating,
             backgroundColor: err ? Colors.red : Colors.green,
-            content: Text(message)),
+            content: Text(message),
+          ),
         );
         ref.invalidate(rondaGroupDetailProvider(rondaGroup.id)); // Refresh data
       }

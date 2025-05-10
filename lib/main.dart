@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
@@ -8,17 +7,11 @@ import 'package:sirnawa_mobile/routing/router_v3.dart';
 import 'package:sirnawa_mobile/ui/core/themes/theme.dart';
 import 'package:sirnawa_mobile/ui/core/ui/scroll_behaviour.dart';
 import 'package:sirnawa_mobile/utils/util.dart';
-import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  try {
-    await dotenv.load();
-  } catch (e) {
-    Logger("Starting application error");
-  }
-   await initializeDateFormatting('id_ID');
+  await initializeDateFormatting('id_ID');
   Logger("Starting application");
   Logger.root.level = Level.ALL;
   runApp(
