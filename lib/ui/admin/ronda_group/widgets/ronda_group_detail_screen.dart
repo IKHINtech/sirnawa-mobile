@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
 import 'package:sirnawa_mobile/domain/model/ronda_group/ronda_group_model.dart';
 import 'package:sirnawa_mobile/domain/model/ronda_group_member/ronda_group_member_model.dart';
@@ -81,7 +82,14 @@ class RondaGroupDetailScreen extends ConsumerWidget {
     return Scaffold(
       appBar: CustomAppBar(title: "Ronda Group Detail"),
       body: rondaGroupAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading:
+            () => Center(
+              child: SizedBox(
+                height: 140,
+                width: 140,
+                child: Lottie.asset('assets/loading_my_rt.json'),
+              ),
+            ),
         error:
             (err, stack) =>
                 Center(child: Text(err.toString() + stack.toString())),

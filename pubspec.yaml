@@ -13,6 +13,7 @@ flutter_localization:
 dependencies:
   cookie_jar: null
   cupertino_icons: ^1.0.8
+  lottie:
   dio: null
   dio_cookie_manager: null
   flutter_localization:
@@ -47,6 +48,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true

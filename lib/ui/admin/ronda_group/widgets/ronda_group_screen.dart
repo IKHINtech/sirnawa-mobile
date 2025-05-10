@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';
@@ -62,7 +63,8 @@ class _GroupRondaScreenState extends ConsumerState<GroupRondaScreen> {
                       );
                     } else {
                       return ListView.separated(
-                        separatorBuilder: (context, index) => const SizedBox(height: 6,),
+                        separatorBuilder:
+                            (context, index) => const SizedBox(height: 6),
                         itemBuilder: (context, index) {
                           if (index < rondaGroups.length) {
                             final rondaGroup = rondaGroups[index];
@@ -110,7 +112,13 @@ class _GroupRondaScreenState extends ConsumerState<GroupRondaScreen> {
                   },
                   error: (error, stack) => Center(child: Text("Error: $error")),
                   loading:
-                      () => const Center(child: CircularProgressIndicator()),
+                      () => Center(
+                        child: SizedBox(
+                          height: 140,
+                          width: 140,
+                          child: Lottie.asset('assets/loading_my_rt.json'),
+                        ),
+                      ),
                 ),
               ),
             ),

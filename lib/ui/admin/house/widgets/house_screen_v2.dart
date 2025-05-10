@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
 import 'package:sirnawa_mobile/domain/model/block/block_model.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
@@ -73,7 +74,14 @@ class HouseScreenV2 extends ConsumerWidget {
     return RefreshIndicator(
       onRefresh: () => ref.read(houseListProvider(blockId).notifier).refresh(),
       child: houseListState.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading:
+            () => Center(
+              child: SizedBox(
+                height: 140,
+                width: 140,
+                child: Lottie.asset('assets/loading_my_rt.json'),
+              ),
+            ),
         error: (error, stack) => Center(child: Text('Error: $error')),
         data: (houses) {
           if (houses.isEmpty) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
 import 'package:sirnawa_mobile/data/services/api/model/ronda_schedule/ronda_schedule_request_model.dart';
 import 'package:sirnawa_mobile/domain/model/ronda_schedule/ronda_schedule_model.dart';
@@ -25,7 +26,14 @@ class RondaScheduleScreen extends ConsumerWidget {
           ref.invalidate(rondaSchedulePaginationProvider);
         },
         child: rondaSchedulesAsync.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading:
+              () => Center(
+                child: SizedBox(
+                  height: 140,
+                  width: 140,
+                  child: Lottie.asset('assets/loading_my_rt.json'),
+                ),
+              ),
           error: (error, _) => Center(child: Text('Error: $error')),
           data: (schedules) => _buildScheduleList(schedules, ref),
         ),
@@ -96,35 +104,46 @@ class RondaScheduleScreen extends ConsumerWidget {
     WidgetRef ref,
     String scheduleId,
   ) {
-    final scheduleAsync = ref.watch(rondaScheduleDetailProvider(scheduleId));
-
     showDialog(
       context: context,
       builder:
-          (context) => Dialog(
-            insetPadding: const EdgeInsets.all(16),
-            child: scheduleAsync.when(
-              loading:
-                  () => const Padding(
-                    padding: EdgeInsets.all(32),
-                    child: CircularProgressIndicator(),
-                  ),
-              error:
-                  (error, _) => Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('Error: $error'),
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Tutup'),
+          (context) => Consumer(
+            builder: (context, ref, _) {
+              final scheduleAsync = ref.watch(
+                rondaScheduleDetailProvider(scheduleId),
+              );
+              return Dialog(
+                insetPadding: const EdgeInsets.all(16),
+                child: scheduleAsync.when(
+                  loading:
+                      () => Padding(
+                        padding: EdgeInsets.all(32),
+                        child: SizedBox(
+                          width: 80,
+                          height: 80,
+                          child: Lottie.asset('assets/loading_my_rt.json'),
                         ),
-                      ],
-                    ),
-                  ),
-              data: (schedule) => _buildScheduleDetailDialog(schedule, context),
-            ),
+                      ),
+                  error:
+                      (error, _) => Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('Error: $error'),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('Tutup'),
+                            ),
+                          ],
+                        ),
+                      ),
+                  data:
+                      (schedule) =>
+                          _buildScheduleDetailDialog(schedule, context),
+                ),
+              );
+            },
           ),
     );
   }
@@ -153,7 +172,10 @@ class RondaScheduleScreen extends ConsumerWidget {
           const SizedBox(height: 16),
           _buildDetailRow(
             'Tanggal',
-            DateFormat('EEEE, d MMMM y', 'id_ID').format(schedule.date),
+            DateFormat(
+              'EEEE, d MMMM y',
+              'id_ID',
+            ).format(schedule.date.toLocal()),
           ),
           _buildDetailRow('Kelompok Ronda', schedule.group?.name ?? '-'),
           _buildDetailRow('RT', schedule.rt?.name ?? '-'),
