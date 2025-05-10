@@ -11,6 +11,49 @@ class RondaGroupDetailScreen extends ConsumerWidget {
   final String rondaGroupId;
   const RondaGroupDetailScreen({super.key, required this.rondaGroupId});
 
+  Future<void> showDeleteConfirmationDialog({
+    required BuildContext context,
+    required WidgetRef ref,
+    required RondaGroupMemberModel member,
+  }) async {
+    //TODO: ubah jadi view model sehingga bisa show loading
+    final repo = ref.read(rondaGroupMemberRepositoryProvider);
+
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Hapus Anggota'),
+          content: Text(
+            'Apakah Anda yakin ingin menghapus ${member.resident?.name ?? 'anggota ini'}?',
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Batal'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: const Text('Hapus', style: TextStyle(color: Colors.red)),
+              onPressed: () async {
+                try {
+                  //TODO: ubah jadi view model sehingga bisa show loading
+
+                  await repo.delete(member.id);
+                  ref.invalidate(rondaGroupDetailProvider(rondaGroupId));
+                  Navigator.of(context).pop(); // Close dialog
+                } catch (e) {
+                  debugPrint(e.toString());
+                  Navigator.of(context).pop(); // Close dialog
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final rondaGroupAsync = ref.watch(rondaGroupDetailProvider(rondaGroupId));
@@ -29,7 +72,7 @@ class RondaGroupDetailScreen extends ConsumerWidget {
                 children: [
                   _buildGroupInfoSection(context, rondaGroup!),
                   const SizedBox(height: 24),
-                  _buildMembersSection(rondaGroup, context),
+                  _buildMembersSection(rondaGroup, context, ref),
                 ],
               ),
             ),
@@ -83,6 +126,7 @@ class RondaGroupDetailScreen extends ConsumerWidget {
   Widget _buildMembersSection(
     RondaGroupModel rondaGroup,
     BuildContext context,
+    WidgetRef ref,
   ) {
     final members = rondaGroup.rondaGroupMembers ?? [];
 
@@ -127,7 +171,7 @@ class RondaGroupDetailScreen extends ConsumerWidget {
                 separatorBuilder: (context, index) => const Divider(),
                 itemBuilder: (context, index) {
                   final member = members[index];
-                  return _buildMemberTile(member);
+                  return _buildMemberTile(member, context, ref);
                 },
               ),
           ],
@@ -136,7 +180,11 @@ class RondaGroupDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildMemberTile(RondaGroupMemberModel member) {
+  Widget _buildMemberTile(
+    RondaGroupMemberModel member,
+    BuildContext context,
+    WidgetRef ref,
+  ) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: CircleAvatar(
@@ -146,10 +194,20 @@ class RondaGroupDetailScreen extends ConsumerWidget {
         member.resident?.name ?? 'Unknown Resident',
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
+      trailing: IconButton(
+        onPressed:
+            () => showDeleteConfirmationDialog(
+              context: context,
+              ref: ref,
+              member: member,
+            ),
+        icon: Icon(Icons.delete_forever, color: Colors.red),
+      ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (member.house != null) Text('Nomor Rumah: ${member.house!.number}'),
+          if (member.house != null)
+            Text('Nomor Rumah: ${member.house!.number}'),
           if (member.resident != null)
             Text('Phone: ${member.resident!.phoneNumber}'),
         ],
