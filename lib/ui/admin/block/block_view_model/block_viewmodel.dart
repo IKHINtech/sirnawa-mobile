@@ -213,3 +213,90 @@ class BlockViewModel extends StateNotifier<BlockState> {
     }
   }
 }
+
+class BlockListNotifier extends StateNotifier<AsyncValue<List<BlockModel>>> {
+  final BlockRepository repository;
+  final String rtId;
+
+  int page = 1;
+  bool hasMore = true;
+  bool isLoading = false;
+
+  BlockListNotifier(this.repository, this.rtId)
+    : super(const AsyncValue.loading()) {
+    loadInitialData();
+  }
+
+  Future<void> loadInitialData() async {
+    state = const AsyncValue.loading();
+    try {
+      final houses = await repository.getListBlock({
+        "page": 1,
+        "page_size": 10,
+        "rt_id": rtId,
+      });
+
+      switch (houses) {
+        case Ok<ApiResponse<List<BlockModel>>>():
+          if (houses.value.data == null) {
+            state = AsyncValue.data([]);
+            return;
+          }
+          hasMore = houses.value.data?.length == 10;
+          state = AsyncValue.data(houses.value.data!);
+          break;
+        case Error<ApiResponse<List<BlockModel>>>():
+          state = AsyncValue.error(houses.error.toString(), StackTrace.empty);
+          return;
+      }
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
+  Future<void> loadMore() async {
+    if (!hasMore || isLoading) return;
+
+    isLoading = true;
+    try {
+      final newBlocks = await repository.getListBlock({
+        "page": page + 1,
+        "page_size": 10,
+        "rt_id": rtId,
+      });
+      switch (newBlocks) {
+        case Ok<ApiResponse<List<BlockModel>>>():
+          if (newBlocks.value.data == null) {
+            hasMore = false;
+            state = state.whenData((houses) => [...houses]);
+            return;
+          }
+          hasMore = newBlocks.value.meta!.totalPages > page;
+          if (hasMore) {
+            page++;
+          }
+
+          state = state.whenData(
+            (houses) => [...houses, ...newBlocks.value.data!],
+          );
+          break;
+        case Error<ApiResponse<List<BlockModel>>>():
+          state = AsyncValue.error(
+            newBlocks.error.toString(),
+            StackTrace.empty,
+          );
+          return;
+      }
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  Future<void> refresh() async {
+    page = 1;
+    hasMore = true;
+    await loadInitialData();
+  }
+}

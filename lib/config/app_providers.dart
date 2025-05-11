@@ -524,6 +524,18 @@ final listResidentHouseProvider = StateNotifierProvider.autoDispose.family<
 });
 
 // ========== BLOCK ========== //
+
+final blockListProvider = StateNotifierProvider<
+  BlockListNotifier,
+  AsyncValue<List<BlockModel>>
+>((ref) {
+  final repository = ref.watch(blockRepositoryProvider);
+  final rtId = ref.watch(
+    homeViewModelProvider.select((s) => s.residentHouse?.house!.rt?.id ?? ""),
+  );
+  return BlockListNotifier(repository, rtId);
+});
+
 final Provider<BlockService> blockServiceProvider = Provider<BlockService>((
   Ref<BlockService> ref,
 ) {
