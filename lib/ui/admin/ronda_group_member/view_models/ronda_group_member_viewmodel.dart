@@ -70,6 +70,8 @@ class RondaGroupMemberViewModel extends StateNotifier<RondaGroupMemberState> {
       }
     } catch (e) {
       state = state.copyWith(isLoading: false, error: "Exception: $e");
+    } finally {
+      state = state.copyWith(isLoading: false);
     }
   }
 
@@ -93,6 +95,8 @@ class RondaGroupMemberViewModel extends StateNotifier<RondaGroupMemberState> {
     } catch (e) {
       state = state.copyWith(isLoading: false, error: "Exception: $e");
       return false;
+    } finally {
+      state = state.copyWith(isLoading: false);
     }
   }
 
@@ -120,6 +124,8 @@ class RondaGroupMemberViewModel extends StateNotifier<RondaGroupMemberState> {
     } catch (e) {
       state = state.copyWith(isLoading: false, error: "Exception: $e");
       return false;
+    } finally {
+      state = state.copyWith(isLoading: false);
     }
   }
 
@@ -140,6 +146,8 @@ class RondaGroupMemberViewModel extends StateNotifier<RondaGroupMemberState> {
       }
     } catch (e) {
       state = state.copyWith(isLoading: false, error: "Exception: $e");
+    } finally {
+      state = state.copyWith(isLoading: false);
     }
   }
 }
