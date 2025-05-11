@@ -20,7 +20,6 @@ class RondaScheduleScreen extends ConsumerWidget {
     );
 
     final role = ref.watch(homeViewModelProvider).userRtModel;
-    debugPrint(role?.role);
 
     ref.read(rondaGroupViewModelProvider.notifier);
 
@@ -47,7 +46,8 @@ class RondaScheduleScreen extends ConsumerWidget {
           role?.role == 'warga'
               ? null
               : FloatingActionButton.extended(
-                onPressed: () => _showAddScheduleDialog(context, ref, rtId),
+                onPressed:
+                    () => _showAddOrEditScheduleDialog(context, ref, rtId),
                 label: Text("Tambah Jadwal"),
                 icon: Icon(Icons.add),
               ),
@@ -125,7 +125,13 @@ class RondaScheduleScreen extends ConsumerWidget {
             children: [
               // Tombol Edit
               SlidableAction(
-                onPressed: (context) => _editSchedule(context, ref, schedule),
+                onPressed:
+                    (context) => _showAddOrEditScheduleDialog(
+                      context,
+                      ref,
+                      schedule.rtId,
+                      existingSchedule: schedule,
+                    ),
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
                 icon: Icons.edit,
@@ -164,33 +170,240 @@ class RondaScheduleScreen extends ConsumerWidget {
 
   // Fungsi untuk handle hapus
   void _deleteSchedule(BuildContext context, WidgetRef ref, String scheduleId) {
-    // Implementasi logika hapus di sini
-    // Contoh: tampilkan dialog konfirmasi
     showDialog(
       context: context,
       builder:
-          (context) => AlertDialog(
-            title: const Text('Hapus Jadwal'),
-            content: const Text(
-              'Apakah Anda yakin ingin menghapus jadwal ini?',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Batal'),
-              ),
-              TextButton(
-                onPressed: () {
-                  // Lakukan penghapusan di sini
-                  // ref.read(scheduleProvider.notifier).deleteSchedule(scheduleId);
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Jadwal $scheduleId dihapus')),
-                  );
-                },
-                child: const Text('Hapus', style: TextStyle(color: Colors.red)),
-              ),
-            ],
+          (context) => Consumer(
+            builder: (context, ref, _) {
+              final state = ref.watch(rondaScheduleViewModelProvider);
+              return AlertDialog(
+                title: const Text('Hapus Jadwal'),
+                content: const Text(
+                  'Apakah Anda yakin ingin menghapus jadwal ini?',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Batal'),
+                  ),
+                  TextButton(
+                    onPressed:
+                        state.isLoading
+                            ? null
+                            : () {
+                              ref
+                                  .read(rondaScheduleViewModelProvider.notifier)
+                                  .deleteRondaSchedule(scheduleId)
+                                  .then((_) {
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        backgroundColor: Colors.green,
+                                        behavior: SnackBarBehavior.floating,
+                                        content: Text('Jadwal  dihapus'),
+                                      ),
+                                    );
+                                    ref.invalidate(
+                                      rondaSchedulePaginationProvider,
+                                    );
+                                  })
+                                  .catchError((err) {
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        backgroundColor: Colors.red,
+                                        behavior: SnackBarBehavior.floating,
+                                        content: Text('Jadwal gagal dihapus'),
+                                      ),
+                                    );
+                                  });
+                            },
+                    child:
+                        state.isLoading
+                            ? SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: const CircularProgressIndicator(
+                                strokeWidth: 2,
+                              ),
+                            )
+                            : const Text(
+                              'Hapus',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                  ),
+                ],
+              );
+            },
+          ),
+    );
+  }
+
+  void _showAddOrEditScheduleDialog(
+    BuildContext context,
+    WidgetRef ref,
+    String rtId, {
+    RondaScheduleModel? existingSchedule,
+  }) {
+    final dateController = TextEditingController(
+      text:
+          existingSchedule != null
+              ? DateFormat('yyyy-MM-dd').format(existingSchedule.date.toLocal())
+              : '',
+    );
+    final groupController = TextEditingController(
+      text: existingSchedule?.group?.name ?? '',
+    );
+    String? selectedGroupId = existingSchedule?.group?.id;
+
+    final groupState = ref.watch(rondaGroupViewModelProvider);
+
+    showDialog(
+      context: context,
+      builder:
+          (context) => Consumer(
+            builder: (context, ref, _) {
+              final state = ref.watch(rondaScheduleViewModelProvider);
+              final provider = ref.watch(
+                rondaScheduleViewModelProvider.notifier,
+              );
+
+              return AlertDialog(
+                title: Text(
+                  existingSchedule == null
+                      ? 'Tambah Jadwal Ronda'
+                      : 'Edit Jadwal Ronda',
+                ),
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextFormField(
+                        controller: dateController,
+                        decoration: const InputDecoration(
+                          labelText: 'Tanggal',
+                          suffixIcon: Icon(Icons.calendar_today),
+                        ),
+                        readOnly: true,
+                        onTap: () async {
+                          final selectedDate = await showDatePicker(
+                            context: context,
+                            locale: const Locale('id', 'ID'),
+                            initialDate:
+                                existingSchedule?.date.toLocal() ??
+                                DateTime.now(),
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime.now().add(
+                              const Duration(days: 365),
+                            ),
+                          );
+                          if (selectedDate != null) {
+                            dateController.text = DateFormat(
+                              'yyyy-MM-dd',
+                            ).format(selectedDate);
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      if (groupState.isLoading)
+                        const CircularProgressIndicator(),
+
+                      if (groupState.error != null)
+                        Text('Error: ${groupState.error}'),
+
+                      if (groupState.list.isNotEmpty)
+                        DropdownButtonFormField<String>(
+                          value: selectedGroupId,
+                          decoration: const InputDecoration(
+                            labelText: 'Kelompok Ronda',
+                          ),
+                          items:
+                              groupState.list.map((group) {
+                                return DropdownMenuItem(
+                                  value: group.id,
+                                  child: Text(group.name),
+                                );
+                              }).toList(),
+                          onChanged: (value) {
+                            selectedGroupId = value;
+                            final selectedGroup = groupState.list.firstWhere(
+                              (g) => g.id == value,
+                            );
+                            groupController.text = selectedGroup.name;
+                          },
+                        ),
+                    ],
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Batal'),
+                  ),
+                  TextButton(
+                    onPressed:
+                        state.isLoading
+                            ? null
+                            : () {
+                              if (dateController.text.isEmpty ||
+                                  selectedGroupId == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Harap isi semua field'),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              final request = RondaScheduleRequestModel(
+                                date:
+                                    DateFormat('yyyy-MM-dd')
+                                        .parse(dateController.text)
+                                        .toUtc()
+                                        .toIso8601String(),
+                                rtId: rtId,
+                                groupId: selectedGroupId!,
+                              );
+
+                              final future =
+                                  existingSchedule == null
+                                      ? provider.createRondaSchedule(request)
+                                      : provider.updateRondaSchedule(
+                                        existingSchedule.id,
+                                        request,
+                                      );
+
+                              future
+                                  .then((_) {
+                                    Navigator.pop(context);
+                                    ref.invalidate(
+                                      rondaSchedulePaginationProvider,
+                                    );
+                                  })
+                                  .catchError((error) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Gagal menyimpan jadwal: $error',
+                                        ),
+                                      ),
+                                    );
+                                  });
+                            },
+                    child:
+                        state.isLoading
+                            ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                            : Text(
+                              existingSchedule == null ? 'Simpan' : 'Perbarui',
+                            ),
+                  ),
+                ],
+              );
+            },
           ),
     );
   }

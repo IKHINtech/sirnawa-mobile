@@ -34,7 +34,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
-    final brightness = MediaQuery.of(context).platformBrightness;
+    // final brightness = MediaQuery.of(context).platformBrightness;
     TextTheme textTheme = createTextTheme(
       context,
       "Merriweather Sans",
@@ -48,7 +48,9 @@ class MyApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       title: 'Sirnajaya Kartika Warga',
       scrollBehavior: AppCustomScrollBehavior(),
-      theme: brightness == Brightness.light ? theme.light() : theme.dark(),
+      theme:
+          theme
+              .light(), //brightness == Brightness.light ? theme.light() : theme.dark(),
       routerConfig: router,
     );
   }
