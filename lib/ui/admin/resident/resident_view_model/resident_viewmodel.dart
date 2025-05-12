@@ -20,7 +20,6 @@ class ResidentState {
     bool? isLoading,
     String? error,
     List<ResidentModel>? list,
-    bool? hasNextPage,
   }) {
     return ResidentState(
       isLoading: isLoading ?? this.isLoading,
@@ -145,23 +144,23 @@ class ResidentListNotifier
   Future<void> loadInitialData() async {
     state = const AsyncValue.loading();
     try {
-      final houses = await repository.getResidents({
+      final result = await repository.getResidents({
         "page": 1,
         "page_size": 10,
         "rt_id": rtId,
       });
 
-      switch (houses) {
+      switch (result) {
         case Ok<ApiResponse<List<ResidentModel>>>():
-          if (houses.value.data == null) {
+          if (result.value.data == null) {
             state = AsyncValue.data([]);
             return;
           }
-          hasMore = houses.value.data?.length == 10;
-          state = AsyncValue.data(houses.value.data!);
+          hasMore = result.value.data?.length == 10;
+          state = AsyncValue.data(result.value.data!);
           break;
         case Error<ApiResponse<List<ResidentModel>>>():
-          state = AsyncValue.error(houses.error.toString(), StackTrace.empty);
+          state = AsyncValue.error(result.error.toString(), StackTrace.empty);
           return;
       }
     } catch (e, st) {

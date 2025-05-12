@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import 'package:sirnawa_mobile/config/app_providers.dart';
+import 'package:sirnawa_mobile/config/ronda_schedule_providers.dart';
 import 'package:sirnawa_mobile/domain/model/ronda_schedule/ronda_schedule_model.dart';
 
 class RondaScheduleItem extends ConsumerWidget {

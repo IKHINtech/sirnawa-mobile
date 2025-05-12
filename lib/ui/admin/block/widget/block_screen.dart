@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
+import 'package:sirnawa_mobile/config/block_providers.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

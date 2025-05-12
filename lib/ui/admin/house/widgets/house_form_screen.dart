@@ -3,6 +3,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
+import 'package:sirnawa_mobile/config/block_providers.dart';
+import 'package:sirnawa_mobile/config/house_provders.dart';
 import 'package:sirnawa_mobile/data/services/api/model/house/house_request_model.dart';
 import 'package:sirnawa_mobile/domain/model/house/house_model.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';

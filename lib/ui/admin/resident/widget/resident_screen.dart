@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sirnawa_mobile/config/app_providers.dart';
+import 'package:lottie/lottie.dart';
+import 'package:sirnawa_mobile/config/resident_providers.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
-import 'package:sirnawa_mobile/ui/admin/resident/resident_view_model/resident_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,12 +21,9 @@ class _ResidentScreenState extends ConsumerState<ResidentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(residentViewModelProvider);
-    final viewModel = ref.read(residentViewModelProvider.notifier);
-
     return Scaffold(
       appBar: CustomAppBar(title: 'Data Warga'),
-      body: _buildBody(state, viewModel, context),
+      body: _buildBody(context),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           context.push(Routes.adminResidentCreate);
@@ -36,48 +33,63 @@ class _ResidentScreenState extends ConsumerState<ResidentScreen> {
     );
   }
 
-  Widget _buildBody(
-    ResidentState state,
-    ResidentViewModel viewModel,
-    BuildContext context,
-  ) {
-    if (state.isLoading && state.list.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (state.error != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Error: ${state.error}"),
-            ElevatedButton(onPressed: () {}, child: const Text("Retry")),
-          ],
-        ),
-      );
-    }
+  Widget _buildBody(BuildContext context) {
+    final residentListState = ref.watch(residentListProvider);
 
     return RefreshIndicator(
       onRefresh: () async {},
-      child: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: 1,
-        itemBuilder: (context, index) {
-          if (index >= state.list.length) {
-            return const Padding(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              child: Center(child: CircularProgressIndicator()),
+      child: residentListState.when(
+        data: (residents) {
+          if (residents.isEmpty) {
+            return Center(
+              child: Column(
+                children: [
+                  Icon(Icons.person, size: 48, color: Colors.grey),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Tidak ada data Warga',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Silakan tambahkan warga',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
             );
           }
-          final rt = state.list[index];
-          return Card(
-            child: ListTile(
-              leading: const CircleAvatar(child: Icon(Icons.person)),
-              title: Text(rt.name),
-              subtitle: Text(rt.phoneNumber),
-            ),
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: residents.length + 1,
+            itemBuilder: (context, index) {
+              if (index < residents.length) {
+                final resident = residents[index];
+                return Card(
+                  child: ListTile(
+                    leading: const CircleAvatar(child: Icon(Icons.person)),
+                    title: Text(resident.name),
+                    subtitle: Text(resident.phoneNumber),
+                  ),
+                );
+              } else {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+            },
           );
         },
+        error: (err, st) => Center(child: Text('Error: $err')),
+        loading:
+            () => Center(
+              child: SizedBox(
+                height: 140,
+                width: 140,
+                child: Lottie.asset('assets/loading_my_rt.json'),
+              ),
+            ),
       ),
     );
   }

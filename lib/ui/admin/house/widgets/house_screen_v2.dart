@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
+import 'package:sirnawa_mobile/config/block_providers.dart';
+import 'package:sirnawa_mobile/config/house_provders.dart';
 import 'package:sirnawa_mobile/domain/model/block/block_model.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/admin/house/widgets/house_item.dart';

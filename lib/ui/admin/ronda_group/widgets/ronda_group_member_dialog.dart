@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sirnawa_mobile/config/app_providers.dart';
+import 'package:sirnawa_mobile/config/house_provders.dart';
+import 'package:sirnawa_mobile/config/resident_house_providers.dart';
+import 'package:sirnawa_mobile/config/ronda_group_member_providers.dart';
+import 'package:sirnawa_mobile/config/ronda_group_providers.dart';
 import 'package:sirnawa_mobile/data/services/api/model/ronda_group_member/ronda_group_member_request_model.dart';
 import 'package:sirnawa_mobile/domain/model/house/house_model.dart';
 import 'package:sirnawa_mobile/domain/model/resident/resident_model.dart';

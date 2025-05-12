@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:sirnawa_mobile/config/app_providers.dart';
+import 'package:sirnawa_mobile/config/announcement_providers.dart';
 import 'package:sirnawa_mobile/domain/model/announcement/announcement_model.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_elevated_button.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sirnawa_mobile/config/app_providers.dart';
+import 'package:sirnawa_mobile/config/rt_providers.dart';
 import 'package:sirnawa_mobile/ui/admin/rt/rt_viewmodel/rt_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

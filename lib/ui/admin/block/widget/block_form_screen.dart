@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
+import 'package:sirnawa_mobile/config/block_providers.dart';
 import 'package:sirnawa_mobile/data/services/api/model/block/block_request_model.dart';
 import 'package:sirnawa_mobile/domain/model/block/block_model.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';

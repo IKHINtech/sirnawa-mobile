@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:sirnawa_mobile/config/announcement_providers.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
 import 'package:sirnawa_mobile/data/services/api/model/announcement/announcement_request_model.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';
