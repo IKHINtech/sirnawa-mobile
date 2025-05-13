@@ -8,6 +8,7 @@ import 'package:sirnawa_mobile/config/auth_providers.dart';
 import 'package:sirnawa_mobile/domain/model/announcement/announcement_model.dart';
 import 'package:sirnawa_mobile/domain/model/block/block_model.dart';
 import 'package:sirnawa_mobile/domain/model/house/house_model.dart';
+import 'package:sirnawa_mobile/domain/model/item/item_model.dart';
 import 'package:sirnawa_mobile/domain/model/resident/resident_model.dart';
 import 'package:sirnawa_mobile/domain/model/ronda_group/ronda_group_model.dart';
 import 'package:sirnawa_mobile/domain/model/rw/rw_model.dart';
@@ -20,6 +21,8 @@ import 'package:sirnawa_mobile/ui/admin/block/widget/block_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/house/widgets/house_detail_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/house/widgets/house_form_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/house/widgets/house_screen_v2.dart';
+import 'package:sirnawa_mobile/ui/admin/item/widgets/item_form_screen.dart';
+import 'package:sirnawa_mobile/ui/admin/item/widgets/item_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/resident/widget/resident_form_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/resident/widget/resident_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/ronda_group/widgets/ronda_form_screen.dart';
@@ -150,6 +153,23 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final rondaGroup = state.extra as RondaGroupModel;
           return RondaFormScreen(rondaGroup: rondaGroup);
+        },
+      ),
+
+      //  ===== ITEM =====
+      GoRoute(
+        path: Routes.item,
+        builder: (context, state) => const ItemListScreen(),
+      ),
+      GoRoute(
+        path: Routes.itemCreate,
+        builder: (context, state) => const ItemFormScreen(),
+      ),
+      GoRoute(
+        path: Routes.itemUpdate,
+        builder: (context, state) {
+          final item = state.extra as ItemModel;
+          return ItemFormScreen(item: item);
         },
       ),
       //  ===== ANNOUNCEMENT =====

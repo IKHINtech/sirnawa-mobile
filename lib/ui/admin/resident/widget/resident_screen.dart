@@ -37,7 +37,9 @@ class _ResidentScreenState extends ConsumerState<ResidentScreen> {
     final residentListState = ref.watch(residentListProvider);
 
     return RefreshIndicator(
-      onRefresh: () async {},
+      onRefresh: () async {
+        ref.read(residentListProvider.notifier).refresh();
+      },
       child: residentListState.when(
         data: (residents) {
           if (residents.isEmpty) {
@@ -73,10 +75,12 @@ class _ResidentScreenState extends ConsumerState<ResidentScreen> {
                   ),
                 );
               } else {
-                return const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  child: Center(child: CircularProgressIndicator()),
-                );
+                return ref.watch(residentListProvider.notifier).hasMore
+                    ? const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                    : SizedBox();
               }
             },
           );

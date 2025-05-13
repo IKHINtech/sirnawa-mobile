@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ItemRequestModel {
 
-@JsonKey(name: 'id') String? get id;@JsonKey(name: 'name') String get name;@JsonKey(name: 'desctription') String get description;@JsonKey(name: 'rt_id') int get rtId;@JsonKey(name: 'item_type') String get itemType;
+@JsonKey(name: 'id') String? get id;@JsonKey(name: 'name') String get name;@JsonKey(name: 'description') String get description;@JsonKey(name: 'rt_id') String get rtId;@JsonKey(name: 'item_type') String get itemType;
 /// Create a copy of ItemRequestModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $ItemRequestModelCopyWith<$Res>  {
   factory $ItemRequestModelCopyWith(ItemRequestModel value, $Res Function(ItemRequestModel) _then) = _$ItemRequestModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'id') String? id,@JsonKey(name: 'name') String name,@JsonKey(name: 'desctription') String description,@JsonKey(name: 'rt_id') int rtId,@JsonKey(name: 'item_type') String itemType
+@JsonKey(name: 'id') String? id,@JsonKey(name: 'name') String name,@JsonKey(name: 'description') String description,@JsonKey(name: 'rt_id') String rtId,@JsonKey(name: 'item_type') String itemType
 });
 
 
@@ -72,7 +72,7 @@ id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,rtId: null == rtId ? _self.rtId : rtId // ignore: cast_nullable_to_non_nullable
-as int,itemType: null == itemType ? _self.itemType : itemType // ignore: cast_nullable_to_non_nullable
+as String,itemType: null == itemType ? _self.itemType : itemType // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -84,13 +84,13 @@ as String,
 @JsonSerializable()
 
 class _ItemRequestModel implements ItemRequestModel {
-  const _ItemRequestModel({@JsonKey(name: 'id') this.id, @JsonKey(name: 'name') required this.name, @JsonKey(name: 'desctription') required this.description, @JsonKey(name: 'rt_id') required this.rtId, @JsonKey(name: 'item_type') required this.itemType});
+  const _ItemRequestModel({@JsonKey(name: 'id') this.id, @JsonKey(name: 'name') required this.name, @JsonKey(name: 'description') required this.description, @JsonKey(name: 'rt_id') required this.rtId, @JsonKey(name: 'item_type') required this.itemType});
   factory _ItemRequestModel.fromJson(Map<String, dynamic> json) => _$ItemRequestModelFromJson(json);
 
 @override@JsonKey(name: 'id') final  String? id;
 @override@JsonKey(name: 'name') final  String name;
-@override@JsonKey(name: 'desctription') final  String description;
-@override@JsonKey(name: 'rt_id') final  int rtId;
+@override@JsonKey(name: 'description') final  String description;
+@override@JsonKey(name: 'rt_id') final  String rtId;
 @override@JsonKey(name: 'item_type') final  String itemType;
 
 /// Create a copy of ItemRequestModel
@@ -126,7 +126,7 @@ abstract mixin class _$ItemRequestModelCopyWith<$Res> implements $ItemRequestMod
   factory _$ItemRequestModelCopyWith(_ItemRequestModel value, $Res Function(_ItemRequestModel) _then) = __$ItemRequestModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'id') String? id,@JsonKey(name: 'name') String name,@JsonKey(name: 'desctription') String description,@JsonKey(name: 'rt_id') int rtId,@JsonKey(name: 'item_type') String itemType
+@JsonKey(name: 'id') String? id,@JsonKey(name: 'name') String name,@JsonKey(name: 'description') String description,@JsonKey(name: 'rt_id') String rtId,@JsonKey(name: 'item_type') String itemType
 });
 
 
@@ -149,7 +149,7 @@ id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,rtId: null == rtId ? _self.rtId : rtId // ignore: cast_nullable_to_non_nullable
-as int,itemType: null == itemType ? _self.itemType : itemType // ignore: cast_nullable_to_non_nullable
+as String,itemType: null == itemType ? _self.itemType : itemType // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

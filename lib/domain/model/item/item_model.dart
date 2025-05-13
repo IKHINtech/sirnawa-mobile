@@ -8,8 +8,8 @@ class ItemModel with _$ItemModel {
   const factory ItemModel({
     @JsonKey(name: 'id') required String id,
     @JsonKey(name: 'name') required String name,
-    @JsonKey(name: 'desctription') required String description,
-    @JsonKey(name: 'rt_id') required int rtId,
+    @JsonKey(name: 'description') required String description,
+    @JsonKey(name: 'rt_id') required String rtId,
     @JsonKey(name: 'item_type') required String itemType,
   }) = _ItemModel;
 

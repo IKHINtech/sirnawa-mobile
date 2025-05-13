@@ -36,6 +36,9 @@ abstract final class Routes {
   static const announcement = '/announcement';
   static const announcementCreate = '/announcement/create';
   static const announcementDetail = '/announcement/detail';
+  static const item = '/item';
+  static const itemCreate = '/item/create';
+  static const itemUpdate = '/item/update';
   static const searchRelative = 'search';
   static const results = '/$resultsRelative';
   static const resultsRelative = 'results';

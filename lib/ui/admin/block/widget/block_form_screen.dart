@@ -97,6 +97,7 @@ class _BlockFormScreenState extends ConsumerState<BlockFormScreen> {
     }
 
     if (mounted) {
+      ref.invalidate(blockListProvider);
       Navigator.pop(context); // kembali ke list
     }
   }

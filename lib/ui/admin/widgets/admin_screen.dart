@@ -96,13 +96,27 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
                   icon: Icons.groups_2_outlined,
                   title: "Group Ronda",
                 ),
+                _itemAdmin(
+                  onClick: () {
+                    context.push(Routes.adminResident);
+                  },
+                  icon: Icons.attach_money,
+                  title: "Tarif IPL",
+                ),
+                _itemAdmin(
+                  onClick: () {
+                    context.push(Routes.item);
+                  },
+                  icon: Icons.list,
+                  title: "Item IPL",
+                ),
 
                 _itemAdmin(
                   onClick: () {
                     context.push(Routes.adminResident);
                   },
                   icon: Icons.receipt_long_sharp,
-                  title: "Data IPL",
+                  title: "Tagihan IPL",
                 ),
               ],
             ),
