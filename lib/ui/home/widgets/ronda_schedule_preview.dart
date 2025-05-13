@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:sirnawa_mobile/config/dashboard_mobile_providers.dart';
-import 'package:sirnawa_mobile/domain/model/announcement/announcement_model.dart';
 import 'package:sirnawa_mobile/domain/model/dashboard/dashboard_mobile_model.dart';
+import 'package:sirnawa_mobile/domain/model/ronda_schedule/ronda_schedule_model.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_elevated_button.dart';
 import 'package:sirnawa_mobile/ui/core/ui/shimmer_box.dart';
 
-class AnnouncementPreview extends ConsumerWidget {
-  const AnnouncementPreview({super.key});
+class RondaSchedulePreview extends ConsumerWidget {
+  const RondaSchedulePreview({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,62 +27,81 @@ class AnnouncementPreview extends ConsumerWidget {
       child: dashboarMobileState.when(
         loading: () => _buildLoadingPreview(context),
         error: (err, stack) => _buildErrorPreview(context, err, ref),
-        data: (res) => _buildPreviewContent(context, res?.announcementModel),
+        data: (res) => _buildPreviewContent(context, res?.rondaScheduleModel),
       ),
     );
   }
 
   Widget _buildPreviewContent(
     BuildContext context,
-    AnnouncementModel? latestAnnouncement,
+    RondaScheduleModel? latestRondaSchedule,
   ) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "Pengumuman",
-              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
+        if (latestRondaSchedule != null) ...[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Ronda Minggu Ini",
+                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
               ),
+              Icon(
+                Icons.calendar_month,
+                color: Theme.of(context).colorScheme.outline,
+              ),
+            ],
+          ),
+          SizedBox(height: 3),
+          Text(
+            DateFormat(
+              'dd MMM yyyy',
+              'id_ID',
+            ).format(latestRondaSchedule.date.toLocal()),
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+              color: Theme.of(context).colorScheme.outline,
             ),
-            Icon(LucideIcons.bell, color: Theme.of(context).colorScheme.error),
-          ],
-        ),
-        const SizedBox(height: 10),
-        if (latestAnnouncement != null)
+          ),
+          const SizedBox(height: 10),
           GestureDetector(
             onTap: () {
               context.push(
                 Routes.announcementDetail,
-                extra: latestAnnouncement,
+                extra: latestRondaSchedule,
               );
             },
             child: Card.outlined(
               child: ListTile(
-                title: Text(latestAnnouncement.title),
-                subtitle: Text(
-                  latestAnnouncement.content,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                title: Text(latestRondaSchedule.group?.name ?? ""),
+                subtitle: Row(
+                  children: [
+                    Icon(Icons.people_alt_rounded),
+                    Text(
+                      "Anggota ${latestRondaSchedule.group?.totalMembers ?? 0} Orang",
+                    ),
+                  ],
                 ),
-                trailing: const Icon(Icons.info, color: Colors.blue),
+                trailing: Icon(Icons.security_rounded, color: Colors.redAccent),
               ),
             ),
-          )
-        else
+          ),
+        ],
+        if (latestRondaSchedule == null)
           const Card.outlined(
             child: ListTile(
-              title: Text("Tidak ada pengumuman"),
-              subtitle: Text("Belum ada pengumuman terbaru"),
+              title: Text("Tidak ada jadwal ronda"),
+              subtitle: Text("Belum ada jadwal terbaru"),
             ),
           ),
         CustomElevatedButton(
-          title: "Lihat Pengumuman Lain",
+          title: "Lihat Jadwal Lengkap",
           onPressed: () {
-            context.push(Routes.announcement);
+            context.push(Routes.adminRondaSchedule);
           },
         ),
       ],
@@ -119,7 +139,7 @@ class AnnouncementPreview extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "Pengumuman",
+              "Jadwal Ronda",
               style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
@@ -132,7 +152,7 @@ class AnnouncementPreview extends ConsumerWidget {
         Card.outlined(
           color: Theme.of(context).colorScheme.errorContainer,
           child: ListTile(
-            title: Text("Gagal memuat pengumuman"),
+            title: Text("Gagal memuat jadwal"),
             subtitle: Text(error.toString()),
             trailing: Icon(
               Icons.error,

@@ -10,6 +10,7 @@ import 'package:sirnawa_mobile/ui/core/ui/placeholder.dart';
 import 'package:sirnawa_mobile/ui/home/view_models/home_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/home/widgets/announcement_preview.dart';
 import 'package:sirnawa_mobile/ui/home/widgets/house_list.dart';
+import 'package:sirnawa_mobile/ui/home/widgets/ronda_schedule_preview.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -123,68 +124,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     Theme.of(context).brightness == Brightness.light
                         ? Colors.white
                         : Theme.of(context).colorScheme.primary,
-                // color: Colors.white,
               ),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                  color: Theme.of(context).colorScheme.surface,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Ronda Minggu Ini",
-                          style: Theme.of(
-                            context,
-                          ).textTheme.headlineSmall!.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                        ),
-                        Icon(
-                          Icons.calendar_month,
-                          color: Theme.of(context).colorScheme.outline,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 3),
-                    Text(
-                      "Sabtu, 12 April 2025",
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Card.outlined(
-                      child: ListTile(
-                        title: Text("Group A"),
-                        subtitle: Row(
-                          children: [Icon(Icons.person), Text("3 Orang")],
-                        ),
-                        trailing: Icon(
-                          Icons.security_rounded,
-                          color: Colors.redAccent,
-                        ),
-                      ),
-                    ),
-                    CustomElevatedButton(
-                      title: "Lihat Jadwal Lengkap",
-                      onPressed: () {
-                        context.push(Routes.adminRondaSchedule);
-                      },
-                    ),
-                  ],
-                ),
-              ),
+              RondaSchedulePreview(),
               Container(
                 height: 20,
 
-                //  color: Colors.white
+                color:
+                    Theme.of(context).brightness == Brightness.light
+                        ? Colors.white
+                        : Theme.of(context).colorScheme.primary,
               ),
               AnnouncementPreview(),
               Container(
