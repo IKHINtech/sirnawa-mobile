@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$IplRateRequestModel {
 
-@JsonKey(name: 'id') String? get id;@JsonKey(name: 'amount') int get ammount;@JsonKey(name: 'block_id') String get blockId;@JsonKey(name: 'rt_id') int get rtId;@JsonKey(name: 'house_type') String get houseType;@JsonKey(name: 'start_date') String get startDate;
+@JsonKey(name: 'id') String? get id;@JsonKey(name: 'amount') int get ammount;@JsonKey(name: 'block_id') String? get blockId;@JsonKey(name: 'rt_id') String get rtId;@JsonKey(name: 'house_type') String? get houseType;@JsonKey(name: 'start_date') String get startDate;
 /// Create a copy of IplRateRequestModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $IplRateRequestModelCopyWith<$Res>  {
   factory $IplRateRequestModelCopyWith(IplRateRequestModel value, $Res Function(IplRateRequestModel) _then) = _$IplRateRequestModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'id') String? id,@JsonKey(name: 'amount') int ammount,@JsonKey(name: 'block_id') String blockId,@JsonKey(name: 'rt_id') int rtId,@JsonKey(name: 'house_type') String houseType,@JsonKey(name: 'start_date') String startDate
+@JsonKey(name: 'id') String? id,@JsonKey(name: 'amount') int ammount,@JsonKey(name: 'block_id') String? blockId,@JsonKey(name: 'rt_id') String rtId,@JsonKey(name: 'house_type') String? houseType,@JsonKey(name: 'start_date') String startDate
 });
 
 
@@ -66,14 +66,14 @@ class _$IplRateRequestModelCopyWithImpl<$Res>
 
 /// Create a copy of IplRateRequestModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? ammount = null,Object? blockId = null,Object? rtId = null,Object? houseType = null,Object? startDate = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? ammount = null,Object? blockId = freezed,Object? rtId = null,Object? houseType = freezed,Object? startDate = null,}) {
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,ammount: null == ammount ? _self.ammount : ammount // ignore: cast_nullable_to_non_nullable
-as int,blockId: null == blockId ? _self.blockId : blockId // ignore: cast_nullable_to_non_nullable
-as String,rtId: null == rtId ? _self.rtId : rtId // ignore: cast_nullable_to_non_nullable
-as int,houseType: null == houseType ? _self.houseType : houseType // ignore: cast_nullable_to_non_nullable
-as String,startDate: null == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
+as int,blockId: freezed == blockId ? _self.blockId : blockId // ignore: cast_nullable_to_non_nullable
+as String?,rtId: null == rtId ? _self.rtId : rtId // ignore: cast_nullable_to_non_nullable
+as String,houseType: freezed == houseType ? _self.houseType : houseType // ignore: cast_nullable_to_non_nullable
+as String?,startDate: null == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -85,14 +85,14 @@ as String,
 @JsonSerializable()
 
 class _IplRateRequestModel implements IplRateRequestModel {
-  const _IplRateRequestModel({@JsonKey(name: 'id') this.id, @JsonKey(name: 'amount') required this.ammount, @JsonKey(name: 'block_id') required this.blockId, @JsonKey(name: 'rt_id') required this.rtId, @JsonKey(name: 'house_type') required this.houseType, @JsonKey(name: 'start_date') required this.startDate});
+  const _IplRateRequestModel({@JsonKey(name: 'id') this.id, @JsonKey(name: 'amount') required this.ammount, @JsonKey(name: 'block_id') this.blockId, @JsonKey(name: 'rt_id') required this.rtId, @JsonKey(name: 'house_type') this.houseType, @JsonKey(name: 'start_date') required this.startDate});
   factory _IplRateRequestModel.fromJson(Map<String, dynamic> json) => _$IplRateRequestModelFromJson(json);
 
 @override@JsonKey(name: 'id') final  String? id;
 @override@JsonKey(name: 'amount') final  int ammount;
-@override@JsonKey(name: 'block_id') final  String blockId;
-@override@JsonKey(name: 'rt_id') final  int rtId;
-@override@JsonKey(name: 'house_type') final  String houseType;
+@override@JsonKey(name: 'block_id') final  String? blockId;
+@override@JsonKey(name: 'rt_id') final  String rtId;
+@override@JsonKey(name: 'house_type') final  String? houseType;
 @override@JsonKey(name: 'start_date') final  String startDate;
 
 /// Create a copy of IplRateRequestModel
@@ -128,7 +128,7 @@ abstract mixin class _$IplRateRequestModelCopyWith<$Res> implements $IplRateRequ
   factory _$IplRateRequestModelCopyWith(_IplRateRequestModel value, $Res Function(_IplRateRequestModel) _then) = __$IplRateRequestModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'id') String? id,@JsonKey(name: 'amount') int ammount,@JsonKey(name: 'block_id') String blockId,@JsonKey(name: 'rt_id') int rtId,@JsonKey(name: 'house_type') String houseType,@JsonKey(name: 'start_date') String startDate
+@JsonKey(name: 'id') String? id,@JsonKey(name: 'amount') int ammount,@JsonKey(name: 'block_id') String? blockId,@JsonKey(name: 'rt_id') String rtId,@JsonKey(name: 'house_type') String? houseType,@JsonKey(name: 'start_date') String startDate
 });
 
 
@@ -145,14 +145,14 @@ class __$IplRateRequestModelCopyWithImpl<$Res>
 
 /// Create a copy of IplRateRequestModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? ammount = null,Object? blockId = null,Object? rtId = null,Object? houseType = null,Object? startDate = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? ammount = null,Object? blockId = freezed,Object? rtId = null,Object? houseType = freezed,Object? startDate = null,}) {
   return _then(_IplRateRequestModel(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,ammount: null == ammount ? _self.ammount : ammount // ignore: cast_nullable_to_non_nullable
-as int,blockId: null == blockId ? _self.blockId : blockId // ignore: cast_nullable_to_non_nullable
-as String,rtId: null == rtId ? _self.rtId : rtId // ignore: cast_nullable_to_non_nullable
-as int,houseType: null == houseType ? _self.houseType : houseType // ignore: cast_nullable_to_non_nullable
-as String,startDate: null == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
+as int,blockId: freezed == blockId ? _self.blockId : blockId // ignore: cast_nullable_to_non_nullable
+as String?,rtId: null == rtId ? _self.rtId : rtId // ignore: cast_nullable_to_non_nullable
+as String,houseType: freezed == houseType ? _self.houseType : houseType // ignore: cast_nullable_to_non_nullable
+as String?,startDate: null == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

@@ -39,6 +39,9 @@ abstract final class Routes {
   static const item = '/item';
   static const itemCreate = '/item/create';
   static const itemUpdate = '/item/update';
+  static const iplRate = '/ipl_rate';
+  static const iplRateCreate = '/ipl_rate/create';
+  static const iplRateUpdate = '/ipl_rate/update';
   static const searchRelative = 'search';
   static const results = '/$resultsRelative';
   static const resultsRelative = 'results';

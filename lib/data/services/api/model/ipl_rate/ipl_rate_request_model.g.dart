@@ -10,9 +10,9 @@ _IplRateRequestModel _$IplRateRequestModelFromJson(Map<String, dynamic> json) =>
     _IplRateRequestModel(
       id: json['id'] as String?,
       ammount: (json['amount'] as num).toInt(),
-      blockId: json['block_id'] as String,
-      rtId: (json['rt_id'] as num).toInt(),
-      houseType: json['house_type'] as String,
+      blockId: json['block_id'] as String?,
+      rtId: json['rt_id'] as String,
+      houseType: json['house_type'] as String?,
       startDate: json['start_date'] as String,
     );
 

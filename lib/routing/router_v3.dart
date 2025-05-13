@@ -8,6 +8,7 @@ import 'package:sirnawa_mobile/config/auth_providers.dart';
 import 'package:sirnawa_mobile/domain/model/announcement/announcement_model.dart';
 import 'package:sirnawa_mobile/domain/model/block/block_model.dart';
 import 'package:sirnawa_mobile/domain/model/house/house_model.dart';
+import 'package:sirnawa_mobile/domain/model/ipl_rate/ipl_rate_model.dart';
 import 'package:sirnawa_mobile/domain/model/item/item_model.dart';
 import 'package:sirnawa_mobile/domain/model/resident/resident_model.dart';
 import 'package:sirnawa_mobile/domain/model/ronda_group/ronda_group_model.dart';
@@ -21,6 +22,8 @@ import 'package:sirnawa_mobile/ui/admin/block/widget/block_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/house/widgets/house_detail_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/house/widgets/house_form_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/house/widgets/house_screen_v2.dart';
+import 'package:sirnawa_mobile/ui/admin/ipl_rate/widgets/ip_rate_form_screen.dart';
+import 'package:sirnawa_mobile/ui/admin/ipl_rate/widgets/ipl_rate_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/item/widgets/item_form_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/item/widgets/item_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/resident/widget/resident_form_screen.dart';
@@ -156,6 +159,21 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
 
+      GoRoute(
+        path: Routes.iplRate,
+        builder: (context, state) => const IplRateListScreen(),
+      ),
+      GoRoute(
+        path: Routes.iplRateCreate,
+        builder: (context, state) => const IplRateFormScreen(),
+      ),
+      GoRoute(
+        path: Routes.iplRateUpdate,
+        builder: (context, state) {
+          final item = state.extra as IplRateModel;
+          return IplRateFormScreen(rate: item);
+        },
+      ),
       //  ===== ITEM =====
       GoRoute(
         path: Routes.item,

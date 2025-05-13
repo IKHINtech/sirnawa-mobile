@@ -40,15 +40,13 @@ class IplRateViewModel extends StateNotifier<IplRateState> {
     getIplRateListIplRate(rtId: rtID);
   }
 
-  Future<bool> createIplRate({
-    required String rtId,
-    required IplRateRequestModel resident,
-  }) async {
+  Future<bool> createIplRate({required IplRateRequestModel payload}) async {
     state = state.copyWith(isLoading: true);
     try {
-      final result = await _repository.createIplRate(resident);
+      final result = await _repository.createIplRate(payload);
       switch (result) {
         case Ok():
+          state = state.copyWith(isLoading: false);
           // Opsional: setelah create, refresh list
           return true;
         case Error():
@@ -68,14 +66,14 @@ class IplRateViewModel extends StateNotifier<IplRateState> {
 
   Future<bool> updateIplRate({
     required String id,
-    required String rtID,
-    required IplRateRequestModel resident,
+    required IplRateRequestModel payload,
   }) async {
     state = state.copyWith(isLoading: true);
     try {
-      final result = await _repository.updateIplRate(id, resident);
+      final result = await _repository.updateIplRate(id, payload);
       switch (result) {
         case Ok():
+          state = state.copyWith(isLoading: false);
           return true;
         case Error():
           state = state.copyWith(
@@ -92,7 +90,7 @@ class IplRateViewModel extends StateNotifier<IplRateState> {
     }
   }
 
-  Future<void> deleteIplRate({required String id, required String rtId}) async {
+  Future<void> deleteIplRate({required String id}) async {
     state = state.copyWith(isLoading: true);
     try {
       final result = await _repository.delete(id);
@@ -109,6 +107,8 @@ class IplRateViewModel extends StateNotifier<IplRateState> {
       }
     } catch (e) {
       state = state.copyWith(isLoading: false, error: "Exception: $e");
+    } finally {
+      state = state.copyWith(isLoading: false);
     }
   }
 

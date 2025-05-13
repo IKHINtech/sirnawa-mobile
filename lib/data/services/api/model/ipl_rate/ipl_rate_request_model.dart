@@ -8,9 +8,9 @@ class IplRateRequestModel with _$IplRateRequestModel {
   const factory IplRateRequestModel({
     @JsonKey(name: 'id') String? id,
     @JsonKey(name: 'amount') required int ammount,
-    @JsonKey(name: 'block_id') required String blockId,
-    @JsonKey(name: 'rt_id') required int rtId,
-    @JsonKey(name: 'house_type') required String houseType,
+    @JsonKey(name: 'block_id') String? blockId,
+    @JsonKey(name: 'rt_id') required String rtId,
+    @JsonKey(name: 'house_type') String? houseType,
     @JsonKey(name: 'start_date') required String startDate,
   }) = _IplRateRequestModel;
 
