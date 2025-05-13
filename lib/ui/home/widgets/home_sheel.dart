@@ -34,7 +34,7 @@ class HomeShell extends StatelessWidget {
           NavigationDestination(icon: Icon(LucideIcons.home), label: 'Home'),
           NavigationDestination(
             icon: Icon(Icons.diversity_3),
-            label: 'Community',
+            label: 'Komunitas',
           ),
           NavigationDestination(icon: Icon(LucideIcons.store), label: 'Warung'),
           NavigationDestination(icon: Icon(LucideIcons.user), label: 'Profile'),

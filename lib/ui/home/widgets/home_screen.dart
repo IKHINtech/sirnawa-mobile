@@ -118,6 +118,75 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
               _mainMenu(context, state),
+
+              Container(
+                height: 20,
+                color:
+                    Theme.of(context).brightness == Brightness.light
+                        ? Colors.white
+                        : Theme.of(context).colorScheme.primary,
+                // color: Colors.white,
+              ),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  color: Theme.of(context).colorScheme.surface,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Tagihan Saya",
+                          style: Theme.of(
+                            context,
+                          ).textTheme.headlineSmall!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                        Icon(
+                          Icons.payments,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 3),
+                    Text(
+                      "Mei 2025",
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        color: Theme.of(context).colorScheme.outline,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Card.outlined(
+                      child: ListTile(
+                        title: Text("Rp. 55.000,-"),
+                        trailing: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.green),
+                            borderRadius: BorderRadius.all(Radius.circular(4)),
+                          ),
+                          padding: EdgeInsets.all(8),
+                          child: Text(
+                            "Bayar",
+                            style: TextStyle(color: Colors.green),
+                          ),
+                        ),
+                      ),
+                    ),
+                    CustomElevatedButton(
+                      title: "Lihat Semua Tagihan",
+                      onPressed: () {
+                        context.push(Routes.adminRondaSchedule);
+                      },
+                    ),
+                  ],
+                ),
+              ),
               Container(
                 height: 20,
                 color:

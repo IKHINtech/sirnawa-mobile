@@ -81,6 +81,7 @@ class RondaSchedulePreview extends ConsumerWidget {
                 subtitle: Row(
                   children: [
                     Icon(Icons.people_alt_rounded),
+                    SizedBox(width: 8),
                     Text(
                       "Anggota ${latestRondaSchedule.group?.totalMembers ?? 0} Orang",
                     ),
