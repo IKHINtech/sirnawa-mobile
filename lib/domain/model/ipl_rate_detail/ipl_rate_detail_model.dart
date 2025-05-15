@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:sirnawa_mobile/domain/model/item/item_model.dart';
 
 part 'ipl_rate_detail_model.freezed.dart';
 part 'ipl_rate_detail_model.g.dart';
@@ -10,6 +11,7 @@ class IplRateDetailModel with _$IplRateDetailModel {
     @JsonKey(name: 'amount') required int amount,
     @JsonKey(name: 'ipl_rate_id') String? iplRateId,
     @JsonKey(name: 'item_id') required String itemId,
+    ItemModel? item,
   }) = _IplRateDetailModel;
 
   factory IplRateDetailModel.fromJson(Map<String, dynamic> json) =>

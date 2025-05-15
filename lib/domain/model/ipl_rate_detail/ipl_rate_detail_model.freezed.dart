@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$IplRateDetailModel {
 
-@JsonKey(name: 'id') String? get id;@JsonKey(name: 'amount') int get amount;@JsonKey(name: 'ipl_rate_id') String? get iplRateId;@JsonKey(name: 'item_id') String get itemId;
+@JsonKey(name: 'id') String? get id;@JsonKey(name: 'amount') int get amount;@JsonKey(name: 'ipl_rate_id') String? get iplRateId;@JsonKey(name: 'item_id') String get itemId; ItemModel? get item;
 /// Create a copy of IplRateDetailModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $IplRateDetailModelCopyWith<IplRateDetailModel> get copyWith => _$IplRateDetailM
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is IplRateDetailModel&&(identical(other.id, id) || other.id == id)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.iplRateId, iplRateId) || other.iplRateId == iplRateId)&&(identical(other.itemId, itemId) || other.itemId == itemId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is IplRateDetailModel&&(identical(other.id, id) || other.id == id)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.iplRateId, iplRateId) || other.iplRateId == iplRateId)&&(identical(other.itemId, itemId) || other.itemId == itemId)&&(identical(other.item, item) || other.item == item));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,amount,iplRateId,itemId);
+int get hashCode => Object.hash(runtimeType,id,amount,iplRateId,itemId,item);
 
 @override
 String toString() {
-  return 'IplRateDetailModel(id: $id, amount: $amount, iplRateId: $iplRateId, itemId: $itemId)';
+  return 'IplRateDetailModel(id: $id, amount: $amount, iplRateId: $iplRateId, itemId: $itemId, item: $item)';
 }
 
 
@@ -49,11 +49,11 @@ abstract mixin class $IplRateDetailModelCopyWith<$Res>  {
   factory $IplRateDetailModelCopyWith(IplRateDetailModel value, $Res Function(IplRateDetailModel) _then) = _$IplRateDetailModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'id') String? id,@JsonKey(name: 'amount') int amount,@JsonKey(name: 'ipl_rate_id') String? iplRateId,@JsonKey(name: 'item_id') String itemId
+@JsonKey(name: 'id') String? id,@JsonKey(name: 'amount') int amount,@JsonKey(name: 'ipl_rate_id') String? iplRateId,@JsonKey(name: 'item_id') String itemId, ItemModel? item
 });
 
 
-
+$ItemModelCopyWith<$Res>? get item;
 
 }
 /// @nodoc
@@ -66,16 +66,29 @@ class _$IplRateDetailModelCopyWithImpl<$Res>
 
 /// Create a copy of IplRateDetailModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? amount = null,Object? iplRateId = freezed,Object? itemId = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? amount = null,Object? iplRateId = freezed,Object? itemId = null,Object? item = freezed,}) {
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
 as int,iplRateId: freezed == iplRateId ? _self.iplRateId : iplRateId // ignore: cast_nullable_to_non_nullable
 as String?,itemId: null == itemId ? _self.itemId : itemId // ignore: cast_nullable_to_non_nullable
-as String,
+as String,item: freezed == item ? _self.item : item // ignore: cast_nullable_to_non_nullable
+as ItemModel?,
   ));
 }
+/// Create a copy of IplRateDetailModel
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ItemModelCopyWith<$Res>? get item {
+    if (_self.item == null) {
+    return null;
+  }
 
+  return $ItemModelCopyWith<$Res>(_self.item!, (value) {
+    return _then(_self.copyWith(item: value));
+  });
+}
 }
 
 
@@ -83,13 +96,14 @@ as String,
 @JsonSerializable()
 
 class _IplRateDetailModel implements IplRateDetailModel {
-  const _IplRateDetailModel({@JsonKey(name: 'id') this.id, @JsonKey(name: 'amount') required this.amount, @JsonKey(name: 'ipl_rate_id') this.iplRateId, @JsonKey(name: 'item_id') required this.itemId});
+  const _IplRateDetailModel({@JsonKey(name: 'id') this.id, @JsonKey(name: 'amount') required this.amount, @JsonKey(name: 'ipl_rate_id') this.iplRateId, @JsonKey(name: 'item_id') required this.itemId, this.item});
   factory _IplRateDetailModel.fromJson(Map<String, dynamic> json) => _$IplRateDetailModelFromJson(json);
 
 @override@JsonKey(name: 'id') final  String? id;
 @override@JsonKey(name: 'amount') final  int amount;
 @override@JsonKey(name: 'ipl_rate_id') final  String? iplRateId;
 @override@JsonKey(name: 'item_id') final  String itemId;
+@override final  ItemModel? item;
 
 /// Create a copy of IplRateDetailModel
 /// with the given fields replaced by the non-null parameter values.
@@ -104,16 +118,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _IplRateDetailModel&&(identical(other.id, id) || other.id == id)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.iplRateId, iplRateId) || other.iplRateId == iplRateId)&&(identical(other.itemId, itemId) || other.itemId == itemId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _IplRateDetailModel&&(identical(other.id, id) || other.id == id)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.iplRateId, iplRateId) || other.iplRateId == iplRateId)&&(identical(other.itemId, itemId) || other.itemId == itemId)&&(identical(other.item, item) || other.item == item));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,amount,iplRateId,itemId);
+int get hashCode => Object.hash(runtimeType,id,amount,iplRateId,itemId,item);
 
 @override
 String toString() {
-  return 'IplRateDetailModel(id: $id, amount: $amount, iplRateId: $iplRateId, itemId: $itemId)';
+  return 'IplRateDetailModel(id: $id, amount: $amount, iplRateId: $iplRateId, itemId: $itemId, item: $item)';
 }
 
 
@@ -124,11 +138,11 @@ abstract mixin class _$IplRateDetailModelCopyWith<$Res> implements $IplRateDetai
   factory _$IplRateDetailModelCopyWith(_IplRateDetailModel value, $Res Function(_IplRateDetailModel) _then) = __$IplRateDetailModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'id') String? id,@JsonKey(name: 'amount') int amount,@JsonKey(name: 'ipl_rate_id') String? iplRateId,@JsonKey(name: 'item_id') String itemId
+@JsonKey(name: 'id') String? id,@JsonKey(name: 'amount') int amount,@JsonKey(name: 'ipl_rate_id') String? iplRateId,@JsonKey(name: 'item_id') String itemId, ItemModel? item
 });
 
 
-
+@override $ItemModelCopyWith<$Res>? get item;
 
 }
 /// @nodoc
@@ -141,17 +155,30 @@ class __$IplRateDetailModelCopyWithImpl<$Res>
 
 /// Create a copy of IplRateDetailModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? amount = null,Object? iplRateId = freezed,Object? itemId = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? amount = null,Object? iplRateId = freezed,Object? itemId = null,Object? item = freezed,}) {
   return _then(_IplRateDetailModel(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
 as int,iplRateId: freezed == iplRateId ? _self.iplRateId : iplRateId // ignore: cast_nullable_to_non_nullable
 as String?,itemId: null == itemId ? _self.itemId : itemId // ignore: cast_nullable_to_non_nullable
-as String,
+as String,item: freezed == item ? _self.item : item // ignore: cast_nullable_to_non_nullable
+as ItemModel?,
   ));
 }
 
+/// Create a copy of IplRateDetailModel
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ItemModelCopyWith<$Res>? get item {
+    if (_self.item == null) {
+    return null;
+  }
 
+  return $ItemModelCopyWith<$Res>(_self.item!, (value) {
+    return _then(_self.copyWith(item: value));
+  });
+}
 }
 
 // dart format on

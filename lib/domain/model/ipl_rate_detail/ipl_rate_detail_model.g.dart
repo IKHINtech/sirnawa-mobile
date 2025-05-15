@@ -12,6 +12,10 @@ _IplRateDetailModel _$IplRateDetailModelFromJson(Map<String, dynamic> json) =>
       amount: (json['amount'] as num).toInt(),
       iplRateId: json['ipl_rate_id'] as String?,
       itemId: json['item_id'] as String,
+      item:
+          json['item'] == null
+              ? null
+              : ItemModel.fromJson(json['item'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$IplRateDetailModelToJson(_IplRateDetailModel instance) =>
@@ -20,4 +24,5 @@ Map<String, dynamic> _$IplRateDetailModelToJson(_IplRateDetailModel instance) =>
       'amount': instance.amount,
       'ipl_rate_id': instance.iplRateId,
       'item_id': instance.itemId,
+      'item': instance.item,
     };

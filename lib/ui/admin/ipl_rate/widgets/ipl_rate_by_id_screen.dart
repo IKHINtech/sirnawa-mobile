@@ -84,29 +84,7 @@ class _IplRateDetailScreenState extends ConsumerState<IplRateDetailScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('House Type:'),
-              Text(
-                widget.rate.houseType ?? "",
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Block ID:'),
-              Text(
-                widget.rate.blockId ?? "",
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Effective Date:'),
+              const Text('Tanggal Efektif:'),
 
               Text(
                 DateFormat(
@@ -160,7 +138,7 @@ class _IplRateDetailScreenState extends ConsumerState<IplRateDetailScreen> {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: ListTile(
-        title: Text('Item: ${item.itemId}'),
+        title: Text('Item: ${item.item?.name ?? ''}'),
         subtitle: Text('Biaya: ${item.amount}'),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
