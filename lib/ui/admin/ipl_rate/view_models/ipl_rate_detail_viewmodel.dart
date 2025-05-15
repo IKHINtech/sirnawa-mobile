@@ -1,27 +1,27 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sirnawa_mobile/data/repositories/item/item_repository.dart';
+import 'package:sirnawa_mobile/data/repositories/ipl_rate_detail/ipl_rate_detail_repository.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
-import 'package:sirnawa_mobile/data/services/api/model/item/item_request_model.dart';
-import 'package:sirnawa_mobile/domain/model/item/item_model.dart';
+import 'package:sirnawa_mobile/data/services/api/model/ipl_rate_detail/ipl_rate_detail_request_model.dart';
+import 'package:sirnawa_mobile/domain/model/ipl_rate_detail/ipl_rate_detail_model.dart';
 import 'package:sirnawa_mobile/utils/result.dart';
 
-class ItemState {
+class IplRateDetailState {
   final bool isLoading;
   final String? error;
-  final AsyncValue<List<ItemModel>> list;
+  final AsyncValue<List<IplRateDetailModel>> list;
 
-  const ItemState({
+  const IplRateDetailState({
     required this.isLoading,
     required this.error,
     required this.list,
   });
 
-  ItemState copyWith({
+  IplRateDetailState copyWith({
     bool? isLoading,
     String? error,
-    AsyncValue<List<ItemModel>>? list,
+    AsyncValue<List<IplRateDetailModel>>? list,
   }) {
-    return ItemState(
+    return IplRateDetailState(
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
       list: list ?? this.list,
@@ -29,51 +29,52 @@ class ItemState {
   }
 }
 
-class ItemViewModel extends StateNotifier<ItemState> {
-  final ItemRepository _repository;
+class IplRateDetailViewModel extends StateNotifier<IplRateDetailState> {
+  final IplRateDetailRepository _repository;
 
-  ItemViewModel({required ItemRepository repository, required String rtID})
+  IplRateDetailViewModel({required IplRateDetailRepository repository})
     : _repository = repository,
       super(
-        const ItemState(
+        const IplRateDetailState(
           isLoading: false,
           error: null,
           list: AsyncValue.data([]),
         ),
-      ) {
-    getItemListItem(rtId: rtID);
-  }
+      );
 
-  Future<bool> createItem({required ItemRequestModel resident}) async {
-    state = state.copyWith(isLoading: true);
-    try {
-      final result = await _repository.createItem(resident);
-      switch (result) {
-        case Ok():
-          state = state.copyWith(isLoading: false);
-          return true;
-        case Error():
-          state = state.copyWith(
-            isLoading: false,
-            error: result.error.toString(),
-          );
-          return false;
-      }
-    } catch (e) {
-      state = state.copyWith(isLoading: false, error: "Exception: $e");
-      return false;
-    } finally {
-      state = state.copyWith(isLoading: false);
-    }
-  }
-
-  Future<bool> updateItem({
-    required String id,
-    required ItemRequestModel resident,
+  Future<bool> createIplRateDetail({
+    required IplRateDetailRequestModel payload,
   }) async {
     state = state.copyWith(isLoading: true);
     try {
-      final result = await _repository.updateItem(id, resident);
+      final result = await _repository.createIplRateDetail(payload);
+      switch (result) {
+        case Ok():
+          state = state.copyWith(isLoading: false);
+          // Opsional: setelah create, refresh list
+          return true;
+        case Error():
+          state = state.copyWith(
+            isLoading: false,
+            error: result.error.toString(),
+          );
+          return false;
+      }
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: "Exception: $e");
+      return false;
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
+
+  Future<bool> updateIplRateDetail({
+    required String id,
+    required IplRateDetailRequestModel payload,
+  }) async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final result = await _repository.updateIplRateDetail(id, payload);
       switch (result) {
         case Ok():
           state = state.copyWith(isLoading: false);
@@ -93,7 +94,7 @@ class ItemViewModel extends StateNotifier<ItemState> {
     }
   }
 
-  Future<void> deleteItem({required String id, required String rtId}) async {
+  Future<void> deleteIplRateDetail({required String id}) async {
     state = state.copyWith(isLoading: true);
     try {
       final result = await _repository.delete(id);
@@ -110,21 +111,25 @@ class ItemViewModel extends StateNotifier<ItemState> {
       }
     } catch (e) {
       state = state.copyWith(isLoading: false, error: "Exception: $e");
+    } finally {
+      state = state.copyWith(isLoading: false);
     }
   }
 
-  Future<void> getItemListItem({required String rtId}) async {
-    state = state.copyWith(isLoading: true, list: AsyncValue.loading());
+  Future<void> getIplRateDetailListIplRateDetail({
+    required String iplRateId,
+  }) async {
+    state = state.copyWith(list: AsyncValue.loading());
     try {
       final result = await _repository.getList({
         "paginated": false,
-        'rt_id': rtId,
+        'ipl_rate_id': iplRateId,
       });
       switch (result) {
         case Ok():
           state = state.copyWith(
             list: AsyncValue.data(result.value.data ?? []),
-            isLoading: false,
+            error: null,
           );
           break;
         case Error():
@@ -145,15 +150,16 @@ class ItemViewModel extends StateNotifier<ItemState> {
   }
 }
 
-class ItemListNotifier extends StateNotifier<AsyncValue<List<ItemModel>>> {
-  final ItemRepository repository;
-  final String rtId;
+class IplRateDetailListNotifier
+    extends StateNotifier<AsyncValue<List<IplRateDetailModel>>> {
+  final IplRateDetailRepository repository;
+  final String iplRateId;
 
   int page = 1;
   bool hasMore = true;
   bool isLoading = false;
 
-  ItemListNotifier(this.repository, this.rtId)
+  IplRateDetailListNotifier(this.repository, this.iplRateId)
     : super(const AsyncValue.loading()) {
     loadInitialData();
   }
@@ -164,11 +170,11 @@ class ItemListNotifier extends StateNotifier<AsyncValue<List<ItemModel>>> {
       final items = await repository.getList({
         "page": 1,
         "page_size": 10,
-        "rt_id": rtId,
+        "ipl_rate_id": iplRateId,
       });
 
       switch (items) {
-        case Ok<ApiResponse<List<ItemModel>>>():
+        case Ok<ApiResponse<List<IplRateDetailModel>>>():
           if (items.value.data == null) {
             state = AsyncValue.data([]);
             return;
@@ -176,7 +182,7 @@ class ItemListNotifier extends StateNotifier<AsyncValue<List<ItemModel>>> {
           hasMore = items.value.data?.length == 10;
           state = AsyncValue.data(items.value.data!);
           break;
-        case Error<ApiResponse<List<ItemModel>>>():
+        case Error<ApiResponse<List<IplRateDetailModel>>>():
           state = AsyncValue.error(items.error.toString(), StackTrace.empty);
           return;
       }
@@ -190,29 +196,32 @@ class ItemListNotifier extends StateNotifier<AsyncValue<List<ItemModel>>> {
 
     isLoading = true;
     try {
-      final newItems = await repository.getList({
+      final newIplRateDetails = await repository.getList({
         "page": page + 1,
         "page_size": 10,
-        "rt_id": rtId,
+        "rt_id": iplRateId,
       });
-      switch (newItems) {
-        case Ok<ApiResponse<List<ItemModel>>>():
-          if (newItems.value.data == null) {
+      switch (newIplRateDetails) {
+        case Ok<ApiResponse<List<IplRateDetailModel>>>():
+          if (newIplRateDetails.value.data == null) {
             hasMore = false;
             state = state.whenData((items) => [...items]);
             return;
           }
-          hasMore = newItems.value.meta!.totalPages > page;
+          hasMore = newIplRateDetails.value.meta!.totalPages > page;
           if (hasMore) {
             page++;
           }
 
           state = state.whenData(
-            (items) => [...items, ...newItems.value.data!],
+            (items) => [...items, ...newIplRateDetails.value.data!],
           );
           break;
-        case Error<ApiResponse<List<ItemModel>>>():
-          state = AsyncValue.error(newItems.error.toString(), StackTrace.empty);
+        case Error<ApiResponse<List<IplRateDetailModel>>>():
+          state = AsyncValue.error(
+            newIplRateDetails.error.toString(),
+            StackTrace.empty,
+          );
           return;
       }
     } catch (e, st) {
@@ -226,40 +235,5 @@ class ItemListNotifier extends StateNotifier<AsyncValue<List<ItemModel>>> {
     page = 1;
     hasMore = true;
     await loadInitialData();
-  }
-}
-
-class ItemListNotInGroupNotifier
-    extends StateNotifier<AsyncValue<List<ItemModel>>> {
-  final ItemRepository repository;
-  final String rtId;
-  ItemListNotInGroupNotifier(this.repository, this.rtId)
-    : super(const AsyncValue.loading()) {
-    loadInitialData();
-  }
-
-  Future<void> loadInitialData() async {
-    state = const AsyncValue.loading();
-    try {
-      final items = await repository.getList({
-        "paginated": false,
-        "rt_id": rtId,
-      });
-
-      switch (items) {
-        case Ok<ApiResponse<List<ItemModel>>>():
-          if (items.value.data == null) {
-            state = AsyncValue.data([]);
-            return;
-          }
-          state = AsyncValue.data(items.value.data!);
-          break;
-        case Error<ApiResponse<List<ItemModel>>>():
-          state = AsyncValue.error(items.error.toString(), StackTrace.empty);
-          return;
-      }
-    } catch (e, st) {
-      state = AsyncValue.error(e, st);
-    }
   }
 }

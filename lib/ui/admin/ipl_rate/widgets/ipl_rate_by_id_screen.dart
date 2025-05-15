@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
+import 'package:sirnawa_mobile/config/ipl_rate_detail_provider.dart';
 import 'package:sirnawa_mobile/data/services/api/model/ipl_rate_detail/ipl_rate_detail_request_model.dart';
 import 'package:sirnawa_mobile/domain/model/ipl_rate/ipl_rate_model.dart';
+import 'package:sirnawa_mobile/domain/model/ipl_rate_detail/ipl_rate_detail_model.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
+import 'package:sirnawa_mobile/ui/admin/ipl_rate/widgets/ipl_rate_items_dialog.dart';
+import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';
 
 class IplRateDetailScreen extends ConsumerStatefulWidget {
   final IplRateModel rate;
@@ -17,13 +22,23 @@ class IplRateDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _IplRateDetailScreenState extends ConsumerState<IplRateDetailScreen> {
-  final DateFormat _dateFormat = DateFormat('dd MMM yyyy');
+  //final DateFormat _dateFormat = DateFormat('dd MMM yyyy');
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      ref
+          .read(iplRateDetailViewModelProvider.notifier)
+          .getIplRateDetailListIplRateDetail(iplRateId: widget.rate.id);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('IPL Rate Details'),
+      appBar: CustomAppBar(
+        title: 'IPL Rate Details',
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),
@@ -58,7 +73,7 @@ class _IplRateDetailScreenState extends ConsumerState<IplRateDetailScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Amount:'),
+              const Text('Biaya:'),
               Text(
                 '${widget.rate.ammount}',
                 style: Theme.of(context).textTheme.bodyLarge,
@@ -109,11 +124,20 @@ class _IplRateDetailScreenState extends ConsumerState<IplRateDetailScreen> {
   }
 
   Widget _buildItemList() {
-    // TODO: Replace with your actual item list provider
-    final itemsAsync = ref.watch(iplRateItemsProvider(widget.rate.id));
+    final itemsAsync = ref.watch(
+      iplRateDetailViewModelProvider.select((e) => e.list),
+    );
 
     return itemsAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading:
+          () => Center(
+            child: SizedBox(
+              width: 140,
+              height: 140,
+              child: Lottie.asset('assets/loading_my_rt.json'),
+            ),
+          ),
+
       error: (error, stack) => Center(child: Text('Error: $error')),
       data: (items) {
         if (items.isEmpty) {
@@ -132,12 +156,12 @@ class _IplRateDetailScreenState extends ConsumerState<IplRateDetailScreen> {
     );
   }
 
-  Widget _buildItemCard(IplRateDetailRequestModel item) {
+  Widget _buildItemCard(IplRateDetailModel item) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: ListTile(
         title: Text('Item: ${item.itemId}'),
-        subtitle: Text('Amount: ${item.amount}'),
+        subtitle: Text('Biaya: ${item.amount}'),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -156,66 +180,79 @@ class _IplRateDetailScreenState extends ConsumerState<IplRateDetailScreen> {
   }
 
   Future<void> _showAddItemDialog(BuildContext context) async {
-    final result = await showDialog<IplRateDetailRequestModel>(
+    await showDialog<IplRateDetailRequestModel>(
       context: context,
       builder: (context) => IplRateItemFormDialog(rateId: widget.rate.id),
     );
-
-    if (result != null) {
-      // TODO: Implement create item logic
-      // await ref.read(iplRateViewModelProvider.notifier)
-      //   .createIplRateItem(result);
-      ref.refresh(iplRateItemsProvider(widget.rate.id));
-    }
   }
 
   Future<void> _showEditItemDialog(
     BuildContext context,
-    IplRateDetailRequestModel item,
+    IplRateDetailModel item,
   ) async {
-    final result = await showDialog<IplRateDetailRequestModel>(
+    await showDialog<IplRateDetailRequestModel>(
       context: context,
       builder:
           (context) =>
               IplRateItemFormDialog(rateId: widget.rate.id, item: item),
     );
-
-    if (result != null) {
-      // TODO: Implement update item logic
-      // await ref.read(iplRateViewModelProvider.notifier)
-      //   .updateIplRateItem(item.id!, result);
-      ref.refresh(iplRateItemsProvider(widget.rate.id));
-    }
   }
 
   Future<void> _showDeleteItemDialog(
     BuildContext context,
     String itemId,
   ) async {
-    final confirmed = await showDialog<bool>(
+    await showDialog<bool>(
       context: context,
       builder:
-          (context) => AlertDialog(
-            title: const Text('Delete Item'),
-            content: const Text('Are you sure you want to delete this item?'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: const Text('Delete'),
-              ),
-            ],
+          (context) => Consumer(
+            builder: (context, ref, _) {
+              final loading = ref.watch(
+                iplRateDetailViewModelProvider.select((e) => e.isLoading),
+              );
+              return AlertDialog(
+                title: const Text('Delete Item'),
+                content: const Text(
+                  'Are you sure you want to delete this item?',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed:
+                        loading
+                            ? null
+                            : () async {
+                              await ref
+                                  .read(iplRateDetailViewModelProvider.notifier)
+                                  .deleteIplRateDetail(id: itemId);
+                              ref
+                                  .watch(
+                                    iplRateDetailViewModelProvider.notifier,
+                                  )
+                                  .getIplRateDetailListIplRateDetail(
+                                    iplRateId: widget.rate.id,
+                                  );
+
+                              Navigator.pop(context);
+                            },
+                    child:
+                        loading
+                            ? SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: const CircularProgressIndicator(
+                                strokeWidth: 2,
+                              ),
+                            )
+                            : const Text('Delete'),
+                  ),
+                ],
+              );
+            },
           ),
     );
-
-    if (confirmed == true) {
-      // TODO: Implement delete item logic
-      // await ref.read(iplRateViewModelProvider.notifier)
-      //   .deleteIplRateItem(itemId);
-      ref.refresh(iplRateItemsProvider(widget.rate.id));
-    }
   }
 }

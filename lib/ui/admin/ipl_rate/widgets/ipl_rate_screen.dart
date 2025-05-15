@@ -107,32 +107,37 @@ class IplRateCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: ListTile(
-        title: Text('Rp. ${rate.ammount}'),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Berlaku Dari : ${DateFormat('EEEE, d MMMM y', 'id_ID').format(rate.startDate.toLocal())}",
-            ),
-          ],
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: () {
-                context.push(Routes.iplRateUpdate, extra: rate);
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () => _showDeleteDialog(context, ref, rate.id),
-            ),
-          ],
+    return InkWell(
+      onTap: () {
+        context.push(Routes.iplRateDetail, extra: rate);
+      },
+      child: Card(
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: ListTile(
+          title: Text('Rp. ${rate.ammount}'),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Berlaku Dari : ${DateFormat('EEEE, d MMMM y', 'id_ID').format(rate.startDate.toLocal())}",
+              ),
+            ],
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.edit),
+                onPressed: () {
+                  context.push(Routes.iplRateUpdate, extra: rate);
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () => _showDeleteDialog(context, ref, rate.id),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sirnawa_mobile/config/ipl_rate_detail_provider.dart';
+import 'package:sirnawa_mobile/config/item_providers.dart';
 import 'package:sirnawa_mobile/data/services/api/model/ipl_rate_detail/ipl_rate_detail_request_model.dart';
+import 'package:sirnawa_mobile/domain/model/ipl_rate_detail/ipl_rate_detail_model.dart';
+import 'package:sirnawa_mobile/ui/admin/ipl_rate/view_models/ipl_rate_detail_viewmodel.dart';
 
 class IplRateItemFormDialog extends ConsumerStatefulWidget {
   final String rateId;
-  final IplRateDetailRequestModel? item;
+  final IplRateDetailModel? item;
 
   const IplRateItemFormDialog({super.key, required this.rateId, this.item});
 
@@ -40,9 +43,10 @@ class _IplRateItemFormDialogState extends ConsumerState<IplRateItemFormDialog> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Replace with your actual items provider
-    final itemsAsync = ref.watch(itemNotInGroupNotifier);
-
+    final itemsAsync = ref.watch(itemViewModelProvider.select((e) => e.list));
+    final loading = ref.watch(
+      iplRateDetailViewModelProvider.select((e) => e.isLoading),
+    );
     return AlertDialog(
       title: Text(widget.item == null ? 'Add Item' : 'Edit Item'),
       content: SingleChildScrollView(
@@ -109,20 +113,45 @@ class _IplRateItemFormDialogState extends ConsumerState<IplRateItemFormDialog> {
           onPressed: () => Navigator.pop(context),
           child: const Text('Cancel'),
         ),
-        TextButton(
-          onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              final item = IplRateDetailRequestModel(
-                id: widget.item?.id,
-                amount: int.parse(_amountController.text),
-                iplRateId: widget.rateId,
-                itemId: _selectedItemId!,
-              );
-              Navigator.pop(context, item);
-            }
-          },
-          child: const Text('Save'),
-        ),
+        loading
+            ? SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+            : TextButton(
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  bool succcess = true;
+                  final item = IplRateDetailRequestModel(
+                    id: widget.item?.id,
+                    amount: int.parse(_amountController.text),
+                    iplRateId: widget.rateId,
+                    itemId: _selectedItemId!,
+                  );
+                  if (widget.item != null) {
+                    succcess = await ref
+                        .read(iplRateDetailViewModelProvider.notifier)
+                        .updateIplRateDetail(id: item.id!, payload: item);
+                  } else {
+                    succcess = await ref
+                        .read(iplRateDetailViewModelProvider.notifier)
+                        .createIplRateDetail(payload: item);
+                  }
+                  if (succcess) {
+                    ref
+                        .watch<IplRateDetailViewModel>(
+                          iplRateDetailViewModelProvider.notifier,
+                        )
+                        .getIplRateDetailListIplRateDetail(
+                          iplRateId: widget.rateId,
+                        );
+                  }
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('Save'),
+            ),
       ],
     );
   }
