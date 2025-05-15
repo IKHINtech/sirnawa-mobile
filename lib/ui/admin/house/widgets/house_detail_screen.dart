@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map/flutter_map.dart' as map;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sirnawa_mobile/config/house_provders.dart';
 import 'package:sirnawa_mobile/config/resident_house_providers.dart';
 import 'package:sirnawa_mobile/config/resident_providers.dart';
@@ -18,10 +19,10 @@ class HouseDetailScreen extends ConsumerWidget {
   final String houseId;
 
   const HouseDetailScreen({super.key, required this.houseId});
-  void _showResidentPicker(BuildContext context, WidgetRef ref) {
+  Future _showResidentPicker(BuildContext context, WidgetRef ref) {
     final residentSearchController = TextEditingController();
 
-    showModalBottomSheet(
+    return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
@@ -29,40 +30,52 @@ class HouseDetailScreen extends ConsumerWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: TextField(
-                  controller: residentSearchController,
-                  decoration: InputDecoration(
-                    labelText: 'Cari penghuni',
-                    prefixIcon: const Icon(Icons.search),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  onChanged: (value) {
-                    ref.read(residentSearchProvider.notifier).state = value;
-                    // Refrensh the provider with search term
-                    final _ = ref.refresh(residentOptionsProvider);
-                  },
-                ),
+        return Consumer(
+          builder: (context, ref, _) {
+            final residentsAsync = ref.watch(residentOptionsProvider);
+            final isLoading = ref.watch(
+              residentHouseViewModelProvider.select((s) => s.isLoading),
+            );
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
               ),
-              Expanded(
-                child: Consumer(
-                  builder: (context, ref, child) {
-                    final residentsAsync = ref.watch(residentOptionsProvider);
-
-                    return residentsAsync.when(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child:
+                        isLoading
+                            ? const CircularProgressIndicator()
+                            : TextField(
+                              controller: residentSearchController,
+                              decoration: InputDecoration(
+                                labelText: 'Cari penghuni',
+                                prefixIcon: const Icon(Icons.search),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              onChanged: (value) {
+                                ref
+                                    .read(residentSearchProvider.notifier)
+                                    .state = value;
+                                // Refrensh the provider with search term
+                                final _ = ref.refresh(residentOptionsProvider);
+                              },
+                            ),
+                  ),
+                  Expanded(
+                    child: residentsAsync.when(
                       loading:
-                          () =>
-                              const Center(child: CircularProgressIndicator()),
+                          () => Center(
+                            child: SizedBox(
+                              height: 140,
+                              width: 140,
+                              child: Lottie.asset("assets/loading_my_rt.json"),
+                            ),
+                          ),
                       error: (err, stack) => Center(child: Text('Error: $err')),
                       data: (residents) {
                         if (residents.isEmpty) {
@@ -119,12 +132,12 @@ class HouseDetailScreen extends ConsumerWidget {
                           },
                         );
                       },
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
@@ -148,11 +161,9 @@ class HouseDetailScreen extends ConsumerWidget {
           isPrimary: false,
         ),
       );
-      ref.invalidate(listPenghuniProvider(houseId));
-      Navigator.pop(context);
+      Navigator.pop(context, true);
     } catch (e) {
-      ref.invalidate(listPenghuniProvider(houseId));
-      Navigator.pop(context);
+      Navigator.pop(context, true);
     }
   }
 
@@ -197,74 +208,67 @@ class HouseDetailScreen extends ConsumerWidget {
       });
     }
 
-    // Status Aksi
-    // final success = ref.watch(residentHouseViewModelProvider).isSuccess;
-    // if (success != null) {
-    //   WidgetsBinding.instance.addPostFrameCallback((_) {
-    //     if (success) {
-    //       ScaffoldMessenger.of(context).showSnackBar(
-    //         const SnackBar(
-    //           behavior: SnackBarBehavior.floating,
-    //           content: Text('Berhasil'),
-    //           duration: Duration(seconds: 2),
-    //         ),
-    //       );
-    //     } else {
-    //       ScaffoldMessenger.of(context).showSnackBar(
-    //         SnackBar(
-    //           behavior: SnackBarBehavior.floating,
-    //           backgroundColor: Theme.of(context).colorScheme.error,
-    //           content: Text('Gagal'),
-    //           duration: Duration(seconds: 2),
-    //         ),
-    //       );
-    //     }
-    //     residentHouseViewModel.resetSuccess();
-    //     ref.invalidate(residentHouseViewModelProvider);
-    //     ref.invalidate(listPenghuniProvider(houseId));
-    //   });
-    // }
-
     Future<void> showDeleteConfirmationDialog({
       required BuildContext context,
       required WidgetRef ref,
       required ResidentHouseModel resident,
       required String houseId,
     }) async {
-      final residentHouseViewModel = ref.read(
-        residentHouseViewModelProvider.notifier,
-      );
-
       return showDialog<void>(
         context: context,
         barrierDismissible: true,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Hapus Penghuni'),
-            content: Text(
-              'Apakah Anda yakin ingin menghapus ${resident.resident?.name ?? 'penghuni ini'}?',
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('Batal'),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-              TextButton(
-                child: const Text('Hapus', style: TextStyle(color: Colors.red)),
-                onPressed: () async {
-                  try {
-                    await residentHouseViewModel.deleteResidentHouse(
-                      resident.id,
-                    );
-                    ref.invalidate(listPenghuniProvider(houseId));
-                    Navigator.of(context).pop(); // Close dialog
-                  } catch (e) {
-                    debugPrint(e.toString());
-                    Navigator.of(context).pop(); // Close dialog
-                  }
-                },
-              ),
-            ],
+          return Consumer(
+            builder: (context, ref, _) {
+              final residentHouseViewModel = ref.read(
+                residentHouseViewModelProvider.notifier,
+              );
+
+              final loading = ref.watch(
+                residentHouseViewModelProvider.select((s) => s.isLoading),
+              );
+              return AlertDialog(
+                title: const Text('Hapus Penghuni'),
+                content: Text(
+                  'Apakah Anda yakin ingin menghapus ${resident.resident?.name ?? 'penghuni ini'}?',
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text('Batal'),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                  TextButton(
+                    onPressed:
+                        loading
+                            ? null
+                            : () async {
+                              try {
+                                await residentHouseViewModel
+                                    .deleteResidentHouse(resident.id);
+                                ref.invalidate(listPenghuniProvider(houseId));
+                                Navigator.of(context).pop(); // Close dialog
+                              } catch (e) {
+                                debugPrint(e.toString());
+                                Navigator.of(context).pop(); // Close dialog
+                              }
+                            },
+                    child:
+                        loading
+                            ? SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: const CircularProgressIndicator(
+                                strokeWidth: 2,
+                              ),
+                            )
+                            : const Text(
+                              'Hapus',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                  ),
+                ],
+              );
+            },
           );
         },
       );
@@ -324,8 +328,8 @@ class HouseDetailScreen extends ConsumerWidget {
                           height: 250,
                           child: Stack(
                             children: [
-                              FlutterMap(
-                                options: MapOptions(
+                              map.FlutterMap(
+                                options: map.MapOptions(
                                   initialCenter: LatLng(
                                     house.latitude!,
                                     house.longitude!,
@@ -333,15 +337,15 @@ class HouseDetailScreen extends ConsumerWidget {
                                   initialZoom: 16,
                                 ),
                                 children: [
-                                  TileLayer(
+                                  map.TileLayer(
                                     urlTemplate:
                                         'https://mt0.google.com/vt/lyrs=r&hl=en&x={x}&y={y}&z={z}',
                                     subdomains: const ['a', 'b', 'c'],
                                     userAgentPackageName: 'com.example.app',
                                   ),
-                                  MarkerLayer(
+                                  map.MarkerLayer(
                                     markers: [
-                                      Marker(
+                                      map.Marker(
                                         point: LatLng(
                                           house.latitude!,
                                           house.longitude!,
@@ -469,8 +473,11 @@ class HouseDetailScreen extends ConsumerWidget {
             const Text('Tambah Penghuni'),
           ],
         ),
-        onPressed: () {
-          _showResidentPicker(context, ref);
+        onPressed: () async {
+          final res = await _showResidentPicker(context, ref);
+          if (res != null) {
+            final _ = ref.refresh(listPenghuniProvider(houseId));
+          }
         },
       ),
     );
@@ -482,6 +489,7 @@ class HouseDetailScreen extends ConsumerWidget {
     required List<Widget> children,
     required WidgetRef ref,
   }) {
+    final loading = ref.watch(listPenghuniProvider(houseId)).isLoading;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -502,9 +510,14 @@ class HouseDetailScreen extends ConsumerWidget {
                 if (isPenghuni)
                   IconButton(
                     icon: const Icon(Icons.refresh),
-                    onPressed: () {
-                      final _ = ref.refresh(listPenghuniProvider(houseId));
-                    },
+                    onPressed:
+                        loading
+                            ? null
+                            : () {
+                              final _ = ref.refresh(
+                                listPenghuniProvider(houseId),
+                              );
+                            },
                   ),
               ],
             ),
