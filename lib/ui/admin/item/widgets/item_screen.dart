@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
+import 'package:sirnawa_mobile/config/app_providers.dart';
 import 'package:sirnawa_mobile/config/item_providers.dart';
 import 'package:sirnawa_mobile/domain/model/item/item_model.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
@@ -110,28 +112,50 @@ class ItemCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: ListTile(
-        title: Text(item.name),
-        subtitle: Text(item.description),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: () {
-                context.push(Routes.itemUpdate, extra: item);
-              },
+    final role = ref.watch(homeViewModelProvider).userRtModel;
+
+    return role?.role == 'warga'
+        ? Card.outlined(
+          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: ListTile(
+            title: Text(item.name),
+            subtitle: Text(item.description),
+          ),
+        )
+        : Slidable(
+          key: ValueKey(item.id),
+          endActionPane: ActionPane(
+            motion: const DrawerMotion(),
+            children: [
+              SlidableAction(
+                onPressed: (context) {
+                  context.push(Routes.itemUpdate, extra: item);
+                },
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+                icon: Icons.edit,
+                label: 'Edit',
+              ),
+              // Uncomment if you want to add delete functionality
+              /*
+                SlidableAction(
+                  onPressed: (context) => _showDeleteDialog(context, ref, item.id),
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                  icon: Icons.delete,
+                  label: 'Delete',
+                ),
+                */
+            ],
+          ),
+          child: Card.outlined(
+            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: ListTile(
+              title: Text(item.name),
+              subtitle: Text(item.description),
             ),
-            //IconButton(
-            //  icon: const Icon(Icons.delete),
-            //  onPressed: () => _showDeleteDialog(context, ref, item.id),
-            //),
-          ],
-        ),
-      ),
-    );
+          ),
+        );
   }
 
   //  void _showDeleteDialog(

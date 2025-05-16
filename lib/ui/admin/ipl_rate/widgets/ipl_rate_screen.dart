@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+import 'package:sirnawa_mobile/config/app_providers.dart';
 import 'package:sirnawa_mobile/config/ipl_rate_provider.dart';
 import 'package:sirnawa_mobile/domain/model/ipl_rate/ipl_rate_model.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
@@ -107,40 +109,72 @@ class IplRateCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return InkWell(
-      onTap: () {
-        context.push(Routes.iplRateDetail, extra: rate);
-      },
-      child: Card(
-        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        child: ListTile(
-          title: Text('Rp. ${rate.ammount}'),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Berlaku Dari : ${DateFormat('EEEE, d MMMM y', 'id_ID').format(rate.startDate.toLocal())}",
+    final role = ref.watch(homeViewModelProvider).userRtModel;
+
+    return role?.role == 'warga'
+        ? InkWell(
+          onTap: () {
+            context.push(Routes.iplRateDetail, extra: rate);
+          },
+          child: Card(
+            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: ListTile(
+              title: Text('Rp. ${rate.ammount}'),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Berlaku Dari : ${DateFormat('EEEE, d MMMM y', 'id_ID').format(rate.startDate.toLocal())}",
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
+        )
+        : Slidable(
+          key: ValueKey(rate.id),
+          endActionPane: ActionPane(
+            motion: const DrawerMotion(),
             children: [
-              IconButton(
-                icon: const Icon(Icons.edit),
-                onPressed: () {
+              SlidableAction(
+                onPressed: (context) {
                   context.push(Routes.iplRateUpdate, extra: rate);
                 },
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+                icon: Icons.edit,
+                label: 'Edit',
               ),
-              IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () => _showDeleteDialog(context, ref, rate.id),
+              SlidableAction(
+                onPressed:
+                    (context) => _showDeleteDialog(context, ref, rate.id),
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+                icon: Icons.delete,
+                label: 'Delete',
               ),
             ],
           ),
-        ),
-      ),
-    );
+          child: InkWell(
+            onTap: () {
+              context.push(Routes.iplRateDetail, extra: rate);
+            },
+            child: Card(
+              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: ListTile(
+                title: Text('Rp. ${rate.ammount}'),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Berlaku Dari : ${DateFormat('EEEE, d MMMM y', 'id_ID').format(rate.startDate.toLocal())}",
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
   }
 
   void _showDeleteDialog(

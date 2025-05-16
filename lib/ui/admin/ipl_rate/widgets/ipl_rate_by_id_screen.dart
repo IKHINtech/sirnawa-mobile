@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+import 'package:sirnawa_mobile/config/app_providers.dart';
 import 'package:sirnawa_mobile/config/ipl_rate_detail_provider.dart';
 import 'package:sirnawa_mobile/data/services/api/model/ipl_rate_detail/ipl_rate_detail_request_model.dart';
 import 'package:sirnawa_mobile/domain/model/ipl_rate/ipl_rate_model.dart';
@@ -127,34 +129,56 @@ class _IplRateDetailScreenState extends ConsumerState<IplRateDetailScreen> {
           itemCount: items.length,
           itemBuilder: (context, index) {
             final item = items[index];
-            return _buildItemCard(item);
+            return _buildItemCard(item, ref, context);
           },
         );
       },
     );
   }
 
-  Widget _buildItemCard(IplRateDetailModel item) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: ListTile(
-        title: Text('Item: ${item.item?.name ?? ''}'),
-        subtitle: Text('Biaya: ${item.amount}'),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: () => _showEditItemDialog(context, item),
+  Widget _buildItemCard(
+    IplRateDetailModel item,
+    WidgetRef ref,
+    BuildContext context,
+  ) {
+    final role = ref.watch(homeViewModelProvider).userRtModel;
+
+    return role?.role == 'warga'
+        ? Card.outlined(
+          child: ListTile(
+            title: Text(item.item?.name ?? ''),
+            subtitle: Text('Biaya: ${item.amount}'),
+          ),
+        )
+        : Slidable(
+          key: ValueKey(item.id),
+          endActionPane: ActionPane(
+            motion: const DrawerMotion(),
+            children: [
+              SlidableAction(
+                onPressed: (context) => _showEditItemDialog(context, item),
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+                icon: Icons.edit,
+                label: 'Edit',
+              ),
+              SlidableAction(
+                onPressed:
+                    (context) => _showDeleteItemDialog(context, item.id!),
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+                icon: Icons.delete,
+                label: 'Hapus',
+              ),
+            ],
+          ),
+          child: Card.outlined(
+            child: ListTile(
+              title: Text(item.item?.name ?? ''),
+              subtitle: Text('Biaya: ${item.amount}'),
             ),
-            IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () => _showDeleteItemDialog(context, item.id!),
-            ),
-          ],
-        ),
-      ),
-    );
+          ),
+        );
   }
 
   Future<void> _showAddItemDialog(BuildContext context) async {
