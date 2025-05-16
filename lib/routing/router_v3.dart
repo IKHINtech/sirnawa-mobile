@@ -22,6 +22,7 @@ import 'package:sirnawa_mobile/ui/admin/block/widget/block_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/house/widgets/house_detail_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/house/widgets/house_form_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/house/widgets/house_screen_v2.dart';
+import 'package:sirnawa_mobile/ui/admin/ipl_bill/widgets/ipl_bill_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/ipl_rate/widgets/ip_rate_form_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/ipl_rate/widgets/ipl_rate_by_id_screen.dart';
 import 'package:sirnawa_mobile/ui/admin/ipl_rate/widgets/ipl_rate_screen.dart';
@@ -158,6 +159,11 @@ final routerProvider = Provider<GoRouter>((ref) {
           final rondaGroup = state.extra as RondaGroupModel;
           return RondaFormScreen(rondaGroup: rondaGroup);
         },
+      ),
+      // IPL BILL
+      GoRoute(
+        path: Routes.iplBill,
+        builder: (context, state) => const IplBillScreen(),
       ),
       // IPL RATE
       GoRoute(

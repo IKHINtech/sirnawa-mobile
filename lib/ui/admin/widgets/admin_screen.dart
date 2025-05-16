@@ -110,10 +110,9 @@ class _AdminScreenState extends ConsumerState<AdminScreen> {
                   icon: Icons.list,
                   title: "Item IPL",
                 ),
-
                 _itemAdmin(
                   onClick: () {
-                    context.push(Routes.iplRate);
+                    context.push(Routes.iplBill);
                   },
                   icon: Icons.receipt_long_sharp,
                   title: "Tagihan IPL",
