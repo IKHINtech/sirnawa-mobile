@@ -20,6 +20,10 @@ _NotificationModel _$NotificationModelFromJson(Map<String, dynamic> json) =>
           json['read_at'] == null
               ? null
               : DateTime.parse(json['read_at'] as String),
+      createdAt:
+          json['created_at'] == null
+              ? null
+              : DateTime.parse(json['created_at'] as String),
     );
 
 Map<String, dynamic> _$NotificationModelToJson(_NotificationModel instance) =>
@@ -33,4 +37,5 @@ Map<String, dynamic> _$NotificationModelToJson(_NotificationModel instance) =>
       'category': instance.category,
       'data': instance.data,
       'read_at': instance.readAt?.toIso8601String(),
+      'created_at': instance.createdAt?.toIso8601String(),
     };

@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$NotificationModel {
 
-@JsonKey(name: 'id') String? get id;@JsonKey(name: 'user_id') String get userId;@JsonKey(name: 'house_id') String? get houseId;@JsonKey(name: 'rt_id') String? get rtId;@JsonKey(name: 'title') String get title;@JsonKey(name: 'body') String get body;@JsonKey(name: 'category') String get category;@JsonKey(name: 'data') Map<String, dynamic> get data;@JsonKey(name: 'read_at') DateTime? get readAt;
+@JsonKey(name: 'id') String? get id;@JsonKey(name: 'user_id') String get userId;@JsonKey(name: 'house_id') String? get houseId;@JsonKey(name: 'rt_id') String? get rtId;@JsonKey(name: 'title') String get title;@JsonKey(name: 'body') String get body;@JsonKey(name: 'category') String get category;@JsonKey(name: 'data') Map<String, dynamic> get data;@JsonKey(name: 'read_at') DateTime? get readAt;@JsonKey(name: 'created_at') DateTime? get createdAt;
 /// Create a copy of NotificationModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $NotificationModelCopyWith<NotificationModel> get copyWith => _$NotificationMode
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.houseId, houseId) || other.houseId == houseId)&&(identical(other.rtId, rtId) || other.rtId == rtId)&&(identical(other.title, title) || other.title == title)&&(identical(other.body, body) || other.body == body)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other.data, data)&&(identical(other.readAt, readAt) || other.readAt == readAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.houseId, houseId) || other.houseId == houseId)&&(identical(other.rtId, rtId) || other.rtId == rtId)&&(identical(other.title, title) || other.title == title)&&(identical(other.body, body) || other.body == body)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other.data, data)&&(identical(other.readAt, readAt) || other.readAt == readAt)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,userId,houseId,rtId,title,body,category,const DeepCollectionEquality().hash(data),readAt);
+int get hashCode => Object.hash(runtimeType,id,userId,houseId,rtId,title,body,category,const DeepCollectionEquality().hash(data),readAt,createdAt);
 
 @override
 String toString() {
-  return 'NotificationModel(id: $id, userId: $userId, houseId: $houseId, rtId: $rtId, title: $title, body: $body, category: $category, data: $data, readAt: $readAt)';
+  return 'NotificationModel(id: $id, userId: $userId, houseId: $houseId, rtId: $rtId, title: $title, body: $body, category: $category, data: $data, readAt: $readAt, createdAt: $createdAt)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $NotificationModelCopyWith<$Res>  {
   factory $NotificationModelCopyWith(NotificationModel value, $Res Function(NotificationModel) _then) = _$NotificationModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'id') String? id,@JsonKey(name: 'user_id') String userId,@JsonKey(name: 'house_id') String? houseId,@JsonKey(name: 'rt_id') String? rtId,@JsonKey(name: 'title') String title,@JsonKey(name: 'body') String body,@JsonKey(name: 'category') String category,@JsonKey(name: 'data') Map<String, dynamic> data,@JsonKey(name: 'read_at') DateTime? readAt
+@JsonKey(name: 'id') String? id,@JsonKey(name: 'user_id') String userId,@JsonKey(name: 'house_id') String? houseId,@JsonKey(name: 'rt_id') String? rtId,@JsonKey(name: 'title') String title,@JsonKey(name: 'body') String body,@JsonKey(name: 'category') String category,@JsonKey(name: 'data') Map<String, dynamic> data,@JsonKey(name: 'read_at') DateTime? readAt,@JsonKey(name: 'created_at') DateTime? createdAt
 });
 
 
@@ -66,7 +66,7 @@ class _$NotificationModelCopyWithImpl<$Res>
 
 /// Create a copy of NotificationModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? userId = null,Object? houseId = freezed,Object? rtId = freezed,Object? title = null,Object? body = null,Object? category = null,Object? data = null,Object? readAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? userId = null,Object? houseId = freezed,Object? rtId = freezed,Object? title = null,Object? body = null,Object? category = null,Object? data = null,Object? readAt = freezed,Object? createdAt = freezed,}) {
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
@@ -77,6 +77,7 @@ as String,body: null == body ? _self.body : body // ignore: cast_nullable_to_non
 as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as String,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>,readAt: freezed == readAt ? _self.readAt : readAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }
@@ -88,7 +89,7 @@ as DateTime?,
 @JsonSerializable()
 
 class _NotificationModel implements NotificationModel {
-  const _NotificationModel({@JsonKey(name: 'id') this.id, @JsonKey(name: 'user_id') required this.userId, @JsonKey(name: 'house_id') this.houseId, @JsonKey(name: 'rt_id') this.rtId, @JsonKey(name: 'title') required this.title, @JsonKey(name: 'body') required this.body, @JsonKey(name: 'category') required this.category, @JsonKey(name: 'data') required final  Map<String, dynamic> data, @JsonKey(name: 'read_at') this.readAt}): _data = data;
+  const _NotificationModel({@JsonKey(name: 'id') this.id, @JsonKey(name: 'user_id') required this.userId, @JsonKey(name: 'house_id') this.houseId, @JsonKey(name: 'rt_id') this.rtId, @JsonKey(name: 'title') required this.title, @JsonKey(name: 'body') required this.body, @JsonKey(name: 'category') required this.category, @JsonKey(name: 'data') required final  Map<String, dynamic> data, @JsonKey(name: 'read_at') this.readAt, @JsonKey(name: 'created_at') this.createdAt}): _data = data;
   factory _NotificationModel.fromJson(Map<String, dynamic> json) => _$NotificationModelFromJson(json);
 
 @override@JsonKey(name: 'id') final  String? id;
@@ -106,6 +107,7 @@ class _NotificationModel implements NotificationModel {
 }
 
 @override@JsonKey(name: 'read_at') final  DateTime? readAt;
+@override@JsonKey(name: 'created_at') final  DateTime? createdAt;
 
 /// Create a copy of NotificationModel
 /// with the given fields replaced by the non-null parameter values.
@@ -120,16 +122,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NotificationModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.houseId, houseId) || other.houseId == houseId)&&(identical(other.rtId, rtId) || other.rtId == rtId)&&(identical(other.title, title) || other.title == title)&&(identical(other.body, body) || other.body == body)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other._data, _data)&&(identical(other.readAt, readAt) || other.readAt == readAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NotificationModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.houseId, houseId) || other.houseId == houseId)&&(identical(other.rtId, rtId) || other.rtId == rtId)&&(identical(other.title, title) || other.title == title)&&(identical(other.body, body) || other.body == body)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other._data, _data)&&(identical(other.readAt, readAt) || other.readAt == readAt)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,userId,houseId,rtId,title,body,category,const DeepCollectionEquality().hash(_data),readAt);
+int get hashCode => Object.hash(runtimeType,id,userId,houseId,rtId,title,body,category,const DeepCollectionEquality().hash(_data),readAt,createdAt);
 
 @override
 String toString() {
-  return 'NotificationModel(id: $id, userId: $userId, houseId: $houseId, rtId: $rtId, title: $title, body: $body, category: $category, data: $data, readAt: $readAt)';
+  return 'NotificationModel(id: $id, userId: $userId, houseId: $houseId, rtId: $rtId, title: $title, body: $body, category: $category, data: $data, readAt: $readAt, createdAt: $createdAt)';
 }
 
 
@@ -140,7 +142,7 @@ abstract mixin class _$NotificationModelCopyWith<$Res> implements $NotificationM
   factory _$NotificationModelCopyWith(_NotificationModel value, $Res Function(_NotificationModel) _then) = __$NotificationModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'id') String? id,@JsonKey(name: 'user_id') String userId,@JsonKey(name: 'house_id') String? houseId,@JsonKey(name: 'rt_id') String? rtId,@JsonKey(name: 'title') String title,@JsonKey(name: 'body') String body,@JsonKey(name: 'category') String category,@JsonKey(name: 'data') Map<String, dynamic> data,@JsonKey(name: 'read_at') DateTime? readAt
+@JsonKey(name: 'id') String? id,@JsonKey(name: 'user_id') String userId,@JsonKey(name: 'house_id') String? houseId,@JsonKey(name: 'rt_id') String? rtId,@JsonKey(name: 'title') String title,@JsonKey(name: 'body') String body,@JsonKey(name: 'category') String category,@JsonKey(name: 'data') Map<String, dynamic> data,@JsonKey(name: 'read_at') DateTime? readAt,@JsonKey(name: 'created_at') DateTime? createdAt
 });
 
 
@@ -157,7 +159,7 @@ class __$NotificationModelCopyWithImpl<$Res>
 
 /// Create a copy of NotificationModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? userId = null,Object? houseId = freezed,Object? rtId = freezed,Object? title = null,Object? body = null,Object? category = null,Object? data = null,Object? readAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? userId = null,Object? houseId = freezed,Object? rtId = freezed,Object? title = null,Object? body = null,Object? category = null,Object? data = null,Object? readAt = freezed,Object? createdAt = freezed,}) {
   return _then(_NotificationModel(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
@@ -168,6 +170,7 @@ as String,body: null == body ? _self.body : body // ignore: cast_nullable_to_non
 as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as String,data: null == data ? _self._data : data // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>,readAt: freezed == readAt ? _self.readAt : readAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }

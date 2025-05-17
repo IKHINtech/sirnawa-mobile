@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
+import 'package:sirnawa_mobile/config/notification_providers.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_shimmer.dart';
 import 'package:sirnawa_mobile/ui/core/ui/placeholder.dart';
@@ -45,6 +46,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch<HomeState>(homeViewModelProvider);
     final notifier = ref.watch<HomeViewModel>(homeViewModelProvider.notifier);
+    final unreadCount = ref.watch(unreadCountProvider).value ?? 0;
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () => ref.read(homeViewModelProvider.notifier).reloadUser(),

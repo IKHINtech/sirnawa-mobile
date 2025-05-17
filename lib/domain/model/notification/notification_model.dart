@@ -15,6 +15,7 @@ class NotificationModel with _$NotificationModel {
     @JsonKey(name: 'category') required String category,
     @JsonKey(name: 'data') required Map<String, dynamic> data,
     @JsonKey(name: 'read_at') DateTime? readAt,
+    @JsonKey(name: 'created_at') DateTime? createdAt,
   }) = _NotificationModel;
 
   factory NotificationModel.fromJson(Map<String, dynamic> json) =>

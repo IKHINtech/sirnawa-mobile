@@ -45,6 +45,7 @@ abstract final class Routes {
   static const iplRateUpdate = '/ipl_rate/update';
   static const iplBill = '/ipl_bill';
   static const searchRelative = 'search';
+  static const notifications = '/notifications';
   static const results = '/$resultsRelative';
   static const resultsRelative = 'results';
   static const activities = '/$activitiesRelative';

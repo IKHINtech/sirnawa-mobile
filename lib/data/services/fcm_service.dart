@@ -183,6 +183,26 @@ class FCMService {
     // }
   }
 
+  Future<void> showLocalNotification({
+    required String title,
+    required String body,
+  }) async {
+    await _flutterLocalNotificationsPlugin.show(
+      0,
+      title,
+      body,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          'your_channel_id',
+          'Your Channel Name',
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+        iOS: DarwinNotificationDetails(),
+      ),
+    );
+  }
+
   Future<void> _showNotification(RemoteMessage message) async {
     AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
