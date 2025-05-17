@@ -1,4 +1,6 @@
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sirnawa_mobile/config/auth_providers.dart';
 import 'package:sirnawa_mobile/data/repositories/auth/auth_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/user/user_repository.dart';
@@ -60,3 +62,11 @@ final StateNotifierProvider<LoginViewModel, LoginState> loginViewModelProvider =
         authRepository: ref.watch<AuthRepository>(authRepositoryProvider),
       );
     });
+
+final deviceInfoProvider = Provider<DeviceInfoPlugin>((ref) {
+  return DeviceInfoPlugin();
+});
+
+final packageInfoProvider = FutureProvider<PackageInfo>((ref) async {
+  return await PackageInfo.fromPlatform();
+});

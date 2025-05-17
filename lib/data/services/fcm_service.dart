@@ -1,14 +1,29 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:sirnawa_mobile/data/services/api/model/user_fcm_token/user_fcm_token_request_model.dart';
+import 'package:sirnawa_mobile/data/services/api/user_fcm_token_service.dart';
 
 class FCMService {
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  final FirebaseMessaging _firebaseMessaging;
+  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
+  final UserFcmTokenService _userFcmTokenService;
+  final DeviceInfoPlugin _deviceInfoPlugin;
+  final PackageInfo _packageInfo;
+
+  FCMService(
+    this._firebaseMessaging,
+    this._flutterLocalNotificationsPlugin,
+    this._userFcmTokenService,
+    this._deviceInfoPlugin,
+    this._packageInfo,
+  );
 
   Future<void> initialize() async {
     await _setupNotificationPermissions();
@@ -71,6 +86,36 @@ class FCMService {
     );
   }
 
+  Future<Map<String, dynamic>> _getDeviceData() async {
+    if (Platform.isAndroid) {
+      final androidInfo = await _deviceInfoPlugin.androidInfo;
+      return {
+        'device_id': androidInfo.id,
+        'os_version': 'Android ${androidInfo.version.release}',
+        'platform': 'android',
+      };
+    } else if (Platform.isIOS) {
+      final iosInfo = await _deviceInfoPlugin.iosInfo;
+      return {
+        'device_id': iosInfo.identifierForVendor ?? 'unknown',
+        'os_version': 'iOS ${iosInfo.systemVersion}',
+        'platform': 'ios',
+      };
+    } else if (Platform.isWindows) {
+      final windowsInfo = await _deviceInfoPlugin.windowsInfo;
+      return {
+        'device_id': windowsInfo.deviceId,
+        'os_version': 'Windows ${windowsInfo.computerName}',
+        'platform': 'windows',
+      };
+    }
+    return {
+      'device_id': 'unknown',
+      'os_version': 'unknown',
+      'platform': Platform.operatingSystem,
+    };
+  }
+
   Future<void> _getToken() async {
     try {
       String? token = await _firebaseMessaging.getToken();
@@ -91,9 +136,32 @@ class FCMService {
   }
 
   Future<void> _sendTokenToServer(String token) async {
-    // Implementasi pengiriman token ke backend Anda
-    // Contoh:
-    // await ApiService().updateFcmToken(token);
+    try {
+      final deviceData = await _getDeviceData();
+      // Anda perlu menambahkan properti lain yang diperlukan untuk model
+      final request = UserFcmTokenRequestModel(
+        token: token,
+        deviceType: Platform.operatingSystem,
+        apVersion: _packageInfo.version,
+        deviceId:
+            deviceData['device_id'] ?? 'unknown', // Ambil dari device_info_plus
+        osVersion:
+            deviceData['os-version'] ??
+            'unknown', // Ambil dari device_info_plus
+      );
+
+      await _userFcmTokenService.createUserFcmToken(request);
+    } catch (e) {
+      debugPrint('Error sending token to server: $e');
+    }
+  }
+
+  Future<void> removeToken(String token) async {
+    try {
+      await _userFcmTokenService.deleteUserFcmToken(token);
+    } catch (e) {
+      debugPrint('Error removing token from server: $e');
+    }
   }
 
   void _setupInteractedMessage() {
