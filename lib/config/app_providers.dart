@@ -45,6 +45,7 @@ final Provider<UserRepository> userRepositoryProvider =
 final StateNotifierProvider<HomeViewModel, HomeState> homeViewModelProvider =
     StateNotifierProvider<HomeViewModel, HomeState>((ref) {
       return HomeViewModel(
+        ref: ref,
         userRepo: ref.read<UserRepository>(userRepositoryProvider),
         authRepository: ref.read<AuthRepository>(authRepositoryProvider),
       );

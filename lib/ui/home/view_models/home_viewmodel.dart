@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sirnawa_mobile/config/fcm_providers.dart';
 import 'package:sirnawa_mobile/data/repositories/auth/auth_repository.dart';
 import 'package:sirnawa_mobile/data/repositories/user/user_repository.dart';
 import 'package:sirnawa_mobile/data/services/api/model/api_response/api_response.dart';
@@ -60,12 +62,14 @@ class HomeState {
 }
 
 class HomeViewModel extends StateNotifier<HomeState> {
+  final Ref ref;
   final UserRepository _userRepo;
   final AuthRepository _authRepository;
 
   HomeViewModel({
     required UserRepository userRepo,
     required AuthRepository authRepository,
+    required this.ref,
   }) : _userRepo = userRepo,
        _authRepository = authRepository,
        super(HomeState.initial()) {
@@ -120,7 +124,28 @@ class HomeViewModel extends StateNotifier<HomeState> {
   }
 
   Future<void> logout() async {
-    await _authRepository.logout();
+    try {
+      state = state.copyWith(
+        isLoading: true,
+        error: null,
+        loadStatus: const AsyncValue.loading(),
+      );
+      await ref.read(fcmViewModelProvider.notifier).removeFcmToken();
+
+      await _authRepository.logout();
+      state = state.copyWith(
+        isLoading: false,
+        error: null,
+        loadStatus: const AsyncValue.data(null),
+      );
+    } catch (e) {
+      debugPrint(e.toString());
+      state = state.copyWith(
+        isLoading: false,
+        error: e.toString(),
+        loadStatus: AsyncValue.error(e, StackTrace.empty),
+      );
+    }
   }
 
   void changeHouse(ResidentHouseModel house) {
