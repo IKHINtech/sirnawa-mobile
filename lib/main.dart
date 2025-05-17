@@ -1,5 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:logging/logging.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
 import 'package:sirnawa_mobile/data/services/share_preference_service.dart';
@@ -7,13 +11,13 @@ import 'package:sirnawa_mobile/routing/router_v3.dart';
 import 'package:sirnawa_mobile/ui/core/themes/theme.dart';
 import 'package:sirnawa_mobile/ui/core/ui/scroll_behaviour.dart';
 import 'package:sirnawa_mobile/utils/util.dart';
-import 'package:intl/date_symbol_data_local.dart';
-// ignore: depend_on_referenced_packages
-import 'package:flutter_localizations/flutter_localizations.dart';
+
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('id_ID');
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   Logger("Starting application");
   Logger.root.level = Level.ALL;
   runApp(
