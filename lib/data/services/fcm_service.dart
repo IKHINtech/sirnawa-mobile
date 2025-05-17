@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class FCMService {
@@ -30,9 +31,9 @@ class FCMService {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('User granted permission');
+      debugPrint('User granted permission');
     } else {
-      print('User declined or has not accepted permission');
+      debugPrint('User declined or has not accepted permission');
     }
   }
 
@@ -74,17 +75,17 @@ class FCMService {
     try {
       String? token = await _firebaseMessaging.getToken();
       if (token != null) {
-        print('FCM Token: $token');
+        debugPrint('FCM Token: $token');
         // Kirim token ke server Anda untuk disimpan
         await _sendTokenToServer(token);
       }
     } catch (e) {
-      print('Error getting FCM token: $e');
+      debugPrint('Error getting FCM token: $e');
     }
 
     // Handle token refresh
     _firebaseMessaging.onTokenRefresh.listen((newToken) {
-      print('New FCM Token: $newToken');
+      debugPrint('New FCM Token: $newToken');
       _sendTokenToServer(newToken);
     });
   }

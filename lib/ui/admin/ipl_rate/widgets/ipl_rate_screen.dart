@@ -3,12 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
 import 'package:sirnawa_mobile/config/ipl_rate_provider.dart';
 import 'package:sirnawa_mobile/domain/model/ipl_rate/ipl_rate_model.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';
+import 'package:sirnawa_mobile/ui/core/ui/lottie_loading.dart';
 
 class IplRateListScreen extends ConsumerStatefulWidget {
   const IplRateListScreen({super.key});
@@ -65,14 +65,7 @@ class _IplRateListScreenState extends ConsumerState<IplRateListScreen> {
           await ref.read(iplRateListProvider.notifier).refresh();
         },
         child: iplRateListAsync.when(
-          loading:
-              () => Center(
-                child: SizedBox(
-                  width: 140,
-                  height: 140,
-                  child: Lottie.asset('assets/loading_my_rt.json'),
-                ),
-              ),
+          loading: () => MyRtLoading(),
           error: (error, stack) => Center(child: Text('Error: $error')),
           data: (rates) {
             if (rates.isEmpty) {

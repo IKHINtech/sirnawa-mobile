@@ -66,10 +66,14 @@ final StateNotifierProvider<HouseViewModel, HouseState> houseViewModelProvider =
       );
     });
 
-final houseNotInGroupNotifier = StateNotifierProvider.autoDispose((ref) {
+final houseOptionsWithParams = StateNotifierProvider.autoDispose.family<
+  HouseListWithParamsNotifier,
+  AsyncValue<List<HouseModel>>,
+  Map<String, dynamic>
+>((ref, params) {
   final repository = ref.watch(houseRepositoryProvider);
   final rtId = ref.watch(
     homeViewModelProvider.select((s) => s.residentHouse?.house!.rt?.id ?? ""),
   );
-  return HouseListNotInGroupNotifier(repository, rtId);
+  return HouseListWithParamsNotifier(repository, rtId, params);
 });

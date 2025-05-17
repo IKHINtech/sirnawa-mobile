@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
 import 'package:sirnawa_mobile/config/ronda_group_member_providers.dart';
 import 'package:sirnawa_mobile/config/ronda_group_providers.dart';
 import 'package:sirnawa_mobile/domain/model/ronda_group/ronda_group_model.dart';
 import 'package:sirnawa_mobile/domain/model/ronda_group_member/ronda_group_member_model.dart';
 import 'package:sirnawa_mobile/ui/admin/ronda_group/widgets/ronda_group_member_dialog.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';
+import 'package:sirnawa_mobile/ui/core/ui/lottie_loading.dart';
 
 class RondaGroupDetailScreen extends ConsumerWidget {
   final String rondaGroupId;
@@ -83,14 +83,7 @@ class RondaGroupDetailScreen extends ConsumerWidget {
     return Scaffold(
       appBar: CustomAppBar(title: "Ronda Group Detail"),
       body: rondaGroupAsync.when(
-        loading:
-            () => Center(
-              child: SizedBox(
-                height: 140,
-                width: 140,
-                child: Lottie.asset('assets/loading_my_rt.json'),
-              ),
-            ),
+        loading: () => MyRtLoading(),
         error:
             (err, stack) =>
                 Center(child: Text(err.toString() + stack.toString())),

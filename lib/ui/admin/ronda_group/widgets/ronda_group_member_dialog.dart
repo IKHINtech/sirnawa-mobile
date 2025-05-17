@@ -26,12 +26,16 @@ class _AddMemberDialogState extends ConsumerState<AddMemberDialog> {
   ResidentModel? _selectedResident;
   bool _isLoading = false;
 
+  final Map<String, dynamic> _houseParams = {
+    "not_in_group_ronda": "not_in_group_ronda",
+  };
+
   @override
   Widget build(BuildContext context) {
     final rondaGroup =
         ref.read(rondaGroupDetailProvider(widget.rondaGroupId)).value;
 
-    final houseAsync = ref.watch(houseNotInGroupNotifier);
+    final houseAsync = ref.watch(houseOptionsWithParams(_houseParams));
 
     final penghuniAsync = ref.watch(
       listPenghuniProvider(_selectedHouseId ?? ""),

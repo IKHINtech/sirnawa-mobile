@@ -1,4 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:sirnawa_mobile/domain/model/house/house_model.dart';
+import 'package:sirnawa_mobile/domain/model/rt/rt_model.dart';
 
 part 'ipl_bill_model.freezed.dart';
 part 'ipl_bill_model.g.dart';
@@ -11,11 +13,13 @@ class IplBillModel with _$IplBillModel {
     @JsonKey(name: "house_id") required String houseId,
     @JsonKey(name: "ipl_rate_id") required String iplRateId,
     required int month,
-    required String penalty,
+    String? penalty,
     @JsonKey(name: "rt_id") required String rtId,
     required String status,
     @JsonKey(name: "total_amount") required double totalAmount,
     required int year,
+    HouseModel? house,
+    RtModel? rt,
   }) = _IplBillModel;
 
   factory IplBillModel.fromJson(Map<String, dynamic> json) =>

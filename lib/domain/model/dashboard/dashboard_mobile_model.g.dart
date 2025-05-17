@@ -21,6 +21,10 @@ _DashboardMobileModel _$DashboardMobileModelFromJson(
           : AnnouncementModel.fromJson(
             json['announcement'] as Map<String, dynamic>,
           ),
+  iplBill:
+      json['ipl_bill'] == null
+          ? null
+          : IplBillModel.fromJson(json['ipl_bill'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$DashboardMobileModelToJson(
@@ -28,4 +32,5 @@ Map<String, dynamic> _$DashboardMobileModelToJson(
 ) => <String, dynamic>{
   'ronda_schedule': instance.rondaScheduleModel,
   'announcement': instance.announcementModel,
+  'ipl_bill': instance.iplBill,
 };

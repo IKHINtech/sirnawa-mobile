@@ -41,6 +41,7 @@ final listPenghuniProvider =
       houseID,
     ) async {
       final viewModel = ref.read(residentHouseViewModelProvider.notifier);
+      if (houseID.isEmpty) return [];
       await viewModel.fetchPenghuni(houseID: houseID);
       return ref.read(residentHouseViewModelProvider).listPenghuni;
     });

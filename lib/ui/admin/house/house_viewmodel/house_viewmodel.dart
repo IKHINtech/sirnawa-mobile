@@ -234,11 +234,12 @@ class HouseListNotifier extends StateNotifier<AsyncValue<List<HouseModel>>> {
   }
 }
 
-class HouseListNotInGroupNotifier
+class HouseListWithParamsNotifier
     extends StateNotifier<AsyncValue<List<HouseModel>>> {
   final HouseRepository repository;
   final String rtId;
-  HouseListNotInGroupNotifier(this.repository, this.rtId)
+  final Map<String, dynamic> params;
+  HouseListWithParamsNotifier(this.repository, this.rtId, this.params)
     : super(const AsyncValue.loading()) {
     loadInitialData();
   }
@@ -249,7 +250,7 @@ class HouseListNotInGroupNotifier
       final houses = await repository.getListHouse({
         "paginated": false,
         "rt_id": rtId,
-        "not_in_group_roda": "true",
+        ...params,
       });
 
       switch (houses) {

@@ -3,7 +3,6 @@ import 'package:flutter_map/flutter_map.dart' as map;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:lottie/lottie.dart';
 import 'package:sirnawa_mobile/config/house_provders.dart';
 import 'package:sirnawa_mobile/config/resident_house_providers.dart';
 import 'package:sirnawa_mobile/config/resident_providers.dart';
@@ -14,6 +13,7 @@ import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/admin/house/widgets/fullscreen_maps.dart';
 import 'package:sirnawa_mobile/ui/admin/resident_house/resident_house_viewmodel/resident_house_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';
+import 'package:sirnawa_mobile/ui/core/ui/lottie_loading.dart';
 
 class HouseDetailScreen extends ConsumerWidget {
   final String houseId;
@@ -68,14 +68,7 @@ class HouseDetailScreen extends ConsumerWidget {
                   ),
                   Expanded(
                     child: residentsAsync.when(
-                      loading:
-                          () => Center(
-                            child: SizedBox(
-                              height: 140,
-                              width: 140,
-                              child: Lottie.asset("assets/loading_my_rt.json"),
-                            ),
-                          ),
+                      loading: () => MyRtLoading(),
                       error: (err, stack) => Center(child: Text('Error: $err')),
                       data: (residents) {
                         if (residents.isEmpty) {

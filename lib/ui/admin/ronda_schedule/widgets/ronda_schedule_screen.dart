@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
 import 'package:sirnawa_mobile/config/ronda_group_providers.dart';
 import 'package:sirnawa_mobile/config/ronda_schedule_providers.dart';
@@ -10,6 +9,7 @@ import 'package:sirnawa_mobile/data/services/api/model/ronda_schedule/ronda_sche
 import 'package:sirnawa_mobile/domain/model/ronda_schedule/ronda_schedule_model.dart';
 import 'package:sirnawa_mobile/ui/admin/ronda_schedule/widgets/ronda_schedule_item.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';
+import 'package:sirnawa_mobile/ui/core/ui/lottie_loading.dart';
 
 class RondaScheduleScreen extends ConsumerWidget {
   const RondaScheduleScreen({super.key});
@@ -32,14 +32,7 @@ class RondaScheduleScreen extends ConsumerWidget {
           ref.invalidate(rondaSchedulePaginationProvider);
         },
         child: rondaSchedulesAsync.when(
-          loading:
-              () => Center(
-                child: SizedBox(
-                  height: 140,
-                  width: 140,
-                  child: Lottie.asset('assets/loading_my_rt.json'),
-                ),
-              ),
+          loading: () => MyRtLoading(),
           error: (error, _) => Center(child: Text('Error: $error')),
           data: (schedules) => _buildScheduleList(schedules, ref, context),
         ),

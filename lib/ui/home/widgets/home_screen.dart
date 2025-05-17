@@ -4,12 +4,12 @@ import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
-import 'package:sirnawa_mobile/ui/core/ui/custom_elevated_button.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_shimmer.dart';
 import 'package:sirnawa_mobile/ui/core/ui/placeholder.dart';
 import 'package:sirnawa_mobile/ui/home/view_models/home_viewmodel.dart';
 import 'package:sirnawa_mobile/ui/home/widgets/announcement_preview.dart';
 import 'package:sirnawa_mobile/ui/home/widgets/house_list.dart';
+import 'package:sirnawa_mobile/ui/home/widgets/ipl_bill_preview.dart';
 import 'package:sirnawa_mobile/ui/home/widgets/ronda_schedule_preview.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -127,66 +127,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         : Theme.of(context).colorScheme.primary,
                 // color: Colors.white,
               ),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                  color: Theme.of(context).colorScheme.surface,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Tagihan Saya",
-                          style: Theme.of(
-                            context,
-                          ).textTheme.headlineSmall!.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                        ),
-                        Icon(
-                          Icons.payments,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 3),
-                    Text(
-                      "Mei 2025",
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Card.outlined(
-                      child: ListTile(
-                        title: Text("Rp. 55.000,-"),
-                        trailing: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.green),
-                            borderRadius: BorderRadius.all(Radius.circular(4)),
-                          ),
-                          padding: EdgeInsets.all(8),
-                          child: Text(
-                            "Bayar",
-                            style: TextStyle(color: Colors.green),
-                          ),
-                        ),
-                      ),
-                    ),
-                    CustomElevatedButton(
-                      title: "Lihat Semua Tagihan",
-                      onPressed: () {
-                        context.push(Routes.adminRondaSchedule);
-                      },
-                    ),
-                  ],
-                ),
-              ),
+              IplBillPreview(),
               Container(
                 height: 20,
                 color:

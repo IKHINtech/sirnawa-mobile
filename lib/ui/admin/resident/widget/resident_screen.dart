@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lottie/lottie.dart';
 import 'package:sirnawa_mobile/config/resident_providers.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_appbar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sirnawa_mobile/ui/core/ui/lottie_loading.dart';
 
 class ResidentScreen extends ConsumerStatefulWidget {
   const ResidentScreen({super.key});
@@ -86,14 +86,7 @@ class _ResidentScreenState extends ConsumerState<ResidentScreen> {
           );
         },
         error: (err, st) => Center(child: Text('Error: $err')),
-        loading:
-            () => Center(
-              child: SizedBox(
-                height: 140,
-                width: 140,
-                child: Lottie.asset('assets/loading_my_rt.json'),
-              ),
-            ),
+        loading: () => MyRtLoading(),
       ),
     );
   }

@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DashboardMobileModel {
 
-@JsonKey(name: "ronda_schedule") RondaScheduleModel? get rondaScheduleModel;@JsonKey(name: "announcement") AnnouncementModel? get announcementModel;
+@JsonKey(name: "ronda_schedule") RondaScheduleModel? get rondaScheduleModel;@JsonKey(name: "announcement") AnnouncementModel? get announcementModel;@JsonKey(name: "ipl_bill") IplBillModel? get iplBill;
 /// Create a copy of DashboardMobileModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $DashboardMobileModelCopyWith<DashboardMobileModel> get copyWith => _$DashboardM
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DashboardMobileModel&&(identical(other.rondaScheduleModel, rondaScheduleModel) || other.rondaScheduleModel == rondaScheduleModel)&&(identical(other.announcementModel, announcementModel) || other.announcementModel == announcementModel));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DashboardMobileModel&&(identical(other.rondaScheduleModel, rondaScheduleModel) || other.rondaScheduleModel == rondaScheduleModel)&&(identical(other.announcementModel, announcementModel) || other.announcementModel == announcementModel)&&(identical(other.iplBill, iplBill) || other.iplBill == iplBill));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,rondaScheduleModel,announcementModel);
+int get hashCode => Object.hash(runtimeType,rondaScheduleModel,announcementModel,iplBill);
 
 @override
 String toString() {
-  return 'DashboardMobileModel(rondaScheduleModel: $rondaScheduleModel, announcementModel: $announcementModel)';
+  return 'DashboardMobileModel(rondaScheduleModel: $rondaScheduleModel, announcementModel: $announcementModel, iplBill: $iplBill)';
 }
 
 
@@ -49,11 +49,11 @@ abstract mixin class $DashboardMobileModelCopyWith<$Res>  {
   factory $DashboardMobileModelCopyWith(DashboardMobileModel value, $Res Function(DashboardMobileModel) _then) = _$DashboardMobileModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: "ronda_schedule") RondaScheduleModel? rondaScheduleModel,@JsonKey(name: "announcement") AnnouncementModel? announcementModel
+@JsonKey(name: "ronda_schedule") RondaScheduleModel? rondaScheduleModel,@JsonKey(name: "announcement") AnnouncementModel? announcementModel,@JsonKey(name: "ipl_bill") IplBillModel? iplBill
 });
 
 
-$RondaScheduleModelCopyWith<$Res>? get rondaScheduleModel;$AnnouncementModelCopyWith<$Res>? get announcementModel;
+$RondaScheduleModelCopyWith<$Res>? get rondaScheduleModel;$AnnouncementModelCopyWith<$Res>? get announcementModel;$IplBillModelCopyWith<$Res>? get iplBill;
 
 }
 /// @nodoc
@@ -66,11 +66,12 @@ class _$DashboardMobileModelCopyWithImpl<$Res>
 
 /// Create a copy of DashboardMobileModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? rondaScheduleModel = freezed,Object? announcementModel = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? rondaScheduleModel = freezed,Object? announcementModel = freezed,Object? iplBill = freezed,}) {
   return _then(_self.copyWith(
 rondaScheduleModel: freezed == rondaScheduleModel ? _self.rondaScheduleModel : rondaScheduleModel // ignore: cast_nullable_to_non_nullable
 as RondaScheduleModel?,announcementModel: freezed == announcementModel ? _self.announcementModel : announcementModel // ignore: cast_nullable_to_non_nullable
-as AnnouncementModel?,
+as AnnouncementModel?,iplBill: freezed == iplBill ? _self.iplBill : iplBill // ignore: cast_nullable_to_non_nullable
+as IplBillModel?,
   ));
 }
 /// Create a copy of DashboardMobileModel
@@ -97,6 +98,18 @@ $AnnouncementModelCopyWith<$Res>? get announcementModel {
   return $AnnouncementModelCopyWith<$Res>(_self.announcementModel!, (value) {
     return _then(_self.copyWith(announcementModel: value));
   });
+}/// Create a copy of DashboardMobileModel
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$IplBillModelCopyWith<$Res>? get iplBill {
+    if (_self.iplBill == null) {
+    return null;
+  }
+
+  return $IplBillModelCopyWith<$Res>(_self.iplBill!, (value) {
+    return _then(_self.copyWith(iplBill: value));
+  });
 }
 }
 
@@ -105,11 +118,12 @@ $AnnouncementModelCopyWith<$Res>? get announcementModel {
 @JsonSerializable()
 
 class _DashboardMobileModel implements DashboardMobileModel {
-  const _DashboardMobileModel({@JsonKey(name: "ronda_schedule") this.rondaScheduleModel, @JsonKey(name: "announcement") this.announcementModel});
+  const _DashboardMobileModel({@JsonKey(name: "ronda_schedule") this.rondaScheduleModel, @JsonKey(name: "announcement") this.announcementModel, @JsonKey(name: "ipl_bill") this.iplBill});
   factory _DashboardMobileModel.fromJson(Map<String, dynamic> json) => _$DashboardMobileModelFromJson(json);
 
 @override@JsonKey(name: "ronda_schedule") final  RondaScheduleModel? rondaScheduleModel;
 @override@JsonKey(name: "announcement") final  AnnouncementModel? announcementModel;
+@override@JsonKey(name: "ipl_bill") final  IplBillModel? iplBill;
 
 /// Create a copy of DashboardMobileModel
 /// with the given fields replaced by the non-null parameter values.
@@ -124,16 +138,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DashboardMobileModel&&(identical(other.rondaScheduleModel, rondaScheduleModel) || other.rondaScheduleModel == rondaScheduleModel)&&(identical(other.announcementModel, announcementModel) || other.announcementModel == announcementModel));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DashboardMobileModel&&(identical(other.rondaScheduleModel, rondaScheduleModel) || other.rondaScheduleModel == rondaScheduleModel)&&(identical(other.announcementModel, announcementModel) || other.announcementModel == announcementModel)&&(identical(other.iplBill, iplBill) || other.iplBill == iplBill));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,rondaScheduleModel,announcementModel);
+int get hashCode => Object.hash(runtimeType,rondaScheduleModel,announcementModel,iplBill);
 
 @override
 String toString() {
-  return 'DashboardMobileModel(rondaScheduleModel: $rondaScheduleModel, announcementModel: $announcementModel)';
+  return 'DashboardMobileModel(rondaScheduleModel: $rondaScheduleModel, announcementModel: $announcementModel, iplBill: $iplBill)';
 }
 
 
@@ -144,11 +158,11 @@ abstract mixin class _$DashboardMobileModelCopyWith<$Res> implements $DashboardM
   factory _$DashboardMobileModelCopyWith(_DashboardMobileModel value, $Res Function(_DashboardMobileModel) _then) = __$DashboardMobileModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: "ronda_schedule") RondaScheduleModel? rondaScheduleModel,@JsonKey(name: "announcement") AnnouncementModel? announcementModel
+@JsonKey(name: "ronda_schedule") RondaScheduleModel? rondaScheduleModel,@JsonKey(name: "announcement") AnnouncementModel? announcementModel,@JsonKey(name: "ipl_bill") IplBillModel? iplBill
 });
 
 
-@override $RondaScheduleModelCopyWith<$Res>? get rondaScheduleModel;@override $AnnouncementModelCopyWith<$Res>? get announcementModel;
+@override $RondaScheduleModelCopyWith<$Res>? get rondaScheduleModel;@override $AnnouncementModelCopyWith<$Res>? get announcementModel;@override $IplBillModelCopyWith<$Res>? get iplBill;
 
 }
 /// @nodoc
@@ -161,11 +175,12 @@ class __$DashboardMobileModelCopyWithImpl<$Res>
 
 /// Create a copy of DashboardMobileModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? rondaScheduleModel = freezed,Object? announcementModel = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? rondaScheduleModel = freezed,Object? announcementModel = freezed,Object? iplBill = freezed,}) {
   return _then(_DashboardMobileModel(
 rondaScheduleModel: freezed == rondaScheduleModel ? _self.rondaScheduleModel : rondaScheduleModel // ignore: cast_nullable_to_non_nullable
 as RondaScheduleModel?,announcementModel: freezed == announcementModel ? _self.announcementModel : announcementModel // ignore: cast_nullable_to_non_nullable
-as AnnouncementModel?,
+as AnnouncementModel?,iplBill: freezed == iplBill ? _self.iplBill : iplBill // ignore: cast_nullable_to_non_nullable
+as IplBillModel?,
   ));
 }
 
@@ -192,6 +207,18 @@ $AnnouncementModelCopyWith<$Res>? get announcementModel {
 
   return $AnnouncementModelCopyWith<$Res>(_self.announcementModel!, (value) {
     return _then(_self.copyWith(announcementModel: value));
+  });
+}/// Create a copy of DashboardMobileModel
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$IplBillModelCopyWith<$Res>? get iplBill {
+    if (_self.iplBill == null) {
+    return null;
+  }
+
+  return $IplBillModelCopyWith<$Res>(_self.iplBill!, (value) {
+    return _then(_self.copyWith(iplBill: value));
   });
 }
 }

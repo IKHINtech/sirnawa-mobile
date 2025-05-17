@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
@@ -7,6 +6,7 @@ import 'package:sirnawa_mobile/config/house_provders.dart';
 import 'package:sirnawa_mobile/config/ipl_bill_providers.dart';
 import 'package:sirnawa_mobile/config/ipl_rate_provider.dart';
 import 'package:sirnawa_mobile/data/services/api/model/ipl_bill_generate_request_model/ipl_bill_generate_request_model.dart';
+import 'package:sirnawa_mobile/ui/core/ui/lottie_loading.dart';
 
 class GenerateIplBillDialog extends ConsumerStatefulWidget {
   const GenerateIplBillDialog({super.key});
@@ -24,6 +24,7 @@ class _GenerateIplBillDialogState extends ConsumerState<GenerateIplBillDialog> {
   String? _iplRateId;
   bool _isAllHouse = false;
   final List<String> _selectedHouseIds = [];
+  final Map<String, String> _params = {"exclude_status": "tidak aktif"};
 
   @override
   void initState() {
@@ -36,7 +37,7 @@ class _GenerateIplBillDialogState extends ConsumerState<GenerateIplBillDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final houseAsync = ref.watch(houseNotInGroupNotifier);
+    final houseAsync = ref.watch(houseOptionsWithParams(_params));
     final iplRates = ref.watch(iplRateListProvider);
     final rtId = ref.watch(
       homeViewModelProvider.select((s) => s.userRtModel?.rtId ?? ''),
@@ -170,7 +171,7 @@ class _GenerateIplBillDialogState extends ConsumerState<GenerateIplBillDialog> {
                 const Text('Select Houses:'),
                 const SizedBox(height: 8),
                 houseAsync.when(
-                  loading: () => const CircularProgressIndicator(),
+                  loading: () => const MyRtLoading(),
                   error: (error, stack) => Text('Error: $error'),
                   data: (houses) {
                     return Column(
