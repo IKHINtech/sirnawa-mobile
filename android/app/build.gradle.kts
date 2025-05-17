@@ -36,12 +36,18 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
+            firebaseCrashlytics {
+                mappingFileUploadEnabled true
+            }
         }
     }
 }
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation(platform('com.google.firebase:firebase-bom:33.13.0'))
+    implementation('com.google.firebase:firebase-crashlytics')
+    implementation('com.google.firebase:firebase-analytics')
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
     // Add this [coreLibraryDesugaring] inside [dependencies]
 }
