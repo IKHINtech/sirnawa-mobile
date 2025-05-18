@@ -16,10 +16,11 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
+plugins {
+    id("com.google.gms.google-services") version "4.3.15" apply false
+    id("com.google.firebase.crashlytics") version "2.9.9" apply false
+}
+
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
-}
-dependencies {
-    classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.9'
-    classpath 'com.google.gms:google-services:4.3.15'
 }
