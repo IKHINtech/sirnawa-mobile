@@ -141,7 +141,7 @@ class IplBillPreview extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "Jadwal Ronda",
+              "Tagihan Saya",
               style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
@@ -154,7 +154,7 @@ class IplBillPreview extends ConsumerWidget {
         Card.outlined(
           color: Theme.of(context).colorScheme.errorContainer,
           child: ListTile(
-            title: Text("Gagal memuat jadwal"),
+            title: Text("Gagal memuat tagihan"),
             subtitle: Text(error.toString()),
             trailing: Icon(
               Icons.error,
