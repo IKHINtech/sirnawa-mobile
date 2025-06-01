@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:sirnawa_mobile/config/app_providers.dart';
-import 'package:sirnawa_mobile/config/notification_providers.dart';
 import 'package:sirnawa_mobile/routing/routes.dart';
 import 'package:sirnawa_mobile/ui/core/ui/custom_shimmer.dart';
 import 'package:sirnawa_mobile/ui/core/ui/placeholder.dart';
@@ -46,118 +45,224 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch<HomeState>(homeViewModelProvider);
     final notifier = ref.watch<HomeViewModel>(homeViewModelProvider.notifier);
-    final unreadCount = ref.watch(unreadCountProvider).value ?? 0;
+    final int unreadCount = 10; // ref.watch(unreadCountProvider).value ?? 0;
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: () => ref.read(homeViewModelProvider.notifier).reloadUser(),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(
-                      "https://images.pexels.com/photos/259780/pexels-photo-259780.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-                    ),
-                    fit: BoxFit.cover,
-                  ),
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(24),
-                    bottomRight: Radius.circular(24),
-                  ),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    // Overlay gelap biar teks/icon tetap terbaca
-                    color: Colors.black.withValues(alpha: 0.3),
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(24),
-                      bottomRight: Radius.circular(24),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      SizedBox(height: kToolbarHeight),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: 16.0,
-                          left: 16,
-                          right: 16,
+      body: CustomScrollView(
+        slivers: [
+          SliverLayoutBuilder(
+            builder: (context, constraints) {
+              final scrolled = constraints.scrollOffset > 120;
+              return SliverAppBar(
+                expandedHeight: 180.0,
+                title:
+                    state.isLoading
+                        ? CustomShimmer(
+                          child: CustomPlaceholder(height: 20, width: 100),
+                        )
+                        : Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              state.residentHouse != null
+                                  ? state
+                                          .residentHouse
+                                          ?.house!
+                                          .hosuingArea
+                                          ?.name ??
+                                      "-"
+                                  : "-",
+                              style: Theme.of(
+                                context,
+                              ).textTheme.titleLarge!.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color:
+                                    scrolled
+                                        ? Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface
+                                        : Colors.white,
+                              ),
+                            ),
+
+                            Text(
+                              state.residentHouse != null
+                                  ? state.residentHouse?.house!.rt?.name ?? "-"
+                                  : "-",
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodyMedium!.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color:
+                                    scrolled
+                                        ? Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface
+                                        : Colors.white,
+                              ),
+                            ),
+                          ],
                         ),
-                        child:
-                            state.user == null && !state.isLoading
-                                ? Card(
-                                  child: ListTile(
-                                    textColor: Colors.red,
-                                    title: Row(
-                                      children: [
-                                        Text("Terjadi Kesalahan"),
-                                        SizedBox(width: 8),
-                                        Icon(Icons.error, color: Colors.red),
-                                      ],
-                                    ),
-                                    trailing: IconButton(
-                                      onPressed: () => notifier.logout(),
-                                      icon: Icon(
-                                        Icons.logout,
-                                        color: Colors.red,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                                : Column(
-                                  children: [
-                                    _title(context, state),
-                                    const SizedBox(height: 8),
-                                    _userLogin(context, state, notifier),
-                                  ],
-                                ),
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          "https://images.pexels.com/photos/259780/pexels-photo-259780.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                        ),
+                        fit: BoxFit.cover,
                       ),
-                    ],
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.3),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: 16.0,
+                              left: 16,
+                              right: 16,
+                            ),
+                            child:
+                                state.user == null && !state.isLoading
+                                    ? Card(
+                                      child: ListTile(
+                                        textColor: Colors.red,
+                                        title: Row(
+                                          children: [
+                                            Text("Terjadi Kesalahan"),
+                                            SizedBox(width: 8),
+                                            Icon(
+                                              Icons.error,
+                                              color: Colors.red,
+                                            ),
+                                          ],
+                                        ),
+                                        trailing: IconButton(
+                                          onPressed: () => notifier.logout(),
+                                          icon: Icon(
+                                            Icons.logout,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                    : _userLogin(context, state, notifier),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              _mainMenu(context, state),
-
-              Container(
-                height: 20,
-                color:
-                    Theme.of(context).brightness == Brightness.light
-                        ? Colors.white
-                        : Theme.of(context).colorScheme.primary,
-                // color: Colors.white,
-              ),
-              IplBillPreview(),
-              Container(
-                height: 20,
-                color:
-                    Theme.of(context).brightness == Brightness.light
-                        ? Colors.white
-                        : Theme.of(context).colorScheme.primary,
-              ),
-              RondaSchedulePreview(),
-              Container(
-                height: 20,
-
-                color:
-                    Theme.of(context).brightness == Brightness.light
-                        ? Colors.white
-                        : Theme.of(context).colorScheme.primary,
-              ),
-              AnnouncementPreview(),
-              Container(
-                height: 20,
-                color:
-                    Theme.of(context).brightness == Brightness.light
-                        ? Colors.white
-                        : Theme.of(context).colorScheme.primary,
-              ),
-              _fiture(context),
-            ],
+                pinned: true,
+                floating: true,
+                snap: true,
+                actions: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.refresh,
+                      color:
+                          scrolled
+                              ? Theme.of(context).colorScheme.primary
+                              : Colors.white,
+                    ),
+                    onPressed:
+                        () =>
+                            ref
+                                .read(homeViewModelProvider.notifier)
+                                .reloadUser(),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16),
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            context.push(Routes.notifications);
+                          },
+                          icon: Icon(
+                            Icons.notifications,
+                            color:
+                                scrolled
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Colors.white,
+                          ),
+                        ),
+                        if (unreadCount > 0)
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            child: Container(
+                              padding: EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                shape: BoxShape.circle,
+                              ),
+                              constraints: BoxConstraints(
+                                minWidth: 16,
+                                minHeight: 16,
+                              ),
+                              child: Text(
+                                '${unreadCount > 9 ? '9+' : unreadCount}',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
-        ),
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                _mainMenu(context, state),
+                Container(
+                  height: 20,
+                  color:
+                      Theme.of(context).brightness == Brightness.light
+                          ? Colors.white
+                          : Theme.of(context).colorScheme.primary,
+                ),
+                IplBillPreview(),
+                Container(
+                  height: 20,
+                  color:
+                      Theme.of(context).brightness == Brightness.light
+                          ? Colors.white
+                          : Theme.of(context).colorScheme.primary,
+                ),
+                RondaSchedulePreview(),
+                Container(
+                  height: 20,
+                  color:
+                      Theme.of(context).brightness == Brightness.light
+                          ? Colors.white
+                          : Theme.of(context).colorScheme.primary,
+                ),
+                AnnouncementPreview(),
+                Container(
+                  height: 20,
+                  color:
+                      Theme.of(context).brightness == Brightness.light
+                          ? Colors.white
+                          : Theme.of(context).colorScheme.primary,
+                ),
+                _fiture(context),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -382,7 +487,70 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  // Widget untuk title ketika expanded
   Widget _title(BuildContext context, HomeState state) {
+    return Align(
+      alignment: Alignment.bottomLeft,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 16, bottom: 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            state.isLoading
+                ? CustomShimmer(
+                  child: CustomPlaceholder(height: 28, width: 240),
+                )
+                : Text(
+                  state.residentHouse != null
+                      ? state.residentHouse?.house!.hosuingArea?.name ?? "-"
+                      : "-",
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+            const SizedBox(height: 4),
+            state.isLoading
+                ? CustomShimmer(child: CustomPlaceholder(height: 18, width: 50))
+                : Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 3),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  child: Text(
+                    state.residentHouse != null
+                        ? state.residentHouse?.house!.rt?.name ?? "-"
+                        : "-",
+                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Widget untuk title ketika collapsed
+  Widget _buildCollapsedTitle(BuildContext context, HomeState state) {
+    return state.isLoading
+        ? CustomShimmer(child: CustomPlaceholder(height: 20, width: 100))
+        : Text(
+          state.residentHouse != null
+              ? state.residentHouse?.house!.hosuingArea?.name ?? "-"
+              : "-",
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        );
+  }
+
+  /*   Widget _title(BuildContext context, HomeState state) {
     return Column(
       children: [
         state.isLoading
@@ -418,7 +586,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ],
     );
   }
-
+ */
   Container _fitureItem({
     required String title,
     required IconData icon,
@@ -486,3 +654,115 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 }
+
+//    RefreshIndicator(
+//   onRefresh: () => ref.read(homeViewModelProvider.notifier).reloadUser(),
+//   child: SingleChildScrollView(
+//     child: Column(
+//       mainAxisAlignment: MainAxisAlignment.start,
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         Container(
+//           decoration: BoxDecoration(
+//             image: DecorationImage(
+//               image: NetworkImage(
+//                 "https://images.pexels.com/photos/259780/pexels-photo-259780.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+//               ),
+//               fit: BoxFit.cover,
+//             ),
+//             borderRadius: const BorderRadius.only(
+//               bottomLeft: Radius.circular(24),
+//               bottomRight: Radius.circular(24),
+//             ),
+//           ),
+//           child: Container(
+//             decoration: BoxDecoration(
+//               // Overlay gelap biar teks/icon tetap terbaca
+//               color: Colors.black.withValues(alpha: 0.3),
+//               borderRadius: const BorderRadius.only(
+//                 bottomLeft: Radius.circular(24),
+//                 bottomRight: Radius.circular(24),
+//               ),
+//             ),
+//             child: Column(
+//               children: [
+//                 SizedBox(height: kToolbarHeight),
+//                 Padding(
+//                   padding: const EdgeInsets.only(
+//                     bottom: 16.0,
+//                     left: 16,
+//                     right: 16,
+//                   ),
+//                   child:
+//                       state.user == null && !state.isLoading
+//                           ? Card(
+//                             child: ListTile(
+//                               textColor: Colors.red,
+//                               title: Row(
+//                                 children: [
+//                                   Text("Terjadi Kesalahan"),
+//                                   SizedBox(width: 8),
+//                                   Icon(Icons.error, color: Colors.red),
+//                                 ],
+//                               ),
+//                               trailing: IconButton(
+//                                 onPressed: () => notifier.logout(),
+//                                 icon: Icon(
+//                                   Icons.logout,
+//                                   color: Colors.red,
+//                                 ),
+//                               ),
+//                             ),
+//                           )
+//                           : Column(
+//                             children: [
+//                               _title(context, state),
+//                               const SizedBox(height: 8),
+//                               _userLogin(context, state, notifier),
+//                             ],
+//                           ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//         _mainMenu(context, state),
+
+//         Container(
+//           height: 20,
+//           color:
+//               Theme.of(context).brightness == Brightness.light
+//                   ? Colors.white
+//                   : Theme.of(context).colorScheme.primary,
+//           // color: Colors.white,
+//         ),
+//         IplBillPreview(),
+//         Container(
+//           height: 20,
+//           color:
+//               Theme.of(context).brightness == Brightness.light
+//                   ? Colors.white
+//                   : Theme.of(context).colorScheme.primary,
+//         ),
+//         RondaSchedulePreview(),
+//         Container(
+//           height: 20,
+
+//           color:
+//               Theme.of(context).brightness == Brightness.light
+//                   ? Colors.white
+//                   : Theme.of(context).colorScheme.primary,
+//         ),
+//         AnnouncementPreview(),
+//         Container(
+//           height: 20,
+//           color:
+//               Theme.of(context).brightness == Brightness.light
+//                   ? Colors.white
+//                   : Theme.of(context).colorScheme.primary,
+//         ),
+//         _fiture(context),
+//       ],
+//     ),
+//   ),
+// ),

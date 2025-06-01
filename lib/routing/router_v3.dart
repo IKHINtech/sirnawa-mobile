@@ -42,6 +42,7 @@ import 'package:sirnawa_mobile/ui/auth/login/widgets/login_screen.dart';
 import 'package:sirnawa_mobile/ui/community/widgets/community_screen.dart';
 import 'package:sirnawa_mobile/ui/home/widgets/home_screen.dart';
 import 'package:sirnawa_mobile/ui/home/widgets/home_sheel.dart';
+import 'package:sirnawa_mobile/ui/home/widgets/notification_screen.dart';
 import 'package:sirnawa_mobile/ui/profile/widgets/profile_screen.dart';
 import 'package:sirnawa_mobile/ui/warung/widgets/warung_screen.dart';
 
@@ -298,6 +299,13 @@ final routerProvider = Provider<GoRouter>((ref) {
           // final houseId = state.pathParameters['id']!;
           return HouseFormScreen(house: house); // Edit mode
         },
+      ),
+      // notification
+      GoRoute(
+        path: Routes.notifications,
+        pageBuilder:
+            (context, state) =>
+                NoTransitionPage(child: const NotificationPage()),
       ),
       ShellRoute(
         builder: (context, state, child) => HomeShell(child: child),
